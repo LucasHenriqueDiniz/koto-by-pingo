@@ -1,0 +1,16 @@
+name = "koto-by-pingo"
+compatibility_date = "2026-01-01"
+main = "cloudflare/api/index.ts"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "koto_by_pingo"
+database_id = "replace-with-database-id"
+
+[vars]
+ENVIRONMENT = "production"
+# CLERK_SECRET_KEY = "sk_live_..." # add via wrangler secret put CLERK_SECRET_KEY
+
+[[pages_build_output_dir]]
+# For Cloudflare Pages deployment
+# output: artifacts/koto/dist/public

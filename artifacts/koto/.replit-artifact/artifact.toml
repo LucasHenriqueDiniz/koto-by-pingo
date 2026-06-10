@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Koto by Pingo"
+version = "1.0.0"
+id = "artifacts/koto"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24263
+
+[services.development]
+run = "pnpm --filter @workspace/koto run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/koto", "run", "build" ]
+publicDir = "artifacts/koto/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24263"
+BASE_PATH = "/"

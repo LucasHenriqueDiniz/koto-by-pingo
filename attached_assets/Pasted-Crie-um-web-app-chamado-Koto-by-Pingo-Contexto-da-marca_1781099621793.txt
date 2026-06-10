@@ -1,0 +1,557 @@
+Crie um web app chamado "Koto by Pingo".
+
+Contexto da marca:
+Koto by Pingo é um app brasileiro para treinar japonês com kana, vocabulário, escuta, progresso e simulados estilo JLPT.
+
+O usuário já tem uma marca chamada "Pingo Concursos".
+O mascote da marca é o Pingo: um pinguim preto.
+Existe uma referência visual do mascote na galeria:
+https://lucashdo.com/gallery
+
+Importante:
+Não copiar imagens automaticamente da internet.
+Crie a estrutura do projeto esperando que depois eu coloque a imagem real do mascote em:
+public/brand/pingo.png
+
+Enquanto a imagem real não existir, use um placeholder visual feito com CSS/SVG inline:
+- pinguim preto simples
+- barriga branca/creme
+- detalhes em vermelho japonês
+- expressão amigável, mas não infantil demais
+
+Nome do produto:
+Koto
+
+Nome completo:
+Koto by Pingo
+
+Mascote:
+Pingo-sensei
+
+Descrição do mascote:
+Pingo-sensei é um pinguim preto que guia o usuário nos estudos de japonês.
+Ele pode aparecer com elementos leves de estudo japonês, como:
+- faixa hachimaki vermelha
+- flashcard com あ
+- fone de ouvido para listening
+- lápis ou caderno
+- postura de professor/guia
+
+Slogan:
+Japonês em pequenos treinos diários.
+
+Proposta:
+Treinar japonês de forma simples, clara e progressiva, com:
+- Kana
+- Vocabulário
+- Escuta
+- Simulados
+- Progresso
+
+Stack:
+Use:
+- Vite
+- React
+- TypeScript
+- React Router
+- Tailwind CSS
+
+Não implemente backend real ainda.
+Não implemente Clerk ainda.
+Não implemente Cloudflare D1 ainda.
+Mas organize a arquitetura pensando nisso.
+
+Deploy futuro:
+O projeto será publicado no Cloudflare Pages.
+Preparar estrutura para futuramente usar:
+- Clerk para login
+- Cloudflare D1 para banco
+- Cloudflare Pages Functions ou Workers para API
+
+Arquitetura:
+Criar o projeto com esta estrutura:
+
+src/
+  app/
+    App.tsx
+    router.tsx
+
+  components/
+    brand/
+      Logo.tsx
+      BrandMark.tsx
+      AppIcon.tsx
+      PingoMascot.tsx
+      MascotMessage.tsx
+
+    layout/
+      AppLayout.tsx
+      Navbar.tsx
+      Footer.tsx
+      MobileBottomNav.tsx
+
+    ui/
+      Button.tsx
+      Card.tsx
+      ProgressBar.tsx
+      StatCard.tsx
+      AdPlaceholder.tsx
+      PageHeader.tsx
+      Badge.tsx
+
+    kana/
+      KanaTrainer.tsx
+      KanaInput.tsx
+      KanaStats.tsx
+
+    vocabulary/
+      VocabularyCard.tsx
+      VocabularyQuiz.tsx
+
+    quiz/
+      QuizCard.tsx
+      MultipleChoiceQuestion.tsx
+      ResultSummary.tsx
+
+  pages/
+    HomePage.tsx
+    KanaPage.tsx
+    VocabularyPage.tsx
+    ListeningPage.tsx
+    ExamsPage.tsx
+    ExamDetailPage.tsx
+    DashboardPage.tsx
+    AboutPage.tsx
+    PrivacyPage.tsx
+    TermsPage.tsx
+    ContactPage.tsx
+
+  data/
+    kana.ts
+    vocabulary.ts
+    mockExams.ts
+
+  hooks/
+    useLocalStorage.ts
+    useStudyProgress.ts
+    useKanaTrainer.ts
+
+  services/
+    progress/
+      progress.local.ts
+      progress.remote.placeholder.ts
+      progress.types.ts
+
+    auth/
+      auth.placeholder.ts
+      auth.types.ts
+
+    exams/
+      exams.local.ts
+      exams.types.ts
+
+  types/
+    kana.ts
+    vocabulary.ts
+    exams.ts
+    progress.ts
+    user.ts
+
+  utils/
+    kana.ts
+    scoring.ts
+    seo.ts
+    storage.ts
+
+cloudflare/
+  README.md
+  schema.sql
+  migrations/
+    0001_initial.sql
+
+public/
+  brand/
+    README.md
+    pingo-placeholder.svg
+
+Também criar:
+- wrangler.example.toml
+- README.md
+
+Identidade visual:
+Criar uma marca limpa, moderna e mobile-first.
+
+Paleta:
+- primary: #E5484D
+- primaryDark: #B4232A
+- primarySoft: #FFE5E7
+- bg: #FFFDF9
+- surface: #FFFFFF
+- border: #E8E2D8
+- text: #1F1F1F
+- muted: #6B6761
+- success: #2F9E44
+- warning: #F59F00
+- error: #D92D20
+- info: #2563EB
+
+Cores por módulo:
+- Kana: #E5484D
+- Vocabulário: #7C3AED
+- Escuta: #0284C7
+- Simulados: #EA580C
+- Progresso: #16A34A
+
+Tipografia:
+Usar fonte principal:
+Inter, system-ui, sans-serif
+
+Para japonês:
+"Noto Sans JP", system-ui, sans-serif
+
+Logo:
+Criar componente Logo.tsx com variantes:
+- horizontal
+- compact
+- iconOnly
+
+O logo deve ter:
+- símbolo simples de gota/pingo ou app icon
+- texto "Koto"
+- assinatura menor "by Pingo"
+
+BrandMark:
+Criar símbolo com:
+- gota/pingo
+- caractere あ dentro
+- visual limpo
+- sem copiar bandeira japonesa diretamente
+
+AppIcon:
+Criar ícone quadrado arredondado com:
+- fundo vermelho suave
+- gota ou pinguim simplificado
+- caractere あ
+- aparência de app mobile
+
+PingoMascot:
+Criar um componente de mascote por CSS/SVG inline.
+O mascote deve representar:
+- pinguim preto
+- barriga clara
+- bico discreto
+- detalhes vermelhos
+- opção de variantes:
+  - default
+  - kana
+  - listening
+  - exam
+  - progress
+
+Exemplo de uso:
+<PingoMascot variant="kana" />
+<PingoMascot variant="listening" />
+<PingoMascot variant="exam" />
+
+Quando public/brand/pingo.png existir, o componente pode usar a imagem real.
+Se a imagem não existir, usar o SVG/CSS placeholder.
+
+Tom de voz:
+- calmo
+- objetivo
+- encorajador
+- sem infantilizar
+- sem excesso de gamificação
+
+Evitar textos como:
+"Uau!!! Você é incrível!!!"
+
+Preferir:
+"Correto. Continue."
+"Quase. A resposta era shi."
+"Boa sequência. Mantenha o ritmo."
+"Você ainda não iniciou nenhum treino. Comece com kana para criar sua base."
+
+Páginas:
+
+1. Home
+Criar uma landing page bonita com:
+- hero
+- mascote Pingo-sensei
+- CTA principal: Começar pelo kana
+- CTA secundário: Ver simulados
+- seção "Por que Koto?"
+- cards:
+  - Treinos curtos
+  - Progresso claro
+  - Simulados organizados
+  - Feito para brasileiros
+- seção "Continue estudando"
+- área reservada para anúncio
+- conteúdo textual suficiente para SEO
+
+Texto do hero:
+Título:
+Japonês em pequenos treinos diários.
+
+Subtítulo:
+Treine kana, vocabulário, escuta e simulados com uma rotina simples, clara e progressiva.
+
+2. Kana
+Criar treino de:
+- Hiragana
+- Katakana
+- Misto
+
+Funcionalidades:
+- mostrar caractere grande
+- input para romaji
+- Enter para responder
+- feedback imediato
+- mostrar resposta correta ao errar
+- botão pular
+- estatísticas da sessão
+- salvar progresso localmente via service
+- case-insensitive
+
+3. Vocabulário
+Criar:
+- lista de palavras N5
+- flashcards
+- quiz de múltipla escolha
+- categorias
+- salvar estatísticas básicas
+
+4. Escuta
+Criar estrutura para listening:
+- usar Web Speech API se disponível
+- botão ouvir
+- quiz de identificação
+- aviso discreto se o navegador não suportar voz japonesa
+- deixar preparado para usar .mp3 no futuro
+
+5. Simulados
+Nesta primeira versão, a prioridade é deixar a estrutura pronta.
+Criar:
+- página de listagem de simulados
+- página de detalhe
+- botão iniciar simulado
+- fluxo simples de questões
+- resultado final
+- revisão das respostas
+
+Estrutura dos simulados:
+Exam:
+- id
+- slug
+- title
+- level
+- description
+- estimatedMinutes
+- sections
+
+Section:
+- id
+- title
+- type: vocabulary | grammar | reading | listening
+- timeLimitMinutes opcional
+- questions
+
+Question:
+- id
+- type
+- prompt
+- japaneseText opcional
+- reading opcional
+- audioUrl opcional
+- imageUrl opcional
+- options
+- correctOptionId
+- explanation opcional
+- tags
+- difficulty
+
+Option:
+- id
+- text
+
+Criar dados mockados pequenos:
+- JLPT N5 Mini Simulado
+- JLPT N4 Mini Simulado
+
+Não precisa criar conteúdo extenso agora.
+Mas a estrutura deve ser escalável para N5, N4, N3, N2 e N1.
+
+6. Dashboard / Progresso
+Mostrar:
+- total de tentativas
+- total de acertos
+- porcentagem geral
+- kana mais errados
+- sessões feitas
+- botão resetar progresso
+- cards claros
+- mascote Pingo-sensei em estado de progresso
+
+7. Páginas legais para AdSense
+Criar:
+- /about
+- /privacy
+- /terms
+- /contact
+
+Conteúdo em português, com tom sério.
+Não adicionar AdSense real ainda.
+Criar apenas AdPlaceholder.
+
+Rotas:
+/
+ /kana
+ /vocabulario
+ /escuta
+ /simulados
+ /simulados/:slug
+ /progresso
+ /sobre
+ /privacidade
+ /termos
+ /contato
+
+Navbar:
+- Logo Koto by Pingo
+- Links:
+  - Kana
+  - Vocabulário
+  - Escuta
+  - Simulados
+  - Progresso
+
+Mobile:
+- Criar bottom navigation com:
+  - Início
+  - Kana
+  - Vocabulário
+  - Simulados
+  - Progresso
+
+Footer:
+Texto:
+Koto by Pingo é um app independente para treino de japonês, feito para estudantes brasileiros.
+
+Links:
+- Sobre
+- Privacidade
+- Termos
+- Contato
+
+AdSense ready:
+- Criar componente AdPlaceholder
+- Reservar espaços de anúncio sem prejudicar UX
+- Não adicionar script do AdSense
+- Não deixar layout quebrado sem anúncios
+
+SEO:
+Criar helper de SEO.
+Cada página deve atualizar title e description.
+
+Title padrão:
+Koto by Pingo — Treine japonês com kana, vocabulário e simulados
+
+Description padrão:
+Treine japonês em sessões rápidas com kana, vocabulário, escuta, progresso e simulados estilo JLPT.
+
+Dados iniciais:
+
+kana.ts:
+Incluir hiragana e katakana básicos:
+a, i, u, e, o
+ka, ki, ku, ke, ko
+sa, shi, su, se, so
+ta, chi, tsu, te, to
+na, ni, nu, ne, no
+ha, hi, fu, he, ho
+ma, mi, mu, me, mo
+ya, yu, yo
+ra, ri, ru, re, ro
+wa, wo, n
+
+vocabulary.ts:
+Incluir pelo menos 40 palavras JLPT N5 com:
+- id
+- japanese
+- kana
+- romaji
+- meaningPt
+- category
+- level
+
+mockExams.ts:
+Criar 2 simulados pequenos:
+- JLPT N5 Mini Simulado
+- JLPT N4 Mini Simulado
+
+Cada um deve ter poucas questões, mas seguindo a estrutura final.
+
+LocalStorage:
+Nenhum componente deve acessar LocalStorage diretamente.
+Todo progresso deve passar por services/progress/progress.local.ts.
+
+Preparar para login futuro:
+Criar auth.placeholder.ts com:
+- getCurrentUser()
+- isAuthenticated()
+- signInPlaceholder()
+- signOutPlaceholder()
+
+Por enquanto, usuário é anônimo.
+Comentar no código onde Clerk será integrado depois.
+
+Preparar para banco futuro:
+Criar cloudflare/schema.sql com tabelas para D1:
+
+- users
+- study_sessions
+- kana_attempts
+- vocabulary_attempts
+- exam_attempts
+- exam_answers
+- user_progress_summary
+
+Usar SQLite compatível com Cloudflare D1.
+IDs como TEXT.
+Timestamps como TEXT.
+Campos simples e claros.
+
+Criar wrangler.example.toml com exemplo:
+
+name = "koto-by-pingo"
+compatibility_date = "2026-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "koto_by_pingo"
+database_id = "replace-with-database-id"
+
+README:
+Explicar:
+- nome do projeto
+- relação com Pingo Concursos
+- que Pingo é um pinguim preto
+- como trocar o placeholder pelo mascote real
+- como rodar localmente
+- como fazer build
+- estrutura do projeto
+- como LocalStorage funciona
+- como Clerk entrará depois
+- como Cloudflare D1 entrará depois
+- como publicar no Cloudflare Pages
+
+Critérios finais:
+- npm install deve funcionar
+- npm run dev deve funcionar
+- npm run build deve funcionar
+- sem erros TypeScript
+- interface bonita e responsiva
+- código organizado
+- sem assets externos obrigatórios
+- sem dependências pesadas desnecessárias
