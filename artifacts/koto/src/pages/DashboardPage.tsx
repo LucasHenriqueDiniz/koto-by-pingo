@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Target, BookOpen, Headphones, FileText, RotateCcw } from 'lucide-react';
+import { Target, BookOpen, FileText, RotateCcw, AlertTriangle, Star, Eye } from 'lucide-react';
 import { useStudyProgress } from '../hooks/useStudyProgress';
 import { StatCard } from '../components/ui/StatCard';
 import { ProgressBar } from '../components/ui/ProgressBar';
@@ -8,6 +8,7 @@ import { PingoMascot } from '../components/brand/PingoMascot';
 import { AdPlaceholder } from '../components/ui/AdPlaceholder';
 import { updatePageSEO } from '../utils/seo';
 import { allKana } from '../data/kana';
+import { vocabulary } from '../data/vocabulary';
 
 export function DashboardPage() {
   const { summary, refresh, reset } = useStudyProgress();
@@ -19,22 +20,27 @@ export function DashboardPage() {
   }, [refresh]);
 
   const handleReset = () => {
-    if (!confirmReset) {
-      setConfirmReset(true);
-      return;
-    }
+    if (!confirmReset) { setConfirmReset(true); return; }
     reset();
     setConfirmReset(false);
   };
 
   const isEmpty = summary.totalAttempts === 0 && summary.examsCompleted === 0;
+  const vs = summary.vocabStats;
 
   const topMistakeLabels = summary.topMistakes
     .map(m => {
       const kana = allKana.find(k => k.id === m.kanaId);
-      return kana ? `${kana.character} (${kana.romaji}) ×${m.count}` : null;
+      return kana ? { label: `${kana.character} (${kana.romaji})`, count: m.count } : null;
     })
-    .filter(Boolean);
+    .filter(Boolean) as { label: string; count: number }[];
+
+  const pingoMsg = () => {
+    if (isEmpty) return 'Você ainda não iniciou nenhum treino. Comece pelo kana.';
+    if (summary.overallAccuracy >= 80) return 'Boa sequência. Mantenha o ritmo.';
+    if (summary.overallAccuracy >= 50) return 'Progresso registrado. Continue praticando.';
+    return 'Consistência é o caminho. Pratique um pouco todos os dias.';
+  };
 
   return (
     <div>
@@ -51,145 +57,176 @@ export function DashboardPage() {
             <div>
               <p className="text-base font-medium text-foreground">Nenhum treino registrado.</p>
               <p className="text-sm text-muted-foreground mt-1">
-                Você ainda não iniciou nenhum treino. Comece com kana para criar sua base.
+                Comece com kana para criar sua base, depois passe para vocabulário e simulados.
               </p>
             </div>
           </div>
         ) : (
           <div className="space-y-8">
-            {/* Overview stats */}
+            {/* Overview */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <StatCard
-                label="Sessões"
-                value={summary.sessionsCount}
-                icon={Target}
-                color="#16A34A"
-              />
-              <StatCard
-                label="Tentativas"
-                value={summary.totalAttempts}
-                icon={BookOpen}
-                color="#7C3AED"
-              />
+              <StatCard label="Sessões" value={summary.sessionsCount} icon={Target} color="#16A34A" />
+              <StatCard label="Tentativas" value={summary.totalAttempts} icon={BookOpen} color="#7C3AED" />
               <StatCard
                 label="Precisão geral"
                 value={`${summary.overallAccuracy}%`}
                 icon={Target}
                 color="#E5484D"
               />
-              <StatCard
-                label="Simulados"
-                value={summary.examsCompleted}
-                icon={FileText}
-                color="#EA580C"
-              />
+              <StatCard label="Simulados" value={summary.examsCompleted} icon={FileText} color="#EA580C" />
             </div>
 
-            {/* Module breakdown */}
-            <div className="bg-card border border-card-border rounded-2xl p-5 space-y-4">
-              <h2 className="text-sm font-semibold text-foreground">Por módulo</h2>
-
+            {/* Kana + Vocab breakdowns side by side */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Kana */}
               {summary.kanaTotal > 0 && (
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-xs">
-                    <span className="font-medium text-foreground flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#E5484D', display: 'inline-block' }} />
-                      Kana
-                    </span>
-                    <span className="text-muted-foreground">{summary.kanaCorrect}/{summary.kanaTotal} — {summary.kanaAccuracy}%</span>
+                <div className="bg-card border border-card-border rounded-2xl p-5 space-y-4">
+                  <h2 className="text-sm font-semibold text-foreground">Kana</h2>
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground">Precisão</span>
+                      <span className="font-medium text-foreground">{summary.kanaCorrect}/{summary.kanaTotal} — {summary.kanaAccuracy}%</span>
+                    </div>
+                    <ProgressBar value={summary.kanaAccuracy} color="#E5484D" />
                   </div>
-                  <ProgressBar value={summary.kanaAccuracy} color="#E5484D" />
+                  {topMistakeLabels.length > 0 && (
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-2">Mais erros:</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {topMistakeLabels.map((m, i) => (
+                          <span
+                            key={i}
+                            className="px-2 py-1 rounded text-xs font-medium"
+                            style={{ backgroundColor: '#FFE5E7', color: '#B4232A', fontFamily: "'Noto Sans JP', sans-serif" }}
+                          >
+                            {m.label} ×{m.count}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
-              {summary.vocabTotal > 0 && (
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-xs">
-                    <span className="font-medium text-foreground flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: '#7C3AED' }} />
-                      Vocabulário
-                    </span>
-                    <span className="text-muted-foreground">{summary.vocabCorrect}/{summary.vocabTotal} — {summary.vocabAccuracy}%</span>
-                  </div>
-                  <ProgressBar value={summary.vocabAccuracy} color="#7C3AED" />
-                </div>
-              )}
+              {/* Vocabulary */}
+              {(summary.vocabTotal > 0 || vs.seen > 0) && (
+                <div className="bg-card border border-card-border rounded-2xl p-5 space-y-4">
+                  <h2 className="text-sm font-semibold text-foreground">Vocabulário</h2>
 
-              {summary.kanaTotal === 0 && summary.vocabTotal === 0 && (
-                <p className="text-sm text-muted-foreground">Nenhuma atividade de treino registrada ainda.</p>
+                  {summary.vocabTotal > 0 && (
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">Precisão</span>
+                        <span className="font-medium text-foreground">{summary.vocabCorrect}/{summary.vocabTotal} — {summary.vocabAccuracy}%</span>
+                      </div>
+                      <ProgressBar value={summary.vocabAccuracy} color="#7C3AED" />
+                    </div>
+                  )}
+
+                  {/* Word-level stats */}
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <div className="bg-muted/40 rounded-lg p-2.5 text-center">
+                      <Eye size={14} className="text-muted-foreground mx-auto mb-1" />
+                      <p className="text-base font-bold text-foreground">{vs.seen}</p>
+                      <p className="text-xs text-muted-foreground">vistas</p>
+                    </div>
+                    <div className="bg-muted/40 rounded-lg p-2.5 text-center">
+                      <Star size={14} className="mx-auto mb-1" style={{ color: '#F59F00' }} />
+                      <p className="text-base font-bold text-foreground">{vs.mastered}</p>
+                      <p className="text-xs text-muted-foreground">dominadas</p>
+                    </div>
+                    <div className="bg-muted/40 rounded-lg p-2.5 text-center">
+                      <AlertTriangle size={14} className="mx-auto mb-1" style={{ color: '#E5484D' }} />
+                      <p className="text-base font-bold text-foreground">{vs.weak}</p>
+                      <p className="text-xs text-muted-foreground">problemáticas</p>
+                    </div>
+                    <div className="bg-muted/40 rounded-lg p-2.5 text-center">
+                      <BookOpen size={14} className="text-muted-foreground mx-auto mb-1" />
+                      <p className="text-base font-bold text-foreground">{vs.neverSeen}</p>
+                      <p className="text-xs text-muted-foreground">não vistas</p>
+                    </div>
+                  </div>
+
+                  {/* Erros por tipo */}
+                  {(vs.weakReasonTotals.reading + vs.weakReasonTotals.meaning) > 0 && (
+                    <div className="pt-1 border-t border-border">
+                      <p className="text-xs text-muted-foreground mb-2">Tipo de erro:</p>
+                      <div className="space-y-1">
+                        {[
+                          { key: 'reading', label: 'Leitura', color: '#E5484D' },
+                          { key: 'meaning', label: 'Significado', color: '#7C3AED' },
+                          { key: 'listening', label: 'Escuta', color: '#0284C7' },
+                          { key: 'typing', label: 'Digitação', color: '#F59F00' },
+                        ].map(t => {
+                          const n = vs.weakReasonTotals[t.key as keyof typeof vs.weakReasonTotals];
+                          if (!n) return null;
+                          return (
+                            <div key={t.key} className="flex items-center gap-2 text-xs">
+                              <span className="w-16 text-muted-foreground flex-shrink-0">{t.label}</span>
+                              <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                                <div
+                                  className="h-full rounded-full"
+                                  style={{
+                                    width: `${Math.min(100, (n / Math.max(1, vs.weakReasonTotals.reading + vs.weakReasonTotals.meaning + vs.weakReasonTotals.listening + vs.weakReasonTotals.typing)) * 100)}%`,
+                                    backgroundColor: t.color,
+                                  }}
+                                />
+                              </div>
+                              <span className="text-foreground font-medium w-4">{n}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
-
-            {/* Top mistakes */}
-            {topMistakeLabels.length > 0 && (
-              <div className="bg-card border border-card-border rounded-2xl p-5">
-                <h2 className="text-sm font-semibold text-foreground mb-3">Kana com mais erros</h2>
-                <div className="flex flex-wrap gap-2">
-                  {topMistakeLabels.map((label, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1.5 rounded-lg text-xs font-medium"
-                      style={{ backgroundColor: '#FFE5E7', color: '#B4232A', fontFamily: "'Noto Sans JP', sans-serif" }}
-                    >
-                      {label}
-                    </span>
-                  ))}
-                </div>
-                <p className="text-xs text-muted-foreground mt-3">
-                  Pratique esses caracteres com mais frequência.
-                </p>
-              </div>
-            )}
 
             {/* Pingo message */}
             <div className="flex items-end gap-3">
               <PingoMascot variant="progress" size="sm" />
               <div className="bg-card border border-border rounded-2xl rounded-bl-sm px-4 py-3 text-sm text-foreground shadow-sm">
-                {summary.overallAccuracy >= 80
-                  ? 'Boa sequência. Mantenha o ritmo.'
-                  : summary.overallAccuracy >= 50
-                  ? 'Progresso registrado. Continue praticando.'
-                  : 'Consistência é o caminho. Pratique um pouco todos os dias.'}
+                {pingoMsg()}
               </div>
             </div>
+
+            {/* Ad (after session, before reset) */}
+            <AdPlaceholder slot="banner" />
 
             {/* Reset */}
             <div className="border-t border-border pt-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between flex-wrap gap-3">
                 <div>
                   <p className="text-sm font-medium text-foreground">Resetar progresso</p>
-                  <p className="text-xs text-muted-foreground">Remove todos os dados de treino armazenados.</p>
+                  <p className="text-xs text-muted-foreground">Remove todos os dados de treino do dispositivo.</p>
                 </div>
-                <button
-                  onClick={handleReset}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
-                    confirmReset
-                      ? 'bg-destructive text-destructive-foreground'
-                      : 'border border-border text-muted-foreground hover:text-foreground hover:bg-muted'
-                  }`}
-                  data-testid="reset-progress-btn"
-                >
-                  <RotateCcw size={14} />
-                  {confirmReset ? 'Confirmar reset' : 'Resetar'}
-                </button>
-              </div>
-              {confirmReset && (
-                <div className="mt-2 flex gap-2">
+                <div className="flex items-center gap-2">
+                  {confirmReset && (
+                    <button
+                      onClick={() => setConfirmReset(false)}
+                      className="text-xs text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-lg border border-border transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                  )}
                   <button
-                    onClick={() => setConfirmReset(false)}
-                    className="text-xs text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-lg border border-border transition-colors"
+                    onClick={handleReset}
+                    className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                      confirmReset
+                        ? 'bg-destructive text-destructive-foreground'
+                        : 'border border-border text-muted-foreground hover:text-foreground hover:bg-muted'
+                    }`}
+                    data-testid="reset-progress-btn"
                   >
-                    Cancelar
+                    <RotateCcw size={14} />
+                    {confirmReset ? 'Confirmar reset' : 'Resetar'}
                   </button>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         )}
-
-        <div className="mt-10">
-          <AdPlaceholder slot="banner" />
-        </div>
       </div>
     </div>
   );

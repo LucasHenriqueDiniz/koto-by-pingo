@@ -1,0 +1,365 @@
+Faça uma nova passada no projeto Koto by Pingo com foco em layout de plataforma, vocabulário e documentação de features futuras.
+
+Objetivos principais:
+1. Transformar o desktop em uma experiência de plataforma/app com sidebar.
+2. Melhorar a página de vocabulário.
+3. Corrigir o modo "Seleção de palavras".
+4. Melhorar o modo "Combinar pares".
+5. Documentar Traçado, banco, Clerk e D1 como TODOs técnicos claros.
+6. Melhorar a responsividade desktop sem piorar mobile.
+
+Contexto visual atual:
+A interface está limpa, mas no desktop ainda parece uma página simples centralizada.
+Quero que pareça mais uma plataforma de estudo.
+
+Layout responsivo:
+Implementar layout adaptativo:
+
+Desktop >= 1024px:
+- Usar sidebar fixa à esquerda.
+- Sidebar com logo Koto by Pingo no topo.
+- Links principais:
+  - Início
+  - Kana
+  - Vocabulário
+  - Escuta
+  - Simulados
+  - Progresso
+  - Configurações
+- Mostrar item ativo.
+- Usar ícones simples, pode usar lucide-react se já estiver instalado; se não estiver, usar SVG inline ou texto.
+- Conteúdo principal deve ficar em uma área central com max-width adequado.
+- Em páginas de treino, usar layout com:
+  - coluna principal para o exercício
+  - painel lateral direito opcional com progresso, dicas ou sessão atual
+
+Tablet:
+- Pode usar navigation rail compacto ou sidebar menor.
+- Não precisa ser perfeito, mas não pode quebrar.
+
+Mobile < 768px:
+- Manter top header simples.
+- Manter bottom navigation.
+- Não mostrar sidebar fixa.
+- Cards e botões grandes.
+
+Criar ou atualizar componentes:
+src/components/layout/DesktopSidebar.tsx
+src/components/layout/ResponsiveAppShell.tsx
+src/components/layout/RightStudyPanel.tsx
+
+Atualizar AppLayout:
+- Usar DesktopSidebar no desktop.
+- Usar MobileBottomNav no mobile.
+- Remover duplicação de navbar quando sidebar estiver ativa.
+- Garantir que páginas legais também funcionem bem com layout.
+
+AdSense:
+Manter AdPlaceholder, mas ajustar:
+- Nunca colocar anúncio no meio de uma pergunta.
+- Nunca colocar anúncio colado a botões de resposta, próximo, confirmar ou iniciar.
+- Em páginas de treino, anúncios só podem aparecer:
+  - antes da sessão
+  - depois da sessão
+  - em área lateral de desktop com espaçamento seguro
+- Em mobile, anúncios devem ficar entre blocos de conteúdo, nunca dentro do card de interação.
+- Documentar isso em README como regra de AdSense/UX.
+
+Vocabulário:
+Melhorar a página /vocabulario.
+
+Ela deve ter modos:
+1. Flashcards
+2. Seleção de palavras
+3. Combinar pares
+4. Quiz de tradução
+
+Se ainda existir apenas Flashcards e Quiz, reorganizar para esses 4 modos.
+
+Criar/atualizar tipos:
+src/types/vocabulary.ts
+
+Cada palavra deve ter:
+- id
+- japanese
+- kana
+- romaji
+- meaningPt
+- category
+- level
+- tags opcional
+- examples opcional
+
+Criar tipos de treino:
+export type VocabularyTrainingMode =
+  | "flashcards"
+  | "word_selection"
+  | "matching_pairs"
+  | "translation_quiz";
+
+Modo 1: Flashcards
+- Card mostra a palavra japonesa grande.
+- Botão "Ver resposta".
+- Ao revelar, mostrar:
+  - leitura em kana
+  - romaji
+  - tradução PT-BR
+  - categoria
+- Botões:
+  - Acertei
+  - Errei
+  - Próxima
+- Registrar progresso por palavra.
+
+Modo 2: Seleção de palavras
+Este modo deve funcionar assim:
+- Mostrar a palavra japonesa.
+- Mostrar tradução como dica, se a configuração estiver ativada.
+- Perguntar: "Qual é a leitura?"
+- Mostrar opções de leitura em romaji.
+- O usuário escolhe a leitura correta.
+
+Exemplo:
+Palavra: いえ
+Dica: casa
+Opções:
+- ie
+- iie
+- e
+- iya
+
+Adicionar configuração local:
+- showTranslationHint: boolean
+
+Na UI:
+- Toggle "Mostrar tradução como dica"
+- Se desligado, mostrar só a palavra japonesa.
+
+O modo deve registrar:
+- wordId
+- selectedOption
+- correctOption
+- result correct/wrong
+- weakReason: "reading"
+
+Modo 3: Combinar pares
+Este modo deve funcionar com pares.
+
+Mostrar duas colunas:
+Coluna esquerda:
+- palavras japonesas
+
+Coluna direita:
+- leitura + tradução
+
+Exemplo:
+Esquerda:
+- いえ
+- みず
+- ねこ
+- たべる
+
+Direita:
+- mizu — água
+- ie — casa
+- taberu — comer
+- neko — gato
+
+Usuário clica em um item da esquerda e depois em um item da direita.
+Quando formar par:
+- se correto, marcar como correto
+- se errado, mostrar feedback leve
+- ao finalizar todos, mostrar resumo
+
+Adicionar configuração:
+matchingPairMode:
+- "reading"
+- "meaning"
+- "reading_and_meaning"
+
+Padrão:
+"reading_and_meaning"
+
+Registrar progresso por palavra:
+- correct/wrong
+- weakReason:
+  - "reading" quando o erro for leitura
+  - "meaning" quando for tradução
+  - "reading" como padrão para reading_and_meaning
+
+Modo 4: Quiz de tradução
+- Mostrar palavra japonesa.
+- Perguntar significado em português.
+- Opções de tradução.
+- Registrar weakReason: "meaning"
+
+Melhorar filtros:
+- Categoria
+- Nível JLPT
+- Apenas palavras problemáticas
+- Nunca vistas
+- Dominadas
+
+Melhorar layout de vocabulário no desktop:
+- Container principal mais largo.
+- Painel lateral com:
+  - modo atual
+  - categoria selecionada
+  - estatísticas rápidas
+  - palavras problemáticas
+- O card central não deve ficar pequeno demais.
+- Em desktop, usar cards mais largos.
+- Em mobile, manter uma coluna.
+
+Progresso de palavras:
+Garantir que services/progress/progress.local.ts tenha:
+- recordWordAttempt(input)
+- getWordProgress()
+- getWeakWords(limit)
+- getNeverSeenWords()
+- getMasteredWords()
+
+Critério:
+Dominada:
+- >= 5 tentativas
+- >= 85% acerto
+
+Problemática:
+- >= 3 tentativas
+- < 60% acerto
+
+Dashboard:
+Adicionar seção de vocabulário:
+- palavras treinadas
+- palavras dominadas
+- palavras problemáticas
+- palavras nunca vistas
+- erros por tipo:
+  - leitura
+  - significado
+  - escuta
+  - digitação
+
+Traçado:
+Não implementar agora.
+Mas documentar corretamente.
+
+Criar arquivo:
+docs/TODO_TRACING.md
+
+Conteúdo:
+- Objetivo da feature Traçado
+- Possíveis abordagens:
+  1. SVG com stroke order
+  2. Canvas touch/mouse drawing
+  3. Comparação simples por checklist manual
+- Dados necessários:
+  - stroke paths por kana
+  - ordem dos traços
+  - bounding boxes
+- MVP futuro:
+  - mostrar stroke order
+  - usuário acompanha visualmente
+  - botão "pratiquei"
+- Versão avançada:
+  - usuário desenha
+  - app compara aproximação
+  - salvar métricas de traçado
+- Status:
+  planned, não implementado no MVP
+
+Banco / Cloudflare D1:
+Atualizar documentação e TODOs.
+
+Criar arquivo:
+docs/TODO_CLOUDFLARE_D1.md
+
+Conteúdo:
+- O que vai para o banco depois:
+  - usuários
+  - preferências
+  - progresso por kana
+  - progresso por palavra
+  - tentativas de simulado
+  - respostas de simulado
+- O que fica no LocalStorage agora
+- Estratégia de migração:
+  1. Usuário anônimo usa LocalStorage
+  2. Usuário faz login com Clerk
+  3. App pergunta se deseja sincronizar progresso local
+  4. API salva no D1
+- Schema previsto
+- Endpoints futuros
+
+Clerk:
+Criar arquivo:
+docs/TODO_CLERK_AUTH.md
+
+Conteúdo:
+- Clerk será usado para login
+- userId do Clerk será chave externa lógica no D1
+- Fluxo:
+  - anônimo
+  - login
+  - sincronizar progresso
+  - logout mantém progresso local separado
+- Não instalar Clerk ainda
+- Manter auth.placeholder.ts
+
+Simulados:
+Manter estrutura atual.
+Adicionar TODO documentado se faltar:
+docs/TODO_EXAMS.md
+
+Conteúdo:
+- Simulados serão organizados por JLPT N5, N4, N3, N2, N1
+- Seções:
+  - vocabulário
+  - gramática
+  - leitura
+  - escuta
+- No futuro:
+  - timer por seção
+  - histórico de tentativas
+  - revisão por erro
+  - banco de questões
+  - importação de conteúdo
+
+Melhorias visuais:
+- Melhorar espaçamento desktop.
+- Evitar que cards fiquem muito estreitos em telas grandes.
+- Usar grid responsivo.
+- Melhorar estados vazios.
+- Melhorar botões ativos.
+- Melhorar contraste de tabs.
+- Melhorar header das páginas.
+- Sidebar deve deixar o app mais parecido com uma plataforma real.
+
+Arquivos esperados:
+Adicionar:
+src/components/layout/DesktopSidebar.tsx
+src/components/layout/ResponsiveAppShell.tsx
+src/components/layout/RightStudyPanel.tsx
+docs/TODO_TRACING.md
+docs/TODO_CLOUDFLARE_D1.md
+docs/TODO_CLERK_AUTH.md
+docs/TODO_EXAMS.md
+
+Atualizar:
+src/components/layout/AppLayout.tsx
+src/pages/VocabularyPage.tsx
+src/pages/DashboardPage.tsx
+src/services/progress/progress.local.ts
+src/types/vocabulary.ts
+src/types/progress.ts
+src/data/vocabulary.ts
+README.md
+
+Garantias:
+- npm run build deve funcionar.
+- Sem erro de TypeScript.
+- Nenhum componente deve acessar LocalStorage diretamente.
+- O app deve continuar funcionando sem backend.
+- A sidebar não deve aparecer no mobile.
+- O bottom nav não deve aparecer no desktop.
+- Não instalar dependências pesadas.

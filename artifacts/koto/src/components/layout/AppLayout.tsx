@@ -1,6 +1,4 @@
-import { Navbar } from './Navbar';
-import { Footer } from './Footer';
-import { MobileBottomNav } from './MobileBottomNav';
+import { ResponsiveAppShell } from './ResponsiveAppShell';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -8,15 +6,8 @@ interface AppLayoutProps {
 
 export function AppLayout({ children }: AppLayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
-      <main className="flex-1 pb-16 md:pb-0">
-        {children}
-      </main>
-      <div className="hidden md:block">
-        <Footer />
-      </div>
-      <MobileBottomNav />
-    </div>
+    <ResponsiveAppShell>
+      {children}
+    </ResponsiveAppShell>
   );
 }

@@ -20,6 +20,19 @@ export interface VocabAttemptRecord {
   timestamp: string;
 }
 
+export interface WordProgressRecord {
+  wordId: string;
+  attempts: number;
+  correct: number;
+  lastSeen: string;
+  weakReasons: {
+    reading: number;
+    meaning: number;
+    listening: number;
+    typing: number;
+  };
+}
+
 export interface ExamAttemptRecord {
   id: string;
   examId: string;
