@@ -1,14 +1,13 @@
 import { useState, useCallback, useRef } from 'react';
-import type { KanaItem, KanaType } from '../types/kana';
-import { getKanaByType } from '../data/kana';
+import type { KanaItem } from '../types/kana';
 import { checkAnswer } from '../utils/kana';
 import { shuffle, generateId } from '../utils/scoring';
 import { recordKanaAttempt, saveSession } from '../services/progress/progress.local';
 
 type FeedbackState = 'idle' | 'correct' | 'wrong';
 
-export function useKanaTrainer(type: KanaType) {
-  const [queue, setQueue] = useState<KanaItem[]>(() => shuffle(getKanaByType(type)));
+export function useKanaTrainer(items: KanaItem[]) {
+  const [queue, setQueue] = useState<KanaItem[]>(() => shuffle([...items]));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [feedback, setFeedback] = useState<FeedbackState>('idle');
   const [sessionCorrect, setSessionCorrect] = useState(0);
@@ -18,8 +17,8 @@ export function useKanaTrainer(type: KanaType) {
 
   const current = queue[currentIndex % queue.length];
 
-  const resetQueue = useCallback((newType: KanaType) => {
-    setQueue(shuffle(getKanaByType(newType)));
+  const resetQueue = useCallback((newItems: KanaItem[]) => {
+    setQueue(shuffle([...newItems]));
     setCurrentIndex(0);
     setFeedback('idle');
     setSessionCorrect(0);

@@ -1,15 +1,16 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { KanaType } from '../../types/kana';
+import type { KanaItem } from '../../types/kana';
 import { useKanaTrainer } from '../../hooks/useKanaTrainer';
 import { KanaInput } from './KanaInput';
 import { KanaStats } from './KanaStats';
 
 interface KanaTrainerProps {
-  type: KanaType;
+  items: KanaItem[];
+  showRomajiHint?: boolean;
 }
 
-export function KanaTrainer({ type }: KanaTrainerProps) {
+export function KanaTrainer({ items, showRomajiHint = false }: KanaTrainerProps) {
   const {
     current,
     feedback,
@@ -19,7 +20,7 @@ export function KanaTrainer({ type }: KanaTrainerProps) {
     submit,
     next,
     skip,
-  } = useKanaTrainer(type);
+  } = useKanaTrainer(items);
 
   const [inputValue, setInputValue] = useState('');
 
@@ -38,7 +39,13 @@ export function KanaTrainer({ type }: KanaTrainerProps) {
     skip();
   }, [skip]);
 
-  if (!current) return null;
+  if (!current) {
+    return (
+      <div className="text-center py-8 text-muted-foreground text-sm">
+        Nenhum caractere disponível para este filtro.
+      </div>
+    );
+  }
 
   const feedbackStyles = {
     idle: '',
@@ -56,7 +63,7 @@ export function KanaTrainer({ type }: KanaTrainerProps) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.15 }}
-          className={`w-44 h-44 flex items-center justify-center rounded-2xl border-2 shadow-sm transition-colors duration-200 ${
+          className={`w-44 h-44 flex flex-col items-center justify-center rounded-2xl border-2 shadow-sm transition-colors duration-200 ${
             feedback === 'idle' ? 'border-border bg-card' : feedbackStyles[feedback]
           }`}
           data-testid="kana-character-display"
@@ -67,8 +74,20 @@ export function KanaTrainer({ type }: KanaTrainerProps) {
           >
             {current.character}
           </span>
+          {showRomajiHint && feedback === 'idle' && (
+            <span className="text-xs text-muted-foreground mt-1 font-mono select-none">
+              dica disponível ↓
+            </span>
+          )}
         </motion.div>
       </AnimatePresence>
+
+      {/* Romaji hint */}
+      {showRomajiHint && feedback === 'idle' && (
+        <p className="text-sm text-muted-foreground -mt-2">
+          Leitura: <span className="font-mono font-semibold text-foreground">{current.romaji}</span>
+        </p>
+      )}
 
       {/* Feedback message */}
       <div className="h-6 text-center">
@@ -90,7 +109,7 @@ export function KanaTrainer({ type }: KanaTrainerProps) {
             style={{ color: '#E5484D' }}
           >
             Quase. A resposta era{' '}
-            <span className="font-bold font-japanese">{current.romaji}</span>.
+            <span className="font-bold font-mono">{current.romaji}</span>.
           </motion.p>
         )}
       </div>

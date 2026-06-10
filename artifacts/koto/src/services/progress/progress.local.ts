@@ -45,6 +45,54 @@ export function getKanaAccuracy(): number {
   return Math.round((attempts.filter(a => a.correct).length / attempts.length) * 100);
 }
 
+/** Per-kana stats map: kanaId → { attempts, correct } */
+export function getKanaStatsMap(): Record<string, { attempts: number; correct: number }> {
+  const { attempts } = getKanaProgress();
+  const map: Record<string, { attempts: number; correct: number }> = {};
+  for (const a of attempts) {
+    if (!map[a.kanaId]) map[a.kanaId] = { attempts: 0, correct: 0 };
+    map[a.kanaId].attempts += 1;
+    if (a.correct) map[a.kanaId].correct += 1;
+  }
+  return map;
+}
+
+export function getWeakKana(ids: string[], limit = 50): string[] {
+  const map = getKanaStatsMap();
+  return ids
+    .filter(id => {
+      const s = map[id];
+      return s && s.attempts >= 3 && (s.correct / s.attempts) < 0.6;
+    })
+    .sort((a, b) => {
+      const sa = map[a], sb = map[b];
+      return (sa.correct / sa.attempts) - (sb.correct / sb.attempts);
+    })
+    .slice(0, limit);
+}
+
+export function getMasteredKana(ids: string[]): string[] {
+  const map = getKanaStatsMap();
+  return ids.filter(id => {
+    const s = map[id];
+    return s && s.attempts >= 5 && (s.correct / s.attempts) >= 0.85;
+  });
+}
+
+export function getNeverSeenKana(ids: string[]): string[] {
+  const map = getKanaStatsMap();
+  return ids.filter(id => !map[id]);
+}
+
+export function getKanaFilterStats(ids: string[]) {
+  return {
+    total: ids.length,
+    neverSeen: getNeverSeenKana(ids).length,
+    weak: getWeakKana(ids).length,
+    mastered: getMasteredKana(ids).length,
+  };
+}
+
 // ---------- LEGACY VOCAB (aggregate) ----------
 export function getVocabProgress(): VocabProgress {
   return storageGet<VocabProgress>(KEYS.VOCAB) ?? { attempts: [], lastUpdated: '' };
