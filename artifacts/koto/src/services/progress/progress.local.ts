@@ -1,14 +1,18 @@
 import { storageGet, storageSet, storageClear } from '../../utils/storage';
 import { generateId } from '../../utils/scoring';
 import { vocabulary } from '../../data/vocabulary';
+import { allKana, KANA_GROUPS } from '../../data/kana';
 import type {
   KanaProgress,
   VocabProgress,
   WordProgressRecord,
   ExamAttemptRecord,
   StudySessionRecord,
+  KanaGroupStats,
+  KanaCharacterStats,
 } from './progress.types';
 import type { WordAttemptInput, WeakReason } from '../../types/vocabulary';
+import type { KanaGroup, KanaTrainingMode } from '../../types/kana';
 
 const KEYS = {
   KANA: 'kana_progress',
@@ -16,6 +20,8 @@ const KEYS = {
   WORD_PROGRESS: 'word_progress',
   EXAMS: 'exam_attempts',
   SESSIONS: 'sessions',
+  TRACING: 'tracing_practice',
+  REMOTE_SYNC: 'remote_sync',
 } as const;
 
 // ---------- KANA ----------
@@ -23,9 +29,20 @@ export function getKanaProgress(): KanaProgress {
   return storageGet<KanaProgress>(KEYS.KANA) ?? { attempts: [], lastUpdated: '' };
 }
 
-export function recordKanaAttempt(kanaId: string, correct: boolean): void {
+export function recordKanaAttempt(
+  kanaId: string,
+  correct: boolean,
+  opts?: { mode?: KanaTrainingMode; skipped?: boolean; group?: KanaGroup },
+): void {
   const progress = getKanaProgress();
-  progress.attempts.push({ kanaId, correct, timestamp: new Date().toISOString() });
+  progress.attempts.push({
+    kanaId,
+    correct,
+    timestamp: new Date().toISOString(),
+    ...(opts?.skipped ? { skipped: true } : {}),
+    ...(opts?.mode ? { mode: opts.mode } : {}),
+    ...(opts?.group ? { group: opts.group } : {}),
+  });
   progress.lastUpdated = new Date().toISOString();
   storageSet(KEYS.KANA, progress);
 }
@@ -34,27 +51,86 @@ export function getKanaMistakes(): Record<string, number> {
   const { attempts } = getKanaProgress();
   const mistakes: Record<string, number> = {};
   for (const a of attempts) {
-    if (!a.correct) mistakes[a.kanaId] = (mistakes[a.kanaId] ?? 0) + 1;
+    if (!a.skipped && !a.correct) mistakes[a.kanaId] = (mistakes[a.kanaId] ?? 0) + 1;
   }
   return mistakes;
 }
 
 export function getKanaAccuracy(): number {
   const { attempts } = getKanaProgress();
-  if (attempts.length === 0) return 0;
-  return Math.round((attempts.filter(a => a.correct).length / attempts.length) * 100);
+  const counted = attempts.filter(a => !a.skipped);
+  if (counted.length === 0) return 0;
+  return Math.round((counted.filter(a => a.correct).length / counted.length) * 100);
 }
 
-/** Per-kana stats map: kanaId → { attempts, correct } */
+/** Per-kana stats map: kanaId → { attempts, correct } (tentativas puladas não contam). */
 export function getKanaStatsMap(): Record<string, { attempts: number; correct: number }> {
   const { attempts } = getKanaProgress();
   const map: Record<string, { attempts: number; correct: number }> = {};
   for (const a of attempts) {
+    if (a.skipped) continue;
     if (!map[a.kanaId]) map[a.kanaId] = { attempts: 0, correct: 0 };
     map[a.kanaId].attempts += 1;
     if (a.correct) map[a.kanaId].correct += 1;
   }
   return map;
+}
+
+/** Per-kana skip count: kanaId → número de vezes pulado. */
+export function getKanaSkipMap(): Record<string, number> {
+  const { attempts } = getKanaProgress();
+  const map: Record<string, number> = {};
+  for (const a of attempts) {
+    if (a.skipped) map[a.kanaId] = (map[a.kanaId] ?? 0) + 1;
+  }
+  return map;
+}
+
+/** Estatísticas detalhadas de um caractere (tentativas, acertos, erros, pulos, precisão). */
+export function getKanaCharacterStats(kanaId: string): KanaCharacterStats {
+  const stats = getKanaStatsMap()[kanaId];
+  const attempts = stats?.attempts ?? 0;
+  const correct = stats?.correct ?? 0;
+  return {
+    kanaId,
+    attempts,
+    correct,
+    errors: attempts - correct,
+    skipped: getKanaSkipMap()[kanaId] ?? 0,
+    accuracy: attempts > 0 ? Math.round((correct / attempts) * 100) : 0,
+  };
+}
+
+/** Taxa de acerto agregada por grupo (basic/dakuten/handakuten/yoon). */
+export function getKanaGroupStats(): KanaGroupStats[] {
+  const statsMap = getKanaStatsMap();
+  const groupOf = new Map(allKana.map(k => [k.id, k.group]));
+
+  const totals: Record<KanaGroup, { attempts: number; correct: number }> = {
+    basic: { attempts: 0, correct: 0 },
+    dakuten: { attempts: 0, correct: 0 },
+    handakuten: { attempts: 0, correct: 0 },
+    yoon: { attempts: 0, correct: 0 },
+  };
+
+  for (const [kanaId, s] of Object.entries(statsMap)) {
+    const group = groupOf.get(kanaId);
+    if (!group) continue;
+    totals[group].attempts += s.attempts;
+    totals[group].correct += s.correct;
+  }
+
+  return KANA_GROUPS.map(group => ({
+    group,
+    attempts: totals[group].attempts,
+    correct: totals[group].correct,
+    accuracy: totals[group].attempts > 0 ? Math.round((totals[group].correct / totals[group].attempts) * 100) : 0,
+  }));
+}
+
+/** Reseta apenas o progresso de kana (mantém vocabulário, simulados e sessões). */
+export function resetKanaProgress(): void {
+  storageSet(KEYS.KANA, { attempts: [], lastUpdated: new Date().toISOString() });
 }
 
 export function getWeakKana(ids: string[], limit = 50): string[] {
@@ -90,6 +166,19 @@ export function getKanaFilterStats(ids: string[]) {
     neverSeen: getNeverSeenKana(ids).length,
     weak: getWeakKana(ids).length,
     mastered: getMasteredKana(ids).length,
+  };
+}
+
+/** Classification stats across all kana (hiragana + katakana). */
+export function getKanaStats() {
+  const ids = allKana.map(k => k.id);
+  const stats = getKanaFilterStats(ids);
+  return {
+    total: stats.total,
+    seen: stats.total - stats.neverSeen,
+    neverSeen: stats.neverSeen,
+    mastered: stats.mastered,
+    weak: stats.weak,
   };
 }
 
@@ -226,6 +315,7 @@ export function getProgressSummary() {
   const exams = getExamAttempts();
   const sessions = getSessions();
   const vocabStats = getVocabStats();
+  const kanaStats = getKanaStats();
 
   const kanaTotal = kanaProg.attempts.length;
   const kanaCorrect = kanaProg.attempts.filter(a => a.correct).length;
@@ -254,10 +344,32 @@ export function getProgressSummary() {
     sessionsCount: sessions.length,
     topMistakes,
     vocabStats,
+    kanaStats,
   };
+}
+
+// ---------- TRAÇADO (placeholder, ver docs/TODO_TRACING.md) ----------
+export function getTracingPracticeMap(): Record<string, number> {
+  return storageGet<Record<string, number>>(KEYS.TRACING) ?? {};
+}
+
+export function recordTracingPractice(kanaId: string): void {
+  const map = getTracingPracticeMap();
+  map[kanaId] = (map[kanaId] ?? 0) + 1;
+  storageSet(KEYS.TRACING, map);
 }
 
 // ---------- RESET ----------
 export function resetAllProgress(): void {
   storageClear();
+}
+
+// ---------- SYNC REMOTO ----------
+/** Indica se o progresso local já foi enviado para a conta na nuvem (D1). */
+export function hasSyncedToRemote(): boolean {
+  return storageGet<boolean>(KEYS.REMOTE_SYNC) ?? false;
+}
+
+export function markSyncedToRemote(): void {
+  storageSet(KEYS.REMOTE_SYNC, true);
 }

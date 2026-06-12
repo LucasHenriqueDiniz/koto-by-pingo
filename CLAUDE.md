@@ -9,9 +9,14 @@ Guia para agentes de IA trabalhando neste projeto. Leia antes de editar qualquer
 **Koto by Pingo** é um app web de aprendizado de japonês para estudantes brasileiros.
 Slogan: _"Japonês em pequenos treinos diários."_
 
-- **Sem backend.** Todo o estado é `localStorage`. Nenhuma API, nenhum banco ativo.
-- **Sem autenticação real.** Há stubs para Clerk e D1, mas não estão integrados.
-- **Funciona 100% offline** depois do primeiro carregamento.
+- **localStorage é a fonte primária.** Todo progresso continua funcionando 100% offline,
+  com ou sem login.
+- **Autenticação real via Clerk** (`@clerk/react`). Login é opcional — usuários anônimos
+  usam o app normalmente.
+- **Backend opcional via Cloudflare D1 + Workers** (`cloudflare/`) — sincroniza o progresso
+  local com a conta do usuário quando ele faz login (sync sob demanda, ver
+  `docs/TODO_CLOUDFLARE_D1.md`).
+- **Funciona 100% offline** depois do primeiro carregamento, mesmo logado.
 
 Artifact principal: `artifacts/koto/` — app React + Vite + TypeScript.
 
@@ -21,7 +26,7 @@ Artifact principal: `artifacts/koto/` — app React + Vite + TypeScript.
 
 | Camada | Tecnologia |
 |--------|-----------|
-| Framework | React 18 + Vite + TypeScript |
+| Framework | React 19 + Vite + TypeScript |
 | Roteamento | **Wouter** (não React Router) |
 | Estilização | Tailwind CSS |
 | Animações | framer-motion |
@@ -41,7 +46,20 @@ artifacts/koto/src/
 │
 ├── components/
 │   ├── brand/                   ← Logo, BrandMark, PingoMascot (5 variantes SVG)
-│   ├── kana/                    ← KanaTrainer, KanaInput, KanaStats
+│   ├── kana/
+│   │   ├── KanaInput.tsx / KanaStats.tsx        ← input de romaji + painel de estatísticas de sessão
+│   │   ├── KanaCharacterCard.tsx                ← card de exibição de um kana (sm/md/lg, com romaji opcional)
+│   │   ├── KanaModeSelector.tsx                 ← grid de seleção dos 7 KanaTrainingMode + KANA_MODE_LABELS
+│   │   ├── KanaGroupFilter.tsx                  ← filtro de script + grupos (KANA_GROUP_LABELS) + "apenas problemáticos"
+│   │   ├── KanaSubNav.tsx                       ← sub-navegação entre as 6 páginas /kana/*
+│   │   └── modes/                               ← 7 modos de treino + KANA_MODE_COMPONENTS (registry)
+│   │       ├── TypingMode.tsx        (digitação — usa useKanaTrainer)
+│   │       ├── FlashcardsMode.tsx    (flip card)
+│   │       ├── MultipleChoiceMode.tsx
+│   │       ├── MatchingPairsMode.tsx (pares kana ↔ romaji, em lotes)
+│   │       ├── ListeningMode.tsx     (Web Speech API)
+│   │       ├── WordBuilderMode.tsx   (monta palavras com kanaWords)
+│   │       └── TracingMode.tsx       (placeholder — ver docs/TODO_TRACING.md)
 │   ├── layout/                  ← AppLayout, DesktopSidebar, ResponsiveAppShell,
 │   │                              MobileBottomNav, MobileTopBar, RightStudyPanel, Footer
 │   ├── quiz/                    ← MultipleChoiceQuestion, QuizCard, ResultSummary
@@ -51,19 +69,28 @@ artifacts/koto/src/
 │                                  StatCard, ProgressBar, ModuleBadge, Spinner...)
 │
 ├── data/
-│   ├── kana.ts                  ← 46 hiragana + 46 katakana, com group (a-row, ka-row...)
+│   ├── kana.ts                  ← 46 hiragana + 46 katakana + dakuten/handakuten/yōon,
+│   │                              com group ('basic'|'dakuten'|'handakuten'|'yoon') e row
+│   ├── kanaWords.ts             ← palavras curtas (KanaWord[]) usadas pelo WordBuilderMode
 │   ├── vocabulary.ts            ← 45 palavras N5 em 9 categorias + helpers
 │   └── mockExams.ts             ← N5 Mini + N4 Mini (questões + seções)
 │
 ├── hooks/
-│   ├── useKanaTrainer.ts        ← lógica de treino de kana (aceita KanaItem[])
+│   ├── useKanaQueue.ts          ← fila/sessão genérica (queue, current, registerResult, endSession...)
+│   ├── useKanaTrainer.ts        ← wrapper de useKanaQueue<KanaItem> p/ TypingMode (aceita KanaItem[])
+│   ├── useKanaFilters.ts        ← preferências compartilhadas de script/grupos/"apenas problemáticos"
 │   ├── useLocalStorage.ts       ← hook genérico de localStorage tipado
 │   ├── useStudyProgress.ts      ← lê e expõe getProgressSummary() com refresh/reset
 │   └── use-mobile.tsx           ← detecta viewport < 768px
 │
 ├── pages/
 │   ├── HomePage.tsx             ← landing com hero, features, módulos
-│   ├── KanaPage.tsx             ← trainer com filtros + grupos de linha + toggle de dica
+│   ├── KanaHubPage.tsx          ← /kana — visão geral + atalhos para as 5 sub-páginas
+│   ├── KanaLearnPage.tsx        ← /kana/aprender — tabela de referência por grupo/linha
+│   ├── KanaTrainPage.tsx        ← /kana/treinar — seletor de modo + filtros + KANA_MODE_COMPONENTS
+│   ├── KanaReviewPage.tsx       ← /kana/revisar — difíceis, nunca vistos, dominados
+│   ├── KanaStatsPage.tsx        ← /kana/estatisticas — precisão geral e por grupo + reset
+│   ├── KanaSettingsPage.tsx     ← /kana/configurar — grupos, modo padrão, dica de romaji
 │   ├── VocabularyPage.tsx       ← 4 modos + filtros inteligentes + grupos de categoria
 │   ├── ListeningPage.tsx        ← treino auditivo via Web Speech API
 │   ├── ExamsPage.tsx            ← lista de simulados disponíveis
@@ -74,14 +101,14 @@ artifacts/koto/src/
 │
 ├── services/
 │   ├── auth/
-│   │   ├── auth.placeholder.ts  ← stub de autenticação (NÃO instalar Clerk ainda)
+│   │   ├── auth.clerk.ts        ← useCurrentUser() / useSignOut() (Clerk)
 │   │   └── auth.types.ts
 │   ├── exams/
 │   │   ├── exams.local.ts       ← salvar/buscar tentativas de simulado
 │   │   └── exams.types.ts
 │   └── progress/
-│       ├── progress.local.ts    ← ÚNICA fonte de leitura/escrita de progresso
-│       ├── progress.remote.placeholder.ts ← stub de sync remoto
+│       ├── progress.local.ts    ← ÚNICA fonte de leitura/escrita de progresso (localStorage)
+│       ├── progress.remote.ts   ← syncProgressToRemote() / fetchProgressFromRemote() (D1 via Workers)
 │       └── progress.types.ts    ← tipos internos do serviço
 │
 ├── types/
@@ -117,12 +144,13 @@ O prefixo de todas as chaves é `koto:` — definido em `utils/storage.ts`.
 ```
 O base path vem de `import.meta.env.BASE_URL` (já configurado no App.tsx).
 
-### 3. Não instalar Clerk nem Cloudflare D1 ainda
-Os stubs já existem:
-- `src/services/auth/auth.placeholder.ts`
-- `src/services/progress/progress.remote.placeholder.ts`
+### 3. Clerk + Cloudflare D1 já estão integrados
+- Auth: `src/services/auth/auth.clerk.ts` (`@clerk/react`, `<ClerkProvider>` em `main.tsx`)
+- Sync remoto: `src/services/progress/progress.remote.ts` (Workers API em `cloudflare/api/`)
 
-Quando chegar a hora, substitua os stubs — não crie paralelos.
+Login é **opcional**: sem login, tudo continua em `localStorage`. Com login, o usuário
+pode sincronizar o progresso local com a conta (banner `SyncProgressBanner` no Dashboard).
+Não crie um segundo serviço de auth ou de sync paralelo — estenda os existentes.
 
 ### 4. Regras de AdSense
 **Nunca coloque `<AdPlaceholder>` dentro de:**
@@ -148,11 +176,11 @@ pnpm --filter @workspace/koto run build   # deve passar sem erros
 ### Páginas
 Toda página usa `<PageHeader title="..." description="..." color="#hex" />` no topo.
 Chama `updatePageSEO(title, description)` no `useEffect`.
-Container principal: `<div className="max-w-5xl mx-auto px-4 py-6">`.
+Container principal: `<div className="max-w-6xl mx-auto px-4 py-6">`.
 
 ### Layout responsivo
 ```
-Desktop (>= 1024px):   DesktopSidebar (w-56 fixa) + main com lg:pl-56
+Desktop (>= 1024px):   DesktopSidebar (w-60 fixa) + main com lg:pl-60
                        xl+ mostra também RightStudyPanel
 Tablet (768–1023px):   sem sidebar, sem bottom nav
 Mobile (< 768px):      MobileTopBar + MobileBottomNav (pb-16 no main)
@@ -169,7 +197,15 @@ O `AppLayout` → `ResponsiveAppShell` já cuida de tudo. Não recrie nav em pá
 | Difícil | ≥ 3 | < 60% |
 | Nunca visto | 0 | — |
 
-Funções: `getWeakKana(ids)`, `getMasteredKana(ids)`, `getNeverSeenKana(ids)`, `getKanaFilterStats(ids)`.
+Tentativas com `skipped: true` não contam para nenhuma métrica.
+
+Funções: `getWeakKana(ids, limit?)`, `getMasteredKana(ids)`, `getNeverSeenKana(ids)`, `getKanaFilterStats(ids)`,
+`getKanaStats()` (totais globais), `getKanaCharacterStats(kanaId)` (attempts/correct/errors/skipped/accuracy
+por caractere), `getKanaGroupStats()` (precisão agregada por grupo: basic/dakuten/handakuten/yoon),
+`resetKanaProgress()` (reseta só o progresso de kana, sem afetar vocabulário/simulados).
+
+`recordKanaAttempt(kanaId, correct, { mode?, skipped?, group? })` registra o modo de treino e o grupo do
+caractere junto com a tentativa.
 
 ### Progresso de vocabulário
 
@@ -178,13 +214,52 @@ Cada tentativa registra `WeakReason`: `'reading' | 'meaning' | 'listening' | 'ty
 
 Funções: `recordWordAttempt(input)`, `getWeakWords(limit)`, `getMasteredWords()`, `getNeverSeenWords()`, `getVocabStats()`.
 
-### Hook de treino de kana
+### Páginas e rotas de Kana
+```
+/kana                ← KanaHubPage      (visão geral + atalhos)
+/kana/aprender       ← KanaLearnPage    (tabela de referência por grupo/linha)
+/kana/treinar        ← KanaTrainPage    (seletor de modo + filtros + treino)
+/kana/revisar        ← KanaReviewPage   (difíceis, nunca vistos, dominados)
+/kana/estatisticas   ← KanaStatsPage    (precisão geral/por grupo + reset)
+/kana/configurar     ← KanaSettingsPage (grupos, modo padrão, dica de romaji)
+```
+A `KanaSubNav` é renderizada no topo de todas as 6 páginas (abaixo do `PageHeader`).
+
+### Grupos de kana e modos de treino
+```ts
+type KanaGroup = 'basic' | 'dakuten' | 'handakuten' | 'yoon';
+// basic: hiragana/katakana básico (a~n) · dakuten: が ざ だ ば... · handakuten: ぱぴぷぺぽ · yoon: きゃ しゅ ぎょ...
+
+type KanaTrainingMode =
+  | 'typing'         // TypingMode.tsx        — digitar o romaji
+  | 'flashcards'      // FlashcardsMode.tsx    — virar carta e avaliar
+  | 'multiple_choice' // MultipleChoiceMode.tsx — escolher romaji entre 4 opções
+  | 'matching_pairs'  // MatchingPairsMode.tsx — combinar kana ↔ romaji em lotes
+  | 'listening'       // ListeningMode.tsx     — ouvir e responder (Web Speech API)
+  | 'word_builder'    // WordBuilderMode.tsx   — montar palavras com data/kanaWords.ts
+  | 'tracing';        // TracingMode.tsx       — placeholder, ver docs/TODO_TRACING.md
+```
+`KANA_MODE_COMPONENTS` (em `components/kana/modes/index.ts`) mapeia cada modo ao seu componente,
+todos com a mesma interface `{ items: KanaItem[]; showRomajiHint?: boolean }`.
+
+### Filtros compartilhados de kana
 ```tsx
-// useKanaTrainer agora aceita KanaItem[] (não KanaType)
+// useKanaFilters() centraliza script + grupos habilitados + "apenas problemáticos"
+const { script, groupPrefs, onlyWeak, groupFilteredItems, filteredItems } = useKanaFilters();
+// groupFilteredItems: itens do script atual restritos aos grupos habilitados
+// filteredItems: groupFilteredItems + filtro "apenas problemáticos" (com fallback se vazio)
+```
+Usado por `KanaTrainPage`, `KanaLearnPage` e `KanaSettingsPage`.
+
+### Hook de treino de kana (modo digitação)
+```tsx
+// useKanaTrainer aceita KanaItem[] (não KanaType)
 const trainer = useKanaTrainer(filteredItems);
 // Resetar com nova lista:
 trainer.resetQueue(newItems);
 ```
+Para os demais modos, use `useKanaQueue<T>(items)` diretamente — retorna
+`{ queue, current, currentIndex, sessionCorrect, sessionTotal, sessionSkipped, sessionAccuracy, next, reset, registerResult, registerSkip, endSession }`.
 
 ### Modos de vocabulário
 ```tsx
@@ -245,8 +320,13 @@ Edite `src/data/mockExams.ts`. Estrutura:
 | `koto:sessions` | `StudySessionRecord[]` |
 | `koto:vocab_mode` | `VocabularyTrainingMode` (preferência salva) |
 | `koto:vocab_hint` | `boolean` (mostrar tradução como dica) |
-| `koto:kana_type` | `KanaType` (preferência salva) |
+| `koto:kana_type` | `KanaType` (script preferido: hiragana/katakana/mixed) |
 | `koto:kana_romaji_hint` | `boolean` (mostrar romaji como dica) |
+| `koto:kana_group_prefs` | `Record<KanaGroup, boolean>` (grupos habilitados: basic/dakuten/handakuten/yoon) |
+| `koto:kana_only_weak` | `boolean` (filtro "apenas problemáticos") |
+| `koto:kana_train_mode` | `KanaTrainingMode` (modo de treino padrão/último usado) |
+| `koto:tracing_practice` | `Record<kanaId, number>` (contagem de "marcar como praticado" no TracingMode) |
+| `koto:remote_sync` | `boolean` (indica que o progresso local já foi sincronizado com a conta via D1) |
 
 ---
 
@@ -265,12 +345,17 @@ pnpm --filter @workspace/koto run preview
 
 ---
 
+## Documentação de funcionalidades
+
+| Arquivo | Assunto | Status |
+|---------|---------|--------|
+| `docs/TODO_CLERK_AUTH.md` | Autenticação com Clerk | ✅ implementado |
+| `docs/TODO_CLOUDFLARE_D1.md` | Backend Cloudflare D1 + Workers | ✅ implementado (falta apenas `wrangler d1 create` real + `CLERK_SECRET_KEY`) |
+
 ## TODOs documentados (não implementar sem instrução)
 
 | Arquivo | Assunto |
 |---------|---------|
-| `docs/TODO_CLERK_AUTH.md` | Integração de autenticação com Clerk |
-| `docs/TODO_CLOUDFLARE_D1.md` | Banco remoto com Cloudflare D1 + Workers |
 | `docs/TODO_TRACING.md` | Feature de traçado de kana (SVG stroke order) |
 | `docs/TODO_EXAMS.md` | Expansão dos simulados JLPT N3/N2/N1, timer, histórico |
 
@@ -280,8 +365,8 @@ pnpm --filter @workspace/koto run preview
 
 - ❌ `localStorage.getItem/setItem` direto em componentes
 - ❌ Instalar `react-router-dom` (usa Wouter)
-- ❌ Instalar `@clerk/clerk-react` antes de instrução explícita
-- ❌ Criar backend/API sem instrução explícita
+- ❌ Instalar `@clerk/clerk-react` (descontinuado — usar `@clerk/react`, já integrado)
+- ❌ Criar um segundo serviço de auth ou de sync paralelo a `auth.clerk.ts`/`progress.remote.ts`
 - ❌ Usar `any` implícito no TypeScript
 - ❌ Colocar `<AdPlaceholder>` dentro de cards de exercício
 - ❌ Duplicar lógica de nav (AppLayout já gerencia tudo)

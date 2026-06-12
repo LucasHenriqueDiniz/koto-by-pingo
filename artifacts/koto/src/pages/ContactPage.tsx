@@ -15,7 +15,7 @@ export function ContactPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
+    <div className="max-w-6xl mx-auto px-4 py-10">
       <div className="max-w-2xl">
         <h1 className="text-2xl font-bold text-foreground mb-2">Contato</h1>
         <p className="text-muted-foreground text-sm mb-8">

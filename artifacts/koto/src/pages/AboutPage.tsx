@@ -8,7 +8,7 @@ export function AboutPage() {
   }, []);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
+    <div className="max-w-6xl mx-auto px-4 py-10">
       <div className="max-w-2xl">
         <div className="mb-8">
           <Logo variant="horizontal" size="lg" />

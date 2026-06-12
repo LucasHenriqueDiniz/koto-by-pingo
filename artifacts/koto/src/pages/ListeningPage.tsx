@@ -88,7 +88,7 @@ export function ListeningPage() {
         color="#0284C7"
       />
 
-      <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="max-w-sm mx-auto space-y-6">
           {/* Speech API warning */}
           {supported === false && (

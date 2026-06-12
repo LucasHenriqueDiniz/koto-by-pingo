@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "koto",
+      "runtimeExecutable": "C:\\Windows\\System32\\cmd.exe",
+      "runtimeArgs": ["/c", "set PORT=24263&& set BASE_PATH=/&& C:\\Users\\lucas.lhdo\\nodejs\\pnpm.CMD --filter @workspace/koto run dev"],
+      "port": 24263
+    }
+  ]
+}

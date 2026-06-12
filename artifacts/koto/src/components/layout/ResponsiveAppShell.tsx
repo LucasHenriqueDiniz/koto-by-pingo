@@ -17,8 +17,8 @@ export function ResponsiveAppShell({ children }: ResponsiveAppShellProps) {
       <MobileTopBar />
 
       {/* Main content — offset for sidebar on desktop, top bar on mobile */}
-      <div className="lg:pl-56 flex flex-col min-h-screen">
-        <main className="flex-1 pb-16 lg:pb-0">
+      <div className="lg:pl-60 flex flex-col min-h-screen">
+        <main className="flex-1 pb-16 md:pb-0">
           {children}
         </main>
 

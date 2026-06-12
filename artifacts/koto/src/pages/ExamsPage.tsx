@@ -26,7 +26,7 @@ export function ExamsPage() {
         color="#EA580C"
       />
 
-      <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="grid gap-4 max-w-2xl">
           {mockExams.map(exam => {
             const examAttempts = getAttemptsForExam(exam.id);

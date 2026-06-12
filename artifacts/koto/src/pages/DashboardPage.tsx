@@ -6,6 +6,7 @@ import { ProgressBar } from '../components/ui/ProgressBar';
 import { PageHeader } from '../components/ui/PageHeader';
 import { PingoMascot } from '../components/brand/PingoMascot';
 import { AdPlaceholder } from '../components/ui/AdPlaceholder';
+import { SyncProgressBanner } from '../components/ui/SyncProgressBanner';
 import { updatePageSEO } from '../utils/seo';
 import { allKana } from '../data/kana';
 import { vocabulary } from '../data/vocabulary';
@@ -27,6 +28,7 @@ export function DashboardPage() {
 
   const isEmpty = summary.totalAttempts === 0 && summary.examsCompleted === 0;
   const vs = summary.vocabStats;
+  const ks = summary.kanaStats;
 
   const topMistakeLabels = summary.topMistakes
     .map(m => {
@@ -50,7 +52,7 @@ export function DashboardPage() {
         color="#16A34A"
       />
 
-      <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-8">
         {isEmpty ? (
           <div className="flex flex-col items-center gap-4 py-16 text-center">
             <PingoMascot variant="progress" size="lg" />
@@ -63,6 +65,8 @@ export function DashboardPage() {
           </div>
         ) : (
           <div className="space-y-8">
+            <SyncProgressBanner hasLocalProgress={!isEmpty} />
+
             {/* Overview */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <StatCard label="Sessões" value={summary.sessionsCount} icon={Target} color="#16A34A" />
@@ -79,16 +83,43 @@ export function DashboardPage() {
             {/* Kana + Vocab breakdowns side by side */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Kana */}
-              {summary.kanaTotal > 0 && (
+              {(summary.kanaTotal > 0 || ks.seen > 0) && (
                 <div className="bg-card border border-card-border rounded-2xl p-5 space-y-4">
                   <h2 className="text-sm font-semibold text-foreground">Kana</h2>
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-muted-foreground">Precisão</span>
-                      <span className="font-medium text-foreground">{summary.kanaCorrect}/{summary.kanaTotal} — {summary.kanaAccuracy}%</span>
+                  {summary.kanaTotal > 0 && (
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">Precisão</span>
+                        <span className="font-medium text-foreground">{summary.kanaCorrect}/{summary.kanaTotal} — {summary.kanaAccuracy}%</span>
+                      </div>
+                      <ProgressBar value={summary.kanaAccuracy} color="#E5484D" />
                     </div>
-                    <ProgressBar value={summary.kanaAccuracy} color="#E5484D" />
+                  )}
+
+                  {/* Per-character classification */}
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <div className="bg-muted/40 rounded-lg p-2.5 text-center">
+                      <Eye size={14} className="text-muted-foreground mx-auto mb-1" />
+                      <p className="text-base font-bold text-foreground">{ks.seen}</p>
+                      <p className="text-xs text-muted-foreground">vistos</p>
+                    </div>
+                    <div className="bg-muted/40 rounded-lg p-2.5 text-center">
+                      <Star size={14} className="mx-auto mb-1" style={{ color: '#F59F00' }} />
+                      <p className="text-base font-bold text-foreground">{ks.mastered}</p>
+                      <p className="text-xs text-muted-foreground">dominados</p>
+                    </div>
+                    <div className="bg-muted/40 rounded-lg p-2.5 text-center">
+                      <AlertTriangle size={14} className="mx-auto mb-1" style={{ color: '#E5484D' }} />
+                      <p className="text-base font-bold text-foreground">{ks.weak}</p>
+                      <p className="text-xs text-muted-foreground">difíceis</p>
+                    </div>
+                    <div className="bg-muted/40 rounded-lg p-2.5 text-center">
+                      <BookOpen size={14} className="text-muted-foreground mx-auto mb-1" />
+                      <p className="text-base font-bold text-foreground">{ks.neverSeen}</p>
+                      <p className="text-xs text-muted-foreground">não vistos</p>
+                    </div>
                   </div>
+
                   {topMistakeLabels.length > 0 && (
                     <div>
                       <p className="text-xs text-muted-foreground mb-2">Mais erros:</p>

@@ -1,6 +1,8 @@
 # TODO — Backend: Cloudflare D1
 
-**Status:** planejado — não implementado no MVP. O app funciona 100% com localStorage.
+**Status:** implementado (Workers API + D1) — pendente apenas criar o banco remoto real
+(`wrangler d1 create`) e configurar `CLERK_SECRET_KEY` em produção. O app continua
+funcionando 100% com localStorage quando o usuário não está logado.
 
 ---
 
@@ -24,15 +26,15 @@ A limpeza de dados do browser apaga o progresso.
 | Tabela | Propósito |
 |--------|-----------|
 | `users` | perfil básico + FK para Clerk userId |
-| `kana_attempts` | histórico de tentativas de kana por usuário |
+| `kana_attempts` | histórico de tentativas de kana por usuário (inclui modo/grupo/skipped) |
 | `vocabulary_attempts` | histórico de tentativas por palavra |
 | `word_progress` | progresso consolidado por palavra |
 | `exam_attempts` | simulados realizados |
 | `exam_answers` | respostas por questão por simulado |
 | `study_sessions` | sessões de estudo |
-| `user_preferences` | preferências do usuário (ex: showHint, pairMode) |
+| `user_preferences` | preferências do usuário (JSON) |
 
-Schema completo disponível em: `cloudflare/schema.sql`
+Schema completo disponível em: `cloudflare/schema.sql` (migrations: `cloudflare/migrations/`)
 
 ---
 
@@ -80,17 +82,11 @@ DELETE /api/progress/reset        — resetar progresso
 
 ## Configuração
 
-1. Criar banco: `npx wrangler d1 create koto_by_pingo`
-2. Aplicar migration: `npx wrangler d1 migrations apply koto_by_pingo`
+1. Criar banco: `npx wrangler d1 create koto_by_pingo` (executar com acesso real à conta Cloudflare —
+   pendente; `wrangler.toml` ainda tem `database_id` placeholder)
+2. Aplicar migrations: `npx wrangler d1 migrations apply koto_by_pingo`
 3. Configurar `wrangler.toml` (ver `wrangler.example.toml`)
-4. Adicionar `CLERK_SECRET_KEY` via `wrangler secret put CLERK_SECRET_KEY`
-
----
-
-## Stubs para substituição
-
-- `src/services/progress/progress.remote.placeholder.ts` — substituir com chamadas reais à API
-- `src/services/auth/auth.placeholder.ts` — substituir com Clerk SDK
+4. Adicionar `CLERK_SECRET_KEY` via `wrangler secret put CLERK_SECRET_KEY` (pendente)
 
 ---
 
@@ -98,8 +94,12 @@ DELETE /api/progress/reset        — resetar progresso
 
 | Etapa | Status |
 |-------|--------|
-| Schema SQL | ✅ criado em `cloudflare/schema.sql` |
-| Migration inicial | ✅ criada em `cloudflare/migrations/0001_initial.sql` |
-| Workers API | não implementado |
-| Sync automático | não implementado |
-| Offline queue | não implementado |
+| Schema SQL | ✅ `cloudflare/schema.sql` |
+| Migrations | ✅ `0001_initial.sql` + `0002_word_progress_and_preferences.sql` (validadas com `--local`) |
+| Workers API | ✅ `cloudflare/api/` — todos os endpoints listados acima, autenticados via `@clerk/backend` |
+| `progress.remote.ts` | ✅ `syncProgressToRemote()` / `fetchProgressFromRemote()` |
+| Banner de sync pós-login | ✅ `SyncProgressBanner` no Dashboard |
+| Sync automático (Fase 2) | não implementado — sync atual é sob demanda (Fase 1) |
+| Offline queue (Fase 2) | não implementado |
+| Banco D1 remoto real | pendente — rodar `wrangler d1 create koto_by_pingo` e atualizar `database_id` |
+| `CLERK_SECRET_KEY` em produção | pendente — `wrangler secret put CLERK_SECRET_KEY` |

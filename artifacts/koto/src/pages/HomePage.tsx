@@ -49,7 +49,7 @@ export function HomePage() {
     <div className="min-h-screen">
       {/* Hero */}
       <section className="bg-background border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 py-16 md:py-24">
+        <div className="max-w-6xl mx-auto px-4 py-16 md:py-24">
           <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -99,7 +99,7 @@ export function HomePage() {
       {/* Continue studying - only shown when there's progress */}
       {hasProgress && (
         <section className="bg-accent/30 border-b border-border">
-          <div className="max-w-5xl mx-auto px-4 py-6">
+          <div className="max-w-6xl mx-auto px-4 py-6">
             <h2 className="text-sm font-semibold text-foreground mb-4">Continue estudando</h2>
             <div className="flex flex-wrap gap-3">
               {summary.kanaTotal > 0 && (
@@ -129,7 +129,7 @@ export function HomePage() {
 
       {/* Features */}
       <section className="bg-background">
-        <div className="max-w-5xl mx-auto px-4 py-14">
+        <div className="max-w-6xl mx-auto px-4 py-14">
           <h2 className="text-xl font-bold text-foreground mb-2">Por que Koto?</h2>
           <p className="text-sm text-muted-foreground mb-8">Uma ferramenta construída com clareza, sem distrações.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -163,14 +163,14 @@ export function HomePage() {
 
       {/* Ad placeholder */}
       <section className="bg-background border-t border-border">
-        <div className="max-w-5xl mx-auto px-4 py-6">
+        <div className="max-w-6xl mx-auto px-4 py-6">
           <AdPlaceholder slot="banner" />
         </div>
       </section>
 
       {/* SEO content */}
       <section className="bg-muted/30 border-t border-border">
-        <div className="max-w-5xl mx-auto px-4 py-12">
+        <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="max-w-2xl">
             <h2 className="text-lg font-bold text-foreground mb-3">
               Aprenda japonês com método e consistência

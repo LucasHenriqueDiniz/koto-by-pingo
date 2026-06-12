@@ -4,7 +4,12 @@ import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { AppLayout } from './components/layout/AppLayout';
 import { HomePage } from './pages/HomePage';
-import { KanaPage } from './pages/KanaPage';
+import { KanaHubPage } from './pages/KanaHubPage';
+import { KanaLearnPage } from './pages/KanaLearnPage';
+import { KanaTrainPage } from './pages/KanaTrainPage';
+import { KanaReviewPage } from './pages/KanaReviewPage';
+import { KanaStatsPage } from './pages/KanaStatsPage';
+import { KanaSettingsPage } from './pages/KanaSettingsPage';
 import { VocabularyPage } from './pages/VocabularyPage';
 import { ListeningPage } from './pages/ListeningPage';
 import { ExamsPage } from './pages/ExamsPage';
@@ -23,7 +28,12 @@ function Router() {
     <AppLayout>
       <Switch>
         <Route path="/" component={HomePage} />
-        <Route path="/kana" component={KanaPage} />
+        <Route path="/kana" component={KanaHubPage} />
+        <Route path="/kana/aprender" component={KanaLearnPage} />
+        <Route path="/kana/treinar" component={KanaTrainPage} />
+        <Route path="/kana/revisar" component={KanaReviewPage} />
+        <Route path="/kana/estatisticas" component={KanaStatsPage} />
+        <Route path="/kana/configurar" component={KanaSettingsPage} />
         <Route path="/vocabulario" component={VocabularyPage} />
         <Route path="/escuta" component={ListeningPage} />
         <Route path="/simulados" component={ExamsPage} />

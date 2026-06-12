@@ -8,7 +8,7 @@ interface PageHeaderProps {
 export function PageHeader({ title, description, color = '#E5484D', children }: PageHeaderProps) {
   return (
     <div className="border-b border-border bg-background">
-      <div className="max-w-5xl mx-auto px-4 py-6">
+      <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">

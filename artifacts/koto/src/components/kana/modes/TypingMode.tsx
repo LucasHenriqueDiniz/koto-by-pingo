@@ -1,16 +1,22 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { KanaItem } from '../../types/kana';
-import { useKanaTrainer } from '../../hooks/useKanaTrainer';
-import { KanaInput } from './KanaInput';
-import { KanaStats } from './KanaStats';
+import type { KanaItem } from '../../../types/kana';
+import { useKanaTrainer } from '../../../hooks/useKanaTrainer';
+import { KanaInput } from '../KanaInput';
+import { KanaStats } from '../KanaStats';
 
-interface KanaTrainerProps {
+interface TypingModeProps {
   items: KanaItem[];
   showRomajiHint?: boolean;
 }
 
-export function KanaTrainer({ items, showRomajiHint = false }: KanaTrainerProps) {
+const FEEDBACK_STYLES = {
+  idle: '',
+  correct: 'border-[#2F9E44] bg-[#DCFCE7]',
+  wrong: 'border-[#E5484D] bg-[#FFE5E7]',
+} as const;
+
+export function TypingMode({ items, showRomajiHint = false }: TypingModeProps) {
   const {
     current,
     feedback,
@@ -20,9 +26,12 @@ export function KanaTrainer({ items, showRomajiHint = false }: KanaTrainerProps)
     submit,
     next,
     skip,
+    endSession,
   } = useKanaTrainer(items);
 
   const [inputValue, setInputValue] = useState('');
+
+  useEffect(() => () => endSession(), [endSession]);
 
   const handleSubmit = useCallback(() => {
     if (!inputValue.trim()) return;
@@ -47,15 +56,8 @@ export function KanaTrainer({ items, showRomajiHint = false }: KanaTrainerProps)
     );
   }
 
-  const feedbackStyles = {
-    idle: '',
-    correct: 'border-[#2F9E44] bg-[#DCFCE7]',
-    wrong: 'border-[#E5484D] bg-[#FFE5E7]',
-  };
-
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-sm mx-auto">
-      {/* Character display */}
       <AnimatePresence mode="wait">
         <motion.div
           key={current.id + feedback}
@@ -64,7 +66,7 @@ export function KanaTrainer({ items, showRomajiHint = false }: KanaTrainerProps)
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.15 }}
           className={`w-44 h-44 flex flex-col items-center justify-center rounded-2xl border-2 shadow-sm transition-colors duration-200 ${
-            feedback === 'idle' ? 'border-border bg-card' : feedbackStyles[feedback]
+            feedback === 'idle' ? 'border-border bg-card' : FEEDBACK_STYLES[feedback]
           }`}
           data-testid="kana-character-display"
         >
@@ -82,14 +84,12 @@ export function KanaTrainer({ items, showRomajiHint = false }: KanaTrainerProps)
         </motion.div>
       </AnimatePresence>
 
-      {/* Romaji hint */}
       {showRomajiHint && feedback === 'idle' && (
         <p className="text-sm text-muted-foreground -mt-2">
           Leitura: <span className="font-mono font-semibold text-foreground">{current.romaji}</span>
         </p>
       )}
 
-      {/* Feedback message */}
       <div className="h-6 text-center">
         {feedback === 'correct' && (
           <motion.p
@@ -114,7 +114,6 @@ export function KanaTrainer({ items, showRomajiHint = false }: KanaTrainerProps)
         )}
       </div>
 
-      {/* Input */}
       {feedback === 'idle' ? (
         <div className="w-full space-y-3">
           <KanaInput
@@ -151,7 +150,6 @@ export function KanaTrainer({ items, showRomajiHint = false }: KanaTrainerProps)
         </button>
       )}
 
-      {/* Session stats */}
       <KanaStats correct={sessionCorrect} total={sessionTotal} accuracy={sessionAccuracy} />
     </div>
   );

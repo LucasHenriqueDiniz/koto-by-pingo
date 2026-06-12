@@ -1,74 +1,55 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import type { KanaItem } from '../types/kana';
 import { checkAnswer } from '../utils/kana';
-import { shuffle, generateId } from '../utils/scoring';
-import { recordKanaAttempt, saveSession } from '../services/progress/progress.local';
+import { recordKanaAttempt } from '../services/progress/progress.local';
+import { useKanaQueue } from './useKanaQueue';
 
 type FeedbackState = 'idle' | 'correct' | 'wrong';
 
+/** Modo Digitação: mostra o kana, usuário digita o romaji. */
 export function useKanaTrainer(items: KanaItem[]) {
-  const [queue, setQueue] = useState<KanaItem[]>(() => shuffle([...items]));
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const queue = useKanaQueue(items);
   const [feedback, setFeedback] = useState<FeedbackState>('idle');
-  const [sessionCorrect, setSessionCorrect] = useState(0);
-  const [sessionTotal, setSessionTotal] = useState(0);
-  const sessionStartRef = useRef(new Date().toISOString());
-  const sessionIdRef = useRef(generateId());
-
-  const current = queue[currentIndex % queue.length];
-
-  const resetQueue = useCallback((newItems: KanaItem[]) => {
-    setQueue(shuffle([...newItems]));
-    setCurrentIndex(0);
-    setFeedback('idle');
-    setSessionCorrect(0);
-    setSessionTotal(0);
-    sessionStartRef.current = new Date().toISOString();
-    sessionIdRef.current = generateId();
-  }, []);
+  const { current, registerResult, registerSkip, next: queueNext, reset } = queue;
 
   const submit = useCallback((input: string): boolean => {
     if (!current) return false;
     const isCorrect = checkAnswer(input, current.romaji);
     setFeedback(isCorrect ? 'correct' : 'wrong');
-    recordKanaAttempt(current.id, isCorrect);
-    setSessionTotal(t => t + 1);
-    if (isCorrect) setSessionCorrect(c => c + 1);
+    recordKanaAttempt(current.id, isCorrect, { mode: 'typing', group: current.group });
+    registerResult(isCorrect);
     return isCorrect;
-  }, [current]);
+  }, [current, registerResult]);
 
   const next = useCallback(() => {
     setFeedback('idle');
-    setCurrentIndex(i => i + 1);
-  }, []);
+    queueNext();
+  }, [queueNext]);
 
   const skip = useCallback(() => {
-    setFeedback('idle');
-    setCurrentIndex(i => i + 1);
-  }, []);
-
-  const endSession = useCallback(() => {
-    if (sessionTotal > 0) {
-      saveSession({
-        module: 'kana',
-        startedAt: sessionStartRef.current,
-        endedAt: new Date().toISOString(),
-        itemsCount: sessionTotal,
-        correctCount: sessionCorrect,
-      });
+    if (current) {
+      recordKanaAttempt(current.id, false, { mode: 'typing', skipped: true, group: current.group });
     }
-  }, [sessionTotal, sessionCorrect]);
+    registerSkip();
+    setFeedback('idle');
+    queueNext();
+  }, [current, registerSkip, queueNext]);
+
+  const resetQueue = useCallback((newItems: KanaItem[]) => {
+    setFeedback('idle');
+    reset(newItems);
+  }, [reset]);
 
   return {
     current,
     feedback,
-    sessionCorrect,
-    sessionTotal,
-    sessionAccuracy: sessionTotal > 0 ? Math.round((sessionCorrect / sessionTotal) * 100) : 0,
+    sessionCorrect: queue.sessionCorrect,
+    sessionTotal: queue.sessionTotal,
+    sessionAccuracy: queue.sessionAccuracy,
     submit,
     next,
     skip,
     resetQueue,
-    endSession,
+    endSession: queue.endSession,
   };
 }

@@ -1,6 +1,8 @@
 # TODO — Feature: Traçado de Kana
 
-**Status:** planned — não implementado no MVP
+**Status:** placeholder criado — `TracingMode.tsx` existe como modo de treino ("Traçado") e
+registra prática via `koto:tracing_practice`, mas ainda sem animação de stroke order ou
+verificação real do desenho.
 
 ---
 
@@ -60,9 +62,9 @@ interface StrokePath {
 
 - [ ] Mostrar animação SVG do traçado completo (stroke-dashoffset animation)
 - [ ] Exibir número de traços
-- [ ] Botão "Pratiquei" para registrar tentativa positiva
-- [ ] Integrar no KanaTrainer como modo opcional: "Treino" / "Traçado"
-- [ ] Salvar no localStorage: `koto:tracing_practice`
+- [x] Botão "Marcar como praticado" para registrar tentativa positiva (`TracingMode.tsx`)
+- [x] Integrar como modo opcional "Traçado" em `/kana/treinar` (via `KanaModeSelector` + `KANA_MODE_COMPONENTS`)
+- [x] Salvar no localStorage: `koto:tracing_practice` (`getTracingPracticeMap`/`recordTracingPractice` em `progress.local.ts`)
 
 ## Versão avançada (fase 2)
 
@@ -74,13 +76,12 @@ interface StrokePath {
 
 ---
 
-## Como integrar
+## Como integrar (próximos passos)
 
-1. Criar componente `src/components/kana/KanaStrokeViewer.tsx`
-2. Criar serviço `src/services/tracing/tracing.local.ts`
-3. Adicionar chave `koto:tracing_progress` no storage
-4. Registrar via `recordTracingAttempt(kanaId, result)`
-5. Adicionar tab "Traçado" na `KanaPage`
+1. Criar componente `src/components/kana/KanaStrokeViewer.tsx` com a animação SVG do traçado
+2. Adicionar os dados de `StrokePath[]` (ex: via KanjiVG) e consumi-los em `TracingMode.tsx`
+3. Exibir o número de traços e a animação dentro do placeholder já existente em `TracingMode.tsx`
+4. (Fase 2) Canvas interativo + comparação de traços + novas métricas em `koto:tracing_practice`
 
 ---
 
@@ -88,7 +89,8 @@ interface StrokePath {
 
 | Fase | Status |
 |------|--------|
-| Dados SVG | não criados |
+| Placeholder de UI (`TracingMode.tsx`) | ✅ implementado |
+| Contador de prática (`koto:tracing_practice`) | ✅ implementado |
+| Dados SVG (stroke order) | não criados |
 | Animação | não implementada |
 | Canvas interativo | não implementado |
-| Integração com progresso | não implementada |

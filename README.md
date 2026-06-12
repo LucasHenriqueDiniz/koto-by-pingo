@@ -54,17 +54,20 @@ O build é gerado em `artifacts/koto/dist/public`.
 
 ```
 artifacts/koto/src/
-  app/           — Router e configuração do app
+  App.tsx        — Router e configuração do app (Wouter)
   components/
     brand/       — Logo, BrandMark, AppIcon, PingoMascot, MascotMessage
-    layout/      — AppLayout, Navbar, Footer, MobileBottomNav
-    ui/          — Componentes genéricos (ProgressBar, StatCard, etc.)
-    kana/        — KanaTrainer, KanaInput, KanaStats
-    vocabulary/  — VocabularyCard, VocabularyQuiz
+    layout/      — AppLayout, ResponsiveAppShell, DesktopSidebar, MobileTopBar,
+                   MobileBottomNav, RightStudyPanel, Footer
+    ui/          — Componentes genéricos (Shadcn/UI + ProgressBar, StatCard, AdPlaceholder, etc.)
+    kana/        — KanaInput, KanaStats, KanaCharacterCard, KanaModeSelector, KanaGroupFilter,
+                   KanaSubNav, modes/ (7 modos de treino de kana)
+    vocabulary/  — FlashcardMode, WordSelectionMode, MatchingPairsMode,
+                   TranslationQuizMode, VocabularyCard, VocabularyQuiz
     quiz/        — QuizCard, MultipleChoiceQuestion, ResultSummary
-  pages/         — Todas as páginas do app
-  data/          — kana.ts, vocabulary.ts, mockExams.ts
-  hooks/         — useLocalStorage, useStudyProgress, useKanaTrainer
+  pages/         — Todas as páginas do app (incluindo KanaHubPage e as 5 sub-páginas /kana/*)
+  data/          — kana.ts, kanaWords.ts, vocabulary.ts, mockExams.ts
+  hooks/         — useLocalStorage, useStudyProgress, useKanaQueue, useKanaTrainer, useKanaFilters
   services/
     progress/    — Acesso ao localStorage (nunca acessar direto)
     auth/        — Placeholder para Clerk

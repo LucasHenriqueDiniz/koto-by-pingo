@@ -31,7 +31,7 @@ export function ExamDetailPage() {
 
   if (!exam) {
     return (
-      <div className="max-w-5xl mx-auto px-4 py-16 text-center">
+      <div className="max-w-6xl mx-auto px-4 py-16 text-center">
         <p className="text-muted-foreground">Simulado não encontrado.</p>
         <button onClick={() => setLocation('/simulados')} className="mt-4 text-primary text-sm">
           Ver simulados
@@ -76,7 +76,7 @@ export function ExamDetailPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6">
+    <div className="max-w-6xl mx-auto px-4 py-6">
       {/* Back */}
       <button
         onClick={() => setLocation('/simulados')}

@@ -1,6 +1,6 @@
 # TODO — Autenticação: Clerk
 
-**Status:** planejado — não implementado no MVP. Placeholder em `src/services/auth/auth.placeholder.ts`.
+**Status:** implementado. `src/services/auth/auth.clerk.ts` substitui o antigo placeholder.
 
 ---
 
@@ -44,78 +44,57 @@
 
 ---
 
-## Como integrar quando o momento chegar
+## Como foi implementado
 
-### 1. Instalar
+### 1. Dependência
 
 ```bash
-pnpm --filter @workspace/koto add @clerk/clerk-react
+pnpm --filter @workspace/koto add @clerk/react
 ```
+
+> Nota: `@clerk/clerk-react` foi descontinuado em favor de `@clerk/react` (Clerk "Core 3").
 
 ### 2. Variável de ambiente
 
+`artifacts/koto/.env.local` (não versionado):
 ```bash
-# .env.local (nunca comitar)
-VITE_CLERK_PUBLISHABLE_KEY=pk_live_...
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
 ```
 
-Adicionar via `environment-secrets` no Replit.
+### 3. App envolvido com `ClerkProvider`
 
-### 3. Envolver o app
-
+`src/main.tsx`:
 ```tsx
-// src/main.tsx
-import { ClerkProvider } from '@clerk/clerk-react';
+import { ClerkProvider } from '@clerk/react';
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
-<ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+<ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
   <App />
 </ClerkProvider>
 ```
 
-### 4. Substituir o placeholder
+### 4. Serviço de auth
 
-```ts
-// src/services/auth/auth.placeholder.ts → substituir com:
-import { useUser, useClerk } from '@clerk/clerk-react';
+`src/services/auth/auth.clerk.ts` expõe `useCurrentUser()` (baseado em `useUser()`) e
+`useSignOut()` (baseado em `useClerk()`), mapeando para os tipos `AuthUser`/`AuthSession`
+de `auth.types.ts`. Substitui o antigo `auth.placeholder.ts`.
 
-export function useCurrentUser() {
-  const { user, isSignedIn } = useUser();
-  return { user, isAuthenticated: !!isSignedIn };
-}
-```
+### 5. Botões de login (UI)
 
-### 5. Adicionar botão de login (UI)
-
-```tsx
-import { SignInButton, UserButton } from '@clerk/clerk-react';
-
-// Se não autenticado:
-<SignInButton mode="modal">Entrar</SignInButton>
-
-// Se autenticado:
-<UserButton />
-```
+`<Show when="signed-out">` + `<SignInButton mode="modal">` / `<Show when="signed-in">` +
+`<UserButton />`, ambos de `@clerk/react`.
 
 ---
 
 ## Onde o Clerk aparece na UI
 
-| Local | Componente |
-|-------|-----------|
-| Sidebar (desktop) | botão "Entrar" ou `<UserButton>` |
-| MobileTopBar | ícone de perfil |
-| Após completar simulado | "Salvar resultado na conta" |
-| Dashboard | banner "Sincronize seu progresso" |
-
----
-
-## Não instalar ainda
-
-O arquivo `src/services/auth/auth.placeholder.ts` já tem TODOs marcados para cada ponto de substituição.
-
-Não instalar `@clerk/clerk-react` no MVP. A instalação prematura adiciona bundle sem funcionalidade.
+| Local | Componente | Status |
+|-------|-----------|--------|
+| Sidebar (desktop) | botão "Entrar" ou `<UserButton>` | ✅ `DesktopSidebar.tsx` |
+| MobileTopBar | ícone de perfil | ✅ `MobileTopBar.tsx` |
+| Dashboard | banner "Sincronize seu progresso" | ✅ `SyncProgressBanner.tsx` |
+| Após completar simulado | "Salvar resultado na conta" | não implementado |
 
 ---
 
@@ -123,7 +102,8 @@ Não instalar `@clerk/clerk-react` no MVP. A instalação prematura adiciona bun
 
 | Etapa | Status |
 |-------|--------|
-| Placeholder de auth | ✅ criado |
-| Integração Clerk | não implementado |
-| Fluxo de sync pós-login | não implementado |
-| UI de login na sidebar | não implementado |
+| Integração Clerk (`@clerk/react`) | ✅ implementado |
+| `auth.clerk.ts` | ✅ implementado |
+| UI de login (sidebar + mobile) | ✅ implementado |
+| Fluxo de sync pós-login | ✅ implementado — ver `docs/TODO_CLOUDFLARE_D1.md` |
+| `CLERK_SECRET_KEY` no Worker (backend) | pendente — `wrangler secret put CLERK_SECRET_KEY` |

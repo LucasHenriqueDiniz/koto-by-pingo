@@ -124,7 +124,7 @@ export function VocabularyPage() {
         color="#7C3AED"
       />
 
-      <div className="max-w-5xl mx-auto px-4 py-6">
+      <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Ad before session */}
         <div className="mb-6">
           <AdPlaceholder slot="banner" />
@@ -243,7 +243,7 @@ export function VocabularyPage() {
               </div>
             ) : (
               /* Training mode */
-              <div className="max-w-md mx-auto xl:max-w-none">
+              <div className="max-w-md mx-auto lg:max-w-xl">
                 {renderMode()}
               </div>
             )}

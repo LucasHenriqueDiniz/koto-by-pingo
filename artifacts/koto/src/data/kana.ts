@@ -1,127 +1,220 @@
-import type { KanaItem } from '../types/kana';
+import type { KanaItem, KanaScript, KanaGroup, KanaExample, KanaType } from '../types/kana';
 
-export const hiragana: KanaItem[] = [
-  // A-row
-  { id: 'h-a', character: 'あ', romaji: 'a', type: 'hiragana', group: 'a-row' },
-  { id: 'h-i', character: 'い', romaji: 'i', type: 'hiragana', group: 'a-row' },
-  { id: 'h-u', character: 'う', romaji: 'u', type: 'hiragana', group: 'a-row' },
-  { id: 'h-e', character: 'え', romaji: 'e', type: 'hiragana', group: 'a-row' },
-  { id: 'h-o', character: 'お', romaji: 'o', type: 'hiragana', group: 'a-row' },
-  // KA-row
-  { id: 'h-ka', character: 'か', romaji: 'ka', type: 'hiragana', group: 'ka-row' },
-  { id: 'h-ki', character: 'き', romaji: 'ki', type: 'hiragana', group: 'ka-row' },
-  { id: 'h-ku', character: 'く', romaji: 'ku', type: 'hiragana', group: 'ka-row' },
-  { id: 'h-ke', character: 'け', romaji: 'ke', type: 'hiragana', group: 'ka-row' },
-  { id: 'h-ko', character: 'こ', romaji: 'ko', type: 'hiragana', group: 'ka-row' },
-  // SA-row
-  { id: 'h-sa', character: 'さ', romaji: 'sa', type: 'hiragana', group: 'sa-row' },
-  { id: 'h-shi', character: 'し', romaji: 'shi', type: 'hiragana', group: 'sa-row' },
-  { id: 'h-su', character: 'す', romaji: 'su', type: 'hiragana', group: 'sa-row' },
-  { id: 'h-se', character: 'せ', romaji: 'se', type: 'hiragana', group: 'sa-row' },
-  { id: 'h-so', character: 'そ', romaji: 'so', type: 'hiragana', group: 'sa-row' },
-  // TA-row
-  { id: 'h-ta', character: 'た', romaji: 'ta', type: 'hiragana', group: 'ta-row' },
-  { id: 'h-chi', character: 'ち', romaji: 'chi', type: 'hiragana', group: 'ta-row' },
-  { id: 'h-tsu', character: 'つ', romaji: 'tsu', type: 'hiragana', group: 'ta-row' },
-  { id: 'h-te', character: 'て', romaji: 'te', type: 'hiragana', group: 'ta-row' },
-  { id: 'h-to', character: 'と', romaji: 'to', type: 'hiragana', group: 'ta-row' },
-  // NA-row
-  { id: 'h-na', character: 'な', romaji: 'na', type: 'hiragana', group: 'na-row' },
-  { id: 'h-ni', character: 'に', romaji: 'ni', type: 'hiragana', group: 'na-row' },
-  { id: 'h-nu', character: 'ぬ', romaji: 'nu', type: 'hiragana', group: 'na-row' },
-  { id: 'h-ne', character: 'ね', romaji: 'ne', type: 'hiragana', group: 'na-row' },
-  { id: 'h-no', character: 'の', romaji: 'no', type: 'hiragana', group: 'na-row' },
-  // HA-row
-  { id: 'h-ha', character: 'は', romaji: 'ha', type: 'hiragana', group: 'ha-row' },
-  { id: 'h-hi', character: 'ひ', romaji: 'hi', type: 'hiragana', group: 'ha-row' },
-  { id: 'h-fu', character: 'ふ', romaji: 'fu', type: 'hiragana', group: 'ha-row' },
-  { id: 'h-he', character: 'へ', romaji: 'he', type: 'hiragana', group: 'ha-row' },
-  { id: 'h-ho', character: 'ほ', romaji: 'ho', type: 'hiragana', group: 'ha-row' },
-  // MA-row
-  { id: 'h-ma', character: 'ま', romaji: 'ma', type: 'hiragana', group: 'ma-row' },
-  { id: 'h-mi', character: 'み', romaji: 'mi', type: 'hiragana', group: 'ma-row' },
-  { id: 'h-mu', character: 'む', romaji: 'mu', type: 'hiragana', group: 'ma-row' },
-  { id: 'h-me', character: 'め', romaji: 'me', type: 'hiragana', group: 'ma-row' },
-  { id: 'h-mo', character: 'も', romaji: 'mo', type: 'hiragana', group: 'ma-row' },
-  // YA-row
-  { id: 'h-ya', character: 'や', romaji: 'ya', type: 'hiragana', group: 'ya-row' },
-  { id: 'h-yu', character: 'ゆ', romaji: 'yu', type: 'hiragana', group: 'ya-row' },
-  { id: 'h-yo', character: 'よ', romaji: 'yo', type: 'hiragana', group: 'ya-row' },
-  // RA-row
-  { id: 'h-ra', character: 'ら', romaji: 'ra', type: 'hiragana', group: 'ra-row' },
-  { id: 'h-ri', character: 'り', romaji: 'ri', type: 'hiragana', group: 'ra-row' },
-  { id: 'h-ru', character: 'る', romaji: 'ru', type: 'hiragana', group: 'ra-row' },
-  { id: 'h-re', character: 'れ', romaji: 're', type: 'hiragana', group: 'ra-row' },
-  { id: 'h-ro', character: 'ろ', romaji: 'ro', type: 'hiragana', group: 'ra-row' },
-  // WA-row + N
-  { id: 'h-wa', character: 'わ', romaji: 'wa', type: 'hiragana', group: 'wa-row' },
-  { id: 'h-wo', character: 'を', romaji: 'wo', type: 'hiragana', group: 'wa-row' },
-  { id: 'h-n', character: 'ん', romaji: 'n', type: 'hiragana', group: 'n' },
+interface KanaCell {
+  /** Sufixo único do id (ex: 'a', 'shi', 'kya'). Combinado com o prefixo do script vira o id final. */
+  id: string;
+  hira: string;
+  kata: string;
+  romaji: string;
+  row: string;
+  column: string;
+  group: KanaGroup;
+  /** ids (sufixo) de kana parecidos, no mesmo script. */
+  similarTo?: string[];
+  /** Exemplo de palavra (aplicado apenas ao hiragana). */
+  example?: KanaExample;
+}
+
+const CELLS: KanaCell[] = [
+  // ---------- BÁSICO: A-row ----------
+  { id: 'a', hira: 'あ', kata: 'ア', romaji: 'a', row: 'a', column: 'a', group: 'basic', example: { word: 'あさ', reading: 'asa', meaningPt: 'manhã' } },
+  { id: 'i', hira: 'い', kata: 'イ', romaji: 'i', row: 'a', column: 'i', group: 'basic', example: { word: 'いぬ', reading: 'inu', meaningPt: 'cachorro' } },
+  { id: 'u', hira: 'う', kata: 'ウ', romaji: 'u', row: 'a', column: 'u', group: 'basic', example: { word: 'うみ', reading: 'umi', meaningPt: 'mar' } },
+  { id: 'e', hira: 'え', kata: 'エ', romaji: 'e', row: 'a', column: 'e', group: 'basic', example: { word: 'えき', reading: 'eki', meaningPt: 'estação' } },
+  { id: 'o', hira: 'お', kata: 'オ', romaji: 'o', row: 'a', column: 'o', group: 'basic', example: { word: 'おちゃ', reading: 'ocha', meaningPt: 'chá' } },
+
+  // ---------- BÁSICO: KA-row ----------
+  { id: 'ka', hira: 'か', kata: 'カ', romaji: 'ka', row: 'ka', column: 'a', group: 'basic', example: { word: 'かさ', reading: 'kasa', meaningPt: 'guarda-chuva' } },
+  { id: 'ki', hira: 'き', kata: 'キ', romaji: 'ki', row: 'ka', column: 'i', group: 'basic', example: { word: 'きいろ', reading: 'kiiro', meaningPt: 'amarelo' } },
+  { id: 'ku', hira: 'く', kata: 'ク', romaji: 'ku', row: 'ka', column: 'u', group: 'basic', similarTo: ['ta'], example: { word: 'くつ', reading: 'kutsu', meaningPt: 'sapato' } },
+  { id: 'ke', hira: 'け', kata: 'ケ', romaji: 'ke', row: 'ka', column: 'e', group: 'basic', example: { word: 'けさ', reading: 'kesa', meaningPt: 'esta manhã' } },
+  { id: 'ko', hira: 'こ', kata: 'コ', romaji: 'ko', row: 'ka', column: 'o', group: 'basic', example: { word: 'こども', reading: 'kodomo', meaningPt: 'criança' } },
+
+  // ---------- BÁSICO: SA-row ----------
+  { id: 'sa', hira: 'さ', kata: 'サ', romaji: 'sa', row: 'sa', column: 'a', group: 'basic', example: { word: 'さかな', reading: 'sakana', meaningPt: 'peixe' } },
+  { id: 'shi', hira: 'し', kata: 'シ', romaji: 'shi', row: 'sa', column: 'i', group: 'basic', similarTo: ['tsu', 'n', 'so'], example: { word: 'しお', reading: 'shio', meaningPt: 'sal' } },
+  { id: 'su', hira: 'す', kata: 'ス', romaji: 'su', row: 'sa', column: 'u', group: 'basic', example: { word: 'すし', reading: 'sushi', meaningPt: 'sushi' } },
+  { id: 'se', hira: 'せ', kata: 'セ', romaji: 'se', row: 'sa', column: 'e', group: 'basic', example: { word: 'せんせい', reading: 'sensei', meaningPt: 'professor(a)' } },
+  { id: 'so', hira: 'そ', kata: 'ソ', romaji: 'so', row: 'sa', column: 'o', group: 'basic', similarTo: ['shi', 'tsu', 'n'], example: { word: 'そら', reading: 'sora', meaningPt: 'céu' } },
+
+  // ---------- BÁSICO: TA-row ----------
+  { id: 'ta', hira: 'た', kata: 'タ', romaji: 'ta', row: 'ta', column: 'a', group: 'basic', similarTo: ['ku'], example: { word: 'たまご', reading: 'tamago', meaningPt: 'ovo' } },
+  { id: 'chi', hira: 'ち', kata: 'チ', romaji: 'chi', row: 'ta', column: 'i', group: 'basic', example: { word: 'ちず', reading: 'chizu', meaningPt: 'mapa' } },
+  { id: 'tsu', hira: 'つ', kata: 'ツ', romaji: 'tsu', row: 'ta', column: 'u', group: 'basic', similarTo: ['shi', 'n', 'so'], example: { word: 'つくえ', reading: 'tsukue', meaningPt: 'mesa' } },
+  { id: 'te', hira: 'て', kata: 'テ', romaji: 'te', row: 'ta', column: 'e', group: 'basic', example: { word: 'てがみ', reading: 'tegami', meaningPt: 'carta' } },
+  { id: 'to', hira: 'と', kata: 'ト', romaji: 'to', row: 'ta', column: 'o', group: 'basic', example: { word: 'とけい', reading: 'tokei', meaningPt: 'relógio' } },
+
+  // ---------- BÁSICO: NA-row ----------
+  { id: 'na', hira: 'な', kata: 'ナ', romaji: 'na', row: 'na', column: 'a', group: 'basic', example: { word: 'なつ', reading: 'natsu', meaningPt: 'verão' } },
+  { id: 'ni', hira: 'に', kata: 'ニ', romaji: 'ni', row: 'na', column: 'i', group: 'basic', example: { word: 'にく', reading: 'niku', meaningPt: 'carne' } },
+  { id: 'nu', hira: 'ぬ', kata: 'ヌ', romaji: 'nu', row: 'na', column: 'u', group: 'basic', similarTo: ['me'], example: { word: 'ぬの', reading: 'nuno', meaningPt: 'tecido' } },
+  { id: 'ne', hira: 'ね', kata: 'ネ', romaji: 'ne', row: 'na', column: 'e', group: 'basic', similarTo: ['wa', 're', 'ru'], example: { word: 'ねこ', reading: 'neko', meaningPt: 'gato' } },
+  { id: 'no', hira: 'の', kata: 'ノ', romaji: 'no', row: 'na', column: 'o', group: 'basic', example: { word: 'のみもの', reading: 'nomimono', meaningPt: 'bebida' } },
+
+  // ---------- BÁSICO: HA-row ----------
+  { id: 'ha', hira: 'は', kata: 'ハ', romaji: 'ha', row: 'ha', column: 'a', group: 'basic', similarTo: ['ho', 'ma'], example: { word: 'はな', reading: 'hana', meaningPt: 'flor' } },
+  { id: 'hi', hira: 'ひ', kata: 'ヒ', romaji: 'hi', row: 'ha', column: 'i', group: 'basic', example: { word: 'ひと', reading: 'hito', meaningPt: 'pessoa' } },
+  { id: 'fu', hira: 'ふ', kata: 'フ', romaji: 'fu', row: 'ha', column: 'u', group: 'basic', example: { word: 'ふゆ', reading: 'fuyu', meaningPt: 'inverno' } },
+  { id: 'he', hira: 'へ', kata: 'ヘ', romaji: 'he', row: 'ha', column: 'e', group: 'basic', example: { word: 'へや', reading: 'heya', meaningPt: 'quarto' } },
+  { id: 'ho', hira: 'ほ', kata: 'ホ', romaji: 'ho', row: 'ha', column: 'o', group: 'basic', similarTo: ['ha', 'ma'], example: { word: 'ほん', reading: 'hon', meaningPt: 'livro' } },
+
+  // ---------- BÁSICO: MA-row ----------
+  { id: 'ma', hira: 'ま', kata: 'マ', romaji: 'ma', row: 'ma', column: 'a', group: 'basic', similarTo: ['ha', 'ho'], example: { word: 'まど', reading: 'mado', meaningPt: 'janela' } },
+  { id: 'mi', hira: 'み', kata: 'ミ', romaji: 'mi', row: 'ma', column: 'i', group: 'basic', example: { word: 'みず', reading: 'mizu', meaningPt: 'água' } },
+  { id: 'mu', hira: 'む', kata: 'ム', romaji: 'mu', row: 'ma', column: 'u', group: 'basic', example: { word: 'むし', reading: 'mushi', meaningPt: 'inseto' } },
+  { id: 'me', hira: 'め', kata: 'メ', romaji: 'me', row: 'ma', column: 'e', group: 'basic', similarTo: ['nu'], example: { word: 'めがね', reading: 'megane', meaningPt: 'óculos' } },
+  { id: 'mo', hira: 'も', kata: 'モ', romaji: 'mo', row: 'ma', column: 'o', group: 'basic', example: { word: 'もも', reading: 'momo', meaningPt: 'pêssego' } },
+
+  // ---------- BÁSICO: YA-row ----------
+  { id: 'ya', hira: 'や', kata: 'ヤ', romaji: 'ya', row: 'ya', column: 'a', group: 'basic', example: { word: 'やま', reading: 'yama', meaningPt: 'montanha' } },
+  { id: 'yu', hira: 'ゆ', kata: 'ユ', romaji: 'yu', row: 'ya', column: 'u', group: 'basic', example: { word: 'ゆき', reading: 'yuki', meaningPt: 'neve' } },
+  { id: 'yo', hira: 'よ', kata: 'ヨ', romaji: 'yo', row: 'ya', column: 'o', group: 'basic', example: { word: 'よる', reading: 'yoru', meaningPt: 'noite' } },
+
+  // ---------- BÁSICO: RA-row ----------
+  { id: 'ra', hira: 'ら', kata: 'ラ', romaji: 'ra', row: 'ra', column: 'a', group: 'basic', example: { word: 'らいねん', reading: 'rainen', meaningPt: 'ano que vem' } },
+  { id: 'ri', hira: 'り', kata: 'リ', romaji: 'ri', row: 'ra', column: 'i', group: 'basic', example: { word: 'りんご', reading: 'ringo', meaningPt: 'maçã' } },
+  { id: 'ru', hira: 'る', kata: 'ル', romaji: 'ru', row: 'ra', column: 'u', group: 'basic', similarTo: ['ne', 're', 'wa'], example: { word: 'るす', reading: 'rusu', meaningPt: 'ausência' } },
+  { id: 're', hira: 'れ', kata: 'レ', romaji: 're', row: 'ra', column: 'e', group: 'basic', similarTo: ['ne', 'wa', 'ru'], example: { word: 'れいぞうこ', reading: 'reizouko', meaningPt: 'geladeira' } },
+  { id: 'ro', hira: 'ろ', kata: 'ロ', romaji: 'ro', row: 'ra', column: 'o', group: 'basic', example: { word: 'ろうか', reading: 'rouka', meaningPt: 'corredor' } },
+
+  // ---------- BÁSICO: WA-row + N ----------
+  { id: 'wa', hira: 'わ', kata: 'ワ', romaji: 'wa', row: 'wa', column: 'a', group: 'basic', similarTo: ['ne', 're', 'ru'], example: { word: 'わたし', reading: 'watashi', meaningPt: 'eu' } },
+  { id: 'wo', hira: 'を', kata: 'ヲ', romaji: 'wo', row: 'wa', column: 'o', group: 'basic', example: { word: 'ほんをよむ', reading: 'hon o yomu', meaningPt: 'ler o livro' } },
+  { id: 'n', hira: 'ん', kata: 'ン', romaji: 'n', row: 'n', column: 'n', group: 'basic', similarTo: ['shi', 'tsu', 'so'], example: { word: 'にほん', reading: 'nihon', meaningPt: 'Japão' } },
+
+  // ---------- DAKUTEN: GA-row ----------
+  { id: 'ga', hira: 'が', kata: 'ガ', romaji: 'ga', row: 'ga', column: 'a', group: 'dakuten' },
+  { id: 'gi', hira: 'ぎ', kata: 'ギ', romaji: 'gi', row: 'ga', column: 'i', group: 'dakuten' },
+  { id: 'gu', hira: 'ぐ', kata: 'グ', romaji: 'gu', row: 'ga', column: 'u', group: 'dakuten' },
+  { id: 'ge', hira: 'げ', kata: 'ゲ', romaji: 'ge', row: 'ga', column: 'e', group: 'dakuten' },
+  { id: 'go', hira: 'ご', kata: 'ゴ', romaji: 'go', row: 'ga', column: 'o', group: 'dakuten' },
+
+  // ---------- DAKUTEN: ZA-row ----------
+  { id: 'za', hira: 'ざ', kata: 'ザ', romaji: 'za', row: 'za', column: 'a', group: 'dakuten' },
+  { id: 'ji', hira: 'じ', kata: 'ジ', romaji: 'ji', row: 'za', column: 'i', group: 'dakuten' },
+  { id: 'zu', hira: 'ず', kata: 'ズ', romaji: 'zu', row: 'za', column: 'u', group: 'dakuten' },
+  { id: 'ze', hira: 'ぜ', kata: 'ゼ', romaji: 'ze', row: 'za', column: 'e', group: 'dakuten' },
+  { id: 'zo', hira: 'ぞ', kata: 'ゾ', romaji: 'zo', row: 'za', column: 'o', group: 'dakuten' },
+
+  // ---------- DAKUTEN: DA-row ----------
+  { id: 'da', hira: 'だ', kata: 'ダ', romaji: 'da', row: 'da', column: 'a', group: 'dakuten' },
+  { id: 'di', hira: 'ぢ', kata: 'ヂ', romaji: 'ji', row: 'da', column: 'i', group: 'dakuten' },
+  { id: 'du', hira: 'づ', kata: 'ヅ', romaji: 'zu', row: 'da', column: 'u', group: 'dakuten' },
+  { id: 'de', hira: 'で', kata: 'デ', romaji: 'de', row: 'da', column: 'e', group: 'dakuten' },
+  { id: 'do', hira: 'ど', kata: 'ド', romaji: 'do', row: 'da', column: 'o', group: 'dakuten' },
+
+  // ---------- DAKUTEN: BA-row ----------
+  { id: 'ba', hira: 'ば', kata: 'バ', romaji: 'ba', row: 'ba', column: 'a', group: 'dakuten' },
+  { id: 'bi', hira: 'び', kata: 'ビ', romaji: 'bi', row: 'ba', column: 'i', group: 'dakuten' },
+  { id: 'bu', hira: 'ぶ', kata: 'ブ', romaji: 'bu', row: 'ba', column: 'u', group: 'dakuten' },
+  { id: 'be', hira: 'べ', kata: 'ベ', romaji: 'be', row: 'ba', column: 'e', group: 'dakuten' },
+  { id: 'bo', hira: 'ぼ', kata: 'ボ', romaji: 'bo', row: 'ba', column: 'o', group: 'dakuten' },
+
+  // ---------- HANDAKUTEN: PA-row ----------
+  { id: 'pa', hira: 'ぱ', kata: 'パ', romaji: 'pa', row: 'pa', column: 'a', group: 'handakuten' },
+  { id: 'pi', hira: 'ぴ', kata: 'ピ', romaji: 'pi', row: 'pa', column: 'i', group: 'handakuten' },
+  { id: 'pu', hira: 'ぷ', kata: 'プ', romaji: 'pu', row: 'pa', column: 'u', group: 'handakuten' },
+  { id: 'pe', hira: 'ぺ', kata: 'ペ', romaji: 'pe', row: 'pa', column: 'e', group: 'handakuten' },
+  { id: 'po', hira: 'ぽ', kata: 'ポ', romaji: 'po', row: 'pa', column: 'o', group: 'handakuten' },
+
+  // ---------- YŌON: KY (き) ----------
+  { id: 'kya', hira: 'きゃ', kata: 'キャ', romaji: 'kya', row: 'ky', column: 'a', group: 'yoon' },
+  { id: 'kyu', hira: 'きゅ', kata: 'キュ', romaji: 'kyu', row: 'ky', column: 'u', group: 'yoon' },
+  { id: 'kyo', hira: 'きょ', kata: 'キョ', romaji: 'kyo', row: 'ky', column: 'o', group: 'yoon' },
+
+  // ---------- YŌON: SH (し) ----------
+  { id: 'sha', hira: 'しゃ', kata: 'シャ', romaji: 'sha', row: 'sh', column: 'a', group: 'yoon' },
+  { id: 'shu', hira: 'しゅ', kata: 'シュ', romaji: 'shu', row: 'sh', column: 'u', group: 'yoon' },
+  { id: 'sho', hira: 'しょ', kata: 'ショ', romaji: 'sho', row: 'sh', column: 'o', group: 'yoon' },
+
+  // ---------- YŌON: CH (ち) ----------
+  { id: 'cha', hira: 'ちゃ', kata: 'チャ', romaji: 'cha', row: 'ch', column: 'a', group: 'yoon' },
+  { id: 'chu', hira: 'ちゅ', kata: 'チュ', romaji: 'chu', row: 'ch', column: 'u', group: 'yoon' },
+  { id: 'cho', hira: 'ちょ', kata: 'チョ', romaji: 'cho', row: 'ch', column: 'o', group: 'yoon' },
+
+  // ---------- YŌON: NY (に) ----------
+  { id: 'nya', hira: 'にゃ', kata: 'ニャ', romaji: 'nya', row: 'ny', column: 'a', group: 'yoon' },
+  { id: 'nyu', hira: 'にゅ', kata: 'ニュ', romaji: 'nyu', row: 'ny', column: 'u', group: 'yoon' },
+  { id: 'nyo', hira: 'にょ', kata: 'ニョ', romaji: 'nyo', row: 'ny', column: 'o', group: 'yoon' },
+
+  // ---------- YŌON: HY (ひ) ----------
+  { id: 'hya', hira: 'ひゃ', kata: 'ヒャ', romaji: 'hya', row: 'hy', column: 'a', group: 'yoon' },
+  { id: 'hyu', hira: 'ひゅ', kata: 'ヒュ', romaji: 'hyu', row: 'hy', column: 'u', group: 'yoon' },
+  { id: 'hyo', hira: 'ひょ', kata: 'ヒョ', romaji: 'hyo', row: 'hy', column: 'o', group: 'yoon' },
+
+  // ---------- YŌON: MY (み) ----------
+  { id: 'mya', hira: 'みゃ', kata: 'ミャ', romaji: 'mya', row: 'my', column: 'a', group: 'yoon' },
+  { id: 'myu', hira: 'みゅ', kata: 'ミュ', romaji: 'myu', row: 'my', column: 'u', group: 'yoon' },
+  { id: 'myo', hira: 'みょ', kata: 'ミョ', romaji: 'myo', row: 'my', column: 'o', group: 'yoon' },
+
+  // ---------- YŌON: RY (り) ----------
+  { id: 'rya', hira: 'りゃ', kata: 'リャ', romaji: 'rya', row: 'ry', column: 'a', group: 'yoon' },
+  { id: 'ryu', hira: 'りゅ', kata: 'リュ', romaji: 'ryu', row: 'ry', column: 'u', group: 'yoon' },
+  { id: 'ryo', hira: 'りょ', kata: 'リョ', romaji: 'ryo', row: 'ry', column: 'o', group: 'yoon' },
+
+  // ---------- YŌON: GY (ぎ) ----------
+  { id: 'gya', hira: 'ぎゃ', kata: 'ギャ', romaji: 'gya', row: 'gy', column: 'a', group: 'yoon' },
+  { id: 'gyu', hira: 'ぎゅ', kata: 'ギュ', romaji: 'gyu', row: 'gy', column: 'u', group: 'yoon' },
+  { id: 'gyo', hira: 'ぎょ', kata: 'ギョ', romaji: 'gyo', row: 'gy', column: 'o', group: 'yoon' },
+
+  // ---------- YŌON: J (じ) ----------
+  { id: 'ja', hira: 'じゃ', kata: 'ジャ', romaji: 'ja', row: 'j', column: 'a', group: 'yoon' },
+  { id: 'ju', hira: 'じゅ', kata: 'ジュ', romaji: 'ju', row: 'j', column: 'u', group: 'yoon' },
+  { id: 'jo', hira: 'じょ', kata: 'ジョ', romaji: 'jo', row: 'j', column: 'o', group: 'yoon' },
+
+  // ---------- YŌON: BY (び) ----------
+  { id: 'bya', hira: 'びゃ', kata: 'ビャ', romaji: 'bya', row: 'by', column: 'a', group: 'yoon' },
+  { id: 'byu', hira: 'びゅ', kata: 'ビュ', romaji: 'byu', row: 'by', column: 'u', group: 'yoon' },
+  { id: 'byo', hira: 'びょ', kata: 'ビョ', romaji: 'byo', row: 'by', column: 'o', group: 'yoon' },
+
+  // ---------- YŌON: PY (ぴ) ----------
+  { id: 'pya', hira: 'ぴゃ', kata: 'ピャ', romaji: 'pya', row: 'py', column: 'a', group: 'yoon' },
+  { id: 'pyu', hira: 'ぴゅ', kata: 'ピュ', romaji: 'pyu', row: 'py', column: 'u', group: 'yoon' },
+  { id: 'pyo', hira: 'ぴょ', kata: 'ピョ', romaji: 'pyo', row: 'py', column: 'o', group: 'yoon' },
 ];
 
-export const katakana: KanaItem[] = [
-  // A-row
-  { id: 'k-a', character: 'ア', romaji: 'a', type: 'katakana', group: 'a-row' },
-  { id: 'k-i', character: 'イ', romaji: 'i', type: 'katakana', group: 'a-row' },
-  { id: 'k-u', character: 'ウ', romaji: 'u', type: 'katakana', group: 'a-row' },
-  { id: 'k-e', character: 'エ', romaji: 'e', type: 'katakana', group: 'a-row' },
-  { id: 'k-o', character: 'オ', romaji: 'o', type: 'katakana', group: 'a-row' },
-  // KA-row
-  { id: 'k-ka', character: 'カ', romaji: 'ka', type: 'katakana', group: 'ka-row' },
-  { id: 'k-ki', character: 'キ', romaji: 'ki', type: 'katakana', group: 'ka-row' },
-  { id: 'k-ku', character: 'ク', romaji: 'ku', type: 'katakana', group: 'ka-row' },
-  { id: 'k-ke', character: 'ケ', romaji: 'ke', type: 'katakana', group: 'ka-row' },
-  { id: 'k-ko', character: 'コ', romaji: 'ko', type: 'katakana', group: 'ka-row' },
-  // SA-row
-  { id: 'k-sa', character: 'サ', romaji: 'sa', type: 'katakana', group: 'sa-row' },
-  { id: 'k-shi', character: 'シ', romaji: 'shi', type: 'katakana', group: 'sa-row' },
-  { id: 'k-su', character: 'ス', romaji: 'su', type: 'katakana', group: 'sa-row' },
-  { id: 'k-se', character: 'セ', romaji: 'se', type: 'katakana', group: 'sa-row' },
-  { id: 'k-so', character: 'ソ', romaji: 'so', type: 'katakana', group: 'sa-row' },
-  // TA-row
-  { id: 'k-ta', character: 'タ', romaji: 'ta', type: 'katakana', group: 'ta-row' },
-  { id: 'k-chi', character: 'チ', romaji: 'chi', type: 'katakana', group: 'ta-row' },
-  { id: 'k-tsu', character: 'ツ', romaji: 'tsu', type: 'katakana', group: 'ta-row' },
-  { id: 'k-te', character: 'テ', romaji: 'te', type: 'katakana', group: 'ta-row' },
-  { id: 'k-to', character: 'ト', romaji: 'to', type: 'katakana', group: 'ta-row' },
-  // NA-row
-  { id: 'k-na', character: 'ナ', romaji: 'na', type: 'katakana', group: 'na-row' },
-  { id: 'k-ni', character: 'ニ', romaji: 'ni', type: 'katakana', group: 'na-row' },
-  { id: 'k-nu', character: 'ヌ', romaji: 'nu', type: 'katakana', group: 'na-row' },
-  { id: 'k-ne', character: 'ネ', romaji: 'ne', type: 'katakana', group: 'na-row' },
-  { id: 'k-no', character: 'ノ', romaji: 'no', type: 'katakana', group: 'na-row' },
-  // HA-row
-  { id: 'k-ha', character: 'ハ', romaji: 'ha', type: 'katakana', group: 'ha-row' },
-  { id: 'k-hi', character: 'ヒ', romaji: 'hi', type: 'katakana', group: 'ha-row' },
-  { id: 'k-fu', character: 'フ', romaji: 'fu', type: 'katakana', group: 'ha-row' },
-  { id: 'k-he', character: 'ヘ', romaji: 'he', type: 'katakana', group: 'ha-row' },
-  { id: 'k-ho', character: 'ホ', romaji: 'ho', type: 'katakana', group: 'ha-row' },
-  // MA-row
-  { id: 'k-ma', character: 'マ', romaji: 'ma', type: 'katakana', group: 'ma-row' },
-  { id: 'k-mi', character: 'ミ', romaji: 'mi', type: 'katakana', group: 'ma-row' },
-  { id: 'k-mu', character: 'ム', romaji: 'mu', type: 'katakana', group: 'ma-row' },
-  { id: 'k-me', character: 'メ', romaji: 'me', type: 'katakana', group: 'ma-row' },
-  { id: 'k-mo', character: 'モ', romaji: 'mo', type: 'katakana', group: 'ma-row' },
-  // YA-row
-  { id: 'k-ya', character: 'ヤ', romaji: 'ya', type: 'katakana', group: 'ya-row' },
-  { id: 'k-yu', character: 'ユ', romaji: 'yu', type: 'katakana', group: 'ya-row' },
-  { id: 'k-yo', character: 'ヨ', romaji: 'yo', type: 'katakana', group: 'ya-row' },
-  // RA-row
-  { id: 'k-ra', character: 'ラ', romaji: 'ra', type: 'katakana', group: 'ra-row' },
-  { id: 'k-ri', character: 'リ', romaji: 'ri', type: 'katakana', group: 'ra-row' },
-  { id: 'k-ru', character: 'ル', romaji: 'ru', type: 'katakana', group: 'ra-row' },
-  { id: 'k-re', character: 'レ', romaji: 're', type: 'katakana', group: 'ra-row' },
-  { id: 'k-ro', character: 'ロ', romaji: 'ro', type: 'katakana', group: 'ra-row' },
-  // WA-row + N
-  { id: 'k-wa', character: 'ワ', romaji: 'wa', type: 'katakana', group: 'wa-row' },
-  { id: 'k-wo', character: 'ヲ', romaji: 'wo', type: 'katakana', group: 'wa-row' },
-  { id: 'k-n', character: 'ン', romaji: 'n', type: 'katakana', group: 'n' },
-];
+function buildKana(script: KanaScript): KanaItem[] {
+  const prefix = script === 'hiragana' ? 'h' : 'k';
+  return CELLS.map(cell => ({
+    id: `${prefix}-${cell.id}`,
+    character: script === 'hiragana' ? cell.hira : cell.kata,
+    romaji: cell.romaji,
+    script,
+    group: cell.group,
+    row: cell.row,
+    column: cell.column,
+    similarTo: cell.similarTo?.map(s => `${prefix}-${s}`),
+    examples: script === 'hiragana' && cell.example ? [cell.example] : undefined,
+  }));
+}
 
+export const hiragana: KanaItem[] = buildKana('hiragana');
+export const katakana: KanaItem[] = buildKana('katakana');
 export const allKana: KanaItem[] = [...hiragana, ...katakana];
 
-export function getKanaByType(type: 'hiragana' | 'katakana' | 'mixed'): KanaItem[] {
+export function getKanaByType(type: KanaType): KanaItem[] {
   if (type === 'hiragana') return hiragana;
   if (type === 'katakana') return katakana;
   return allKana;
+}
+
+export function getKanaByScript(script: KanaScript): KanaItem[] {
+  return script === 'hiragana' ? hiragana : katakana;
+}
+
+export function getKanaByGroup(items: KanaItem[], group: KanaGroup): KanaItem[] {
+  return items.filter(k => k.group === group);
+}
+
+export const KANA_GROUPS: KanaGroup[] = ['basic', 'dakuten', 'handakuten', 'yoon'];
+
+const ROW_LABELS: Record<string, string> = {
+  a: 'A', ka: 'KA', sa: 'SA', ta: 'TA', na: 'NA', ha: 'HA', ma: 'MA', ya: 'YA', ra: 'RA', wa: 'WA', n: 'N',
+  ga: 'GA', za: 'ZA', da: 'DA', ba: 'BA', pa: 'PA',
+  ky: 'KYA/KYU/KYO', sh: 'SHA/SHU/SHO', ch: 'CHA/CHU/CHO', ny: 'NYA/NYU/NYO', hy: 'HYA/HYU/HYO',
+  my: 'MYA/MYU/MYO', ry: 'RYA/RYU/RYO', gy: 'GYA/GYU/GYO', j: 'JA/JU/JO', by: 'BYA/BYU/BYO', py: 'PYA/PYU/PYO',
+};
+
+export function getRowLabel(row: string): string {
+  return ROW_LABELS[row] ?? row.toUpperCase();
 }

@@ -1,7 +1,10 @@
 import type { VocabularyTrainingMode } from '../../types/vocabulary';
+import type { KanaTrainingMode } from '../../types/kana';
+import { KANA_MODE_LABELS } from '../kana/KanaModeSelector';
+import { KANA_GROUP_LABELS } from '../kana/KanaGroupFilter';
 
 interface RightStudyPanelProps {
-  mode?: VocabularyTrainingMode | string;
+  mode?: VocabularyTrainingMode | KanaTrainingMode | string;
   category?: string;
   correct?: number;
   total?: number;
@@ -10,13 +13,12 @@ interface RightStudyPanelProps {
 }
 
 const modeLabels: Record<string, string> = {
-  flashcards: 'Flashcards',
   word_selection: 'Seleção de palavras',
-  matching_pairs: 'Combinar pares',
   translation_quiz: 'Quiz de tradução',
   hiragana: 'Hiragana',
   katakana: 'Katakana',
   mixed: 'Misto',
+  ...KANA_MODE_LABELS,
 };
 
 const categoryLabels: Record<string, string> = {
@@ -30,6 +32,7 @@ const categoryLabels: Record<string, string> = {
   lugares: 'Lugares',
   verbos: 'Verbos',
   adjetivos: 'Adjetivos',
+  ...KANA_GROUP_LABELS,
 };
 
 export function RightStudyPanel({ mode, category, correct = 0, total = 0, weakCount, hint }: RightStudyPanelProps) {
