@@ -82,11 +82,12 @@ DELETE /api/progress/reset        — resetar progresso
 
 ## Configuração
 
-1. Criar banco: `npx wrangler d1 create koto_by_pingo` (executar com acesso real à conta Cloudflare —
-   pendente; `wrangler.toml` ainda tem `database_id` placeholder)
-2. Aplicar migrations: `npx wrangler d1 migrations apply koto_by_pingo`
-3. Configurar `wrangler.toml` (ver `wrangler.example.toml`)
-4. Adicionar `CLERK_SECRET_KEY` via `wrangler secret put CLERK_SECRET_KEY` (pendente)
+1. ✅ Banco criado: `npx wrangler d1 create koto_by_pingo` → ID `5a9c4ef0-dc81-4720-96aa-ec883cb34461`
+2. ✅ Migrations aplicadas: `npx wrangler d1 migrations apply koto_by_pingo --remote`
+3. ✅ `wrangler.toml` atualizado com o `database_id` real
+4. ✅ `CLERK_SECRET_KEY` configurado via `wrangler secret put CLERK_SECRET_KEY`
+5. ✅ Worker deployado: `https://koto-by-pingo.lucas-hdo.workers.dev`
+6. ✅ `VITE_API_BASE_URL` definido em `artifacts/koto/.env.local`
 
 ---
 
@@ -95,11 +96,12 @@ DELETE /api/progress/reset        — resetar progresso
 | Etapa | Status |
 |-------|--------|
 | Schema SQL | ✅ `cloudflare/schema.sql` |
-| Migrations | ✅ `0001_initial.sql` + `0002_word_progress_and_preferences.sql` (validadas com `--local`) |
-| Workers API | ✅ `cloudflare/api/` — todos os endpoints listados acima, autenticados via `@clerk/backend` |
+| Migrations | ✅ aplicadas no banco remoto (9 tabelas) |
+| Workers API | ✅ `cloudflare/api/` — todos os endpoints autenticados via `@clerk/backend` |
 | `progress.remote.ts` | ✅ `syncProgressToRemote()` / `fetchProgressFromRemote()` |
 | Banner de sync pós-login | ✅ `SyncProgressBanner` no Dashboard |
+| Banco D1 remoto real | ✅ `koto_by_pingo` — ID `5a9c4ef0-dc81-4720-96aa-ec883cb34461` |
+| `CLERK_SECRET_KEY` em produção | ✅ configurado via `wrangler secret put` |
+| Worker deployado | ✅ `https://koto-by-pingo.lucas-hdo.workers.dev` |
 | Sync automático (Fase 2) | não implementado — sync atual é sob demanda (Fase 1) |
 | Offline queue (Fase 2) | não implementado |
-| Banco D1 remoto real | pendente — rodar `wrangler d1 create koto_by_pingo` e atualizar `database_id` |
-| `CLERK_SECRET_KEY` em produção | pendente — `wrangler secret put CLERK_SECRET_KEY` |
