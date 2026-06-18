@@ -13,7 +13,7 @@ export const KANA_MODES: ModeConfig[] = [
   { value: 'matching_pairs', label: 'Combinar pares', description: 'Combine kana e romaji' },
   { value: 'listening', label: 'Escuta', description: 'Ouça e responda' },
   { value: 'word_builder', label: 'Montar palavra', description: 'Monte palavras com kana' },
-  { value: 'tracing', label: 'Traçado', description: 'Em breve' },
+  { value: 'tracing', label: 'Traçado', description: 'Veja e pratique o desenho' },
 ];
 
 export const KANA_MODE_LABELS: Record<KanaTrainingMode, string> = KANA_MODES.reduce(
