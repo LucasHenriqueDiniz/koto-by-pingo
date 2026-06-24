@@ -1,22 +1,20 @@
 import { useState, useCallback, useEffect } from 'react';
+import { Link } from 'wouter';
 import type { KanaItem } from '../../../types/kana';
 import { useKanaQueue } from '../../../hooks/useKanaQueue';
 import { recordTracingPractice, getTracingPracticeMap } from '../../../services/progress/progress.local';
-import { KanaStrokeViewer } from '../KanaStrokeViewer';
 import { DrawingCanvas } from '../DrawingCanvas';
 import { fetchStrokes } from '../../../data/strokeData';
+import { MaterialIcon } from '../../ui/MaterialIcon';
 
 interface TracingModeProps {
   items: KanaItem[];
   showRomajiHint?: boolean;
 }
 
-type Tab = 'order' | 'practice';
-
 export function TracingMode({ items, showRomajiHint }: TracingModeProps) {
   const { current, next } = useKanaQueue(items);
   const [practiceMap, setPracticeMap] = useState(() => getTracingPracticeMap());
-  const [tab, setTab] = useState<Tab>('order');
   const [strokes, setStrokes] = useState<string[]>([]);
 
   // Free-practice (any kanji)
@@ -25,7 +23,7 @@ export function TracingMode({ items, showRomajiHint }: TracingModeProps) {
 
   const activeChar = freeMode ? freeChar : (current?.character ?? '');
 
-  // Load strokes for the drawing canvas guide
+  // Carrega os traços apenas como guia leve no canvas (sem ensinar a ordem aqui)
   useEffect(() => {
     if (!activeChar) return;
     fetchStrokes(activeChar).then(setStrokes);
@@ -50,6 +48,14 @@ export function TracingMode({ items, showRomajiHint }: TracingModeProps) {
 
   return (
     <div className="flex flex-col gap-4 w-full max-w-sm mx-auto">
+      {/* Aviso: aqui é teste de desenho — ordem dos traços fica em Aprender */}
+      <Link
+        href="/kana/aprender"
+        className="flex items-center gap-2 text-xs text-[--color-text-secondary] hover:text-primary transition-colors w-fit"
+      >
+        <MaterialIcon name="info" size={15} />
+        Quer ver a ordem dos traços antes? Consulte Aprender
+      </Link>
 
       {/* Free kanji toggle */}
       <div className="flex items-center gap-2">
@@ -78,7 +84,7 @@ export function TracingMode({ items, showRomajiHint }: TracingModeProps) {
             style={{ fontFamily: "'Noto Sans JP', sans-serif" }}
           />
           <p className="text-xs text-muted-foreground flex-1">
-            Digite um caractere (kanji, hiragana ou katakana) para ver a ordem dos traços e praticar o desenho.
+            Digite um caractere (kanji, hiragana ou katakana) para desenhar.
           </p>
         </div>
       )}
@@ -103,36 +109,8 @@ export function TracingMode({ items, showRomajiHint }: TracingModeProps) {
         </div>
       )}
 
-      {/* Tabs */}
-      {activeChar && (
-        <>
-          <div className="flex rounded-xl bg-muted/40 p-1 gap-1">
-            <button
-              onClick={() => setTab('order')}
-              className={`flex-1 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                tab === 'order'
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Ordem dos traços
-            </button>
-            <button
-              onClick={() => setTab('practice')}
-              className={`flex-1 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                tab === 'practice'
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Praticar desenho
-            </button>
-          </div>
-
-          {tab === 'order' && <KanaStrokeViewer character={activeChar} />}
-          {tab === 'practice' && <DrawingCanvas strokes={strokes} />}
-        </>
-      )}
+      {/* Teste de desenho */}
+      {activeChar && <DrawingCanvas strokes={strokes} />}
 
       {/* Actions (kana mode only) */}
       {!freeMode && current && (

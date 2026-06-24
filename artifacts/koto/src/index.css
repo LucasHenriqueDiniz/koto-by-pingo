@@ -258,6 +258,15 @@
   font-family: var(--app-font-japanese);
 }
 
+@keyframes kana-wave {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+.animate-kana-wave {
+  animation: kana-wave 1s ease-in-out infinite;
+}
+
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
   font-weight: normal;

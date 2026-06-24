@@ -1,12 +1,14 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getRowLabel } from '../data/kana';
 import type { KanaGroup, KanaItem } from '../types/kana';
 import { useKanaFilters } from '../hooks/useKanaFilters';
 import { KanaCharacterCard } from '../components/kana/KanaCharacterCard';
+import { KanaStrokeViewer } from '../components/kana/KanaStrokeViewer';
 import { KanaGroupFilter, KANA_GROUP_LABELS } from '../components/kana/KanaGroupFilter';
 import { KanaSubNav } from '../components/kana/KanaSubNav';
 import { PageHeader } from '../components/ui/PageHeader';
 import { AdPlaceholder } from '../components/ui/AdPlaceholder';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
 import { updatePageSEO } from '../utils/seo';
 
 function groupByRow(items: KanaItem[]): { row: string; items: KanaItem[] }[] {
@@ -26,6 +28,8 @@ export function KanaLearnPage() {
   const {
     script, setScript, groupPrefs, setGroupPrefs, onlyWeak, setOnlyWeak, filteredItems,
   } = useKanaFilters();
+
+  const [strokeItem, setStrokeItem] = useState<KanaItem | null>(null);
 
   useEffect(() => {
     updatePageSEO('Aprender Kana', 'Tabela de referência de hiragana e katakana organizada por grupos e linhas, com exemplos de palavras.');
@@ -78,7 +82,15 @@ export function KanaLearnPage() {
                   <div className="flex flex-wrap gap-2">
                     {items.map(item => (
                       <div key={item.id} className="flex flex-col items-center gap-1">
-                        <KanaCharacterCard character={item.character} romaji={item.romaji} showRomaji size="sm" />
+                        <button
+                          type="button"
+                          onClick={() => setStrokeItem(item)}
+                          className="rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/40"
+                          title="Ver ordem dos traços"
+                          data-testid={`kana-learn-card-${item.id}`}
+                        >
+                          <KanaCharacterCard character={item.character} romaji={item.romaji} showRomaji size="sm" />
+                        </button>
                         {item.examples?.[0] && (
                           <p className="text-[11px] text-muted-foreground text-center max-w-28 leading-tight">
                             <span style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>{item.examples[0].word}</span>
@@ -95,6 +107,23 @@ export function KanaLearnPage() {
           </section>
         ))}
       </div>
+
+      <Dialog open={!!strokeItem} onOpenChange={open => { if (!open) setStrokeItem(null); }}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <span style={{ fontFamily: "'Noto Sans JP', sans-serif" }} className="text-2xl">
+                {strokeItem?.character}
+              </span>
+              Ordem dos traços
+            </DialogTitle>
+            <DialogDescription>
+              {strokeItem?.romaji ? `Romaji: ${strokeItem.romaji}` : 'Acompanhe a animação e depois pratique em Treinar > Traçado.'}
+            </DialogDescription>
+          </DialogHeader>
+          {strokeItem && <KanaStrokeViewer character={strokeItem.character} />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
