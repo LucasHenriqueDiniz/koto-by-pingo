@@ -47,6 +47,7 @@ export function WordBuilderMode({ items }: WordBuilderModeProps) {
   const [blocks, setBlocks] = useState<BlockItem[]>([]);
   const [selected, setSelected] = useState<BlockItem[]>([]);
   const [feedback, setFeedback] = useState<'idle' | 'correct' | 'wrong'>('idle');
+  const [hintShown, setHintShown] = useState(false);
 
   useEffect(() => () => endSession(), [endSession]);
 
@@ -55,6 +56,7 @@ export function WordBuilderMode({ items }: WordBuilderModeProps) {
       setBlocks(buildBlocks(current));
       setSelected([]);
       setFeedback('idle');
+      setHintShown(false);
     }
   }, [current]);
 
@@ -91,9 +93,26 @@ export function WordBuilderMode({ items }: WordBuilderModeProps) {
 
   return (
     <div className="flex flex-col items-center gap-5 w-full max-w-sm mx-auto">
-      <p className="text-sm text-muted-foreground text-center">
-        Monte a palavra: <strong className="text-foreground">{current.meaningPt}</strong>
-      </p>
+      <div className="flex flex-col items-center gap-1.5">
+        <p className="text-sm text-muted-foreground text-center">
+          Monte a palavra: <strong className="text-foreground">{current.meaningPt}</strong>
+        </p>
+        {feedback === 'idle' && (
+          hintShown ? (
+            <p className="text-xs font-mono text-muted-foreground" data-testid="kana-word-builder-hint">
+              {current.romaji}
+            </p>
+          ) : (
+            <button
+              onClick={() => setHintShown(true)}
+              className="text-xs text-muted-foreground hover:text-primary underline transition-colors"
+              data-testid="kana-word-builder-hint-btn"
+            >
+              Mostrar dica (romaji)
+            </button>
+          )
+        )}
+      </div>
 
       <div className="flex gap-2 justify-center flex-wrap min-h-16" data-testid="kana-word-builder-slots">
         {Array.from({ length: current.kanaIds.length }).map((_, i) => {

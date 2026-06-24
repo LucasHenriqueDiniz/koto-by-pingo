@@ -9,9 +9,12 @@ interface FlashcardsModeProps {
   items: KanaItem[];
 }
 
+const FLIP_DURATION_MS = 350;
+
 export function FlashcardsMode({ items }: FlashcardsModeProps) {
   const { current, sessionCorrect, sessionTotal, sessionAccuracy, registerResult, next, endSession } = useKanaQueue(items);
   const [flipped, setFlipped] = useState(false);
+  const [answered, setAnswered] = useState(false);
 
   useEffect(() => () => endSession(), [endSession]);
 
@@ -19,9 +22,14 @@ export function FlashcardsMode({ items }: FlashcardsModeProps) {
     if (!current) return;
     recordKanaAttempt(current.id, correct, { mode: 'flashcards', group: current.group });
     registerResult(correct);
+    setAnswered(true);
+  }, [current, registerResult]);
+
+  const handleNext = useCallback(() => {
     setFlipped(false);
-    next();
-  }, [current, registerResult, next]);
+    setAnswered(false);
+    setTimeout(next, FLIP_DURATION_MS);
+  }, [next]);
 
   if (!current) {
     return (
@@ -38,7 +46,7 @@ export function FlashcardsMode({ items }: FlashcardsModeProps) {
       <div
         className="w-full cursor-pointer"
         style={{ perspective: '1000px' }}
-        onClick={() => setFlipped(f => !f)}
+        onClick={() => { if (!answered) setFlipped(f => !f); }}
         data-testid="kana-flashcard"
       >
         <motion.div
@@ -79,7 +87,16 @@ export function FlashcardsMode({ items }: FlashcardsModeProps) {
         </motion.div>
       </div>
 
-      {flipped ? (
+      {answered ? (
+        <button
+          onClick={handleNext}
+          autoFocus
+          className="w-full py-3 rounded-xl bg-primary text-primary-foreground text-sm font-semibold"
+          data-testid="kana-flashcard-next-btn"
+        >
+          Próximo
+        </button>
+      ) : flipped ? (
         <div className="flex gap-2 w-full">
           <button
             onClick={() => handleResult(false)}

@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { Link } from 'wouter';
 import type { KanaItem } from '../../../types/kana';
 import { useKanaQueue } from '../../../hooks/useKanaQueue';
-import { recordTracingPractice, getTracingPracticeMap } from '../../../services/progress/progress.local';
+import { recordTracingPractice, getTracingPracticeMap, recordKanaAttempt } from '../../../services/progress/progress.local';
 import { DrawingCanvas } from '../DrawingCanvas';
 import { fetchStrokes } from '../../../data/strokeData';
 import { MaterialIcon } from '../../ui/MaterialIcon';
@@ -16,6 +16,7 @@ export function TracingMode({ items, showRomajiHint }: TracingModeProps) {
   const { current, next } = useKanaQueue(items);
   const [practiceMap, setPracticeMap] = useState(() => getTracingPracticeMap());
   const [strokes, setStrokes] = useState<string[]>([]);
+  const [hintRevealed, setHintRevealed] = useState(false);
 
   // Free-practice (any kanji)
   const [freeChar, setFreeChar] = useState('');
@@ -23,18 +24,25 @@ export function TracingMode({ items, showRomajiHint }: TracingModeProps) {
 
   const activeChar = freeMode ? freeChar : (current?.character ?? '');
 
-  // Carrega os traços apenas como guia leve no canvas (sem ensinar a ordem aqui)
+  // Carrega os traços (usados como guia no canvas só depois da dica revelada, no modo kana)
   useEffect(() => {
     if (!activeChar) return;
     fetchStrokes(activeChar).then(setStrokes);
   }, [activeChar]);
 
+  useEffect(() => {
+    setHintRevealed(false);
+  }, [current]);
+
+  const handleRevealHint = useCallback(() => setHintRevealed(true), []);
+
   const handlePracticed = useCallback(() => {
     if (freeMode || !current) return;
     recordTracingPractice(current.id);
+    recordKanaAttempt(current.id, !hintRevealed, { mode: 'tracing', group: current.group });
     setPracticeMap(getTracingPracticeMap());
     next();
-  }, [current, freeMode, next]);
+  }, [current, freeMode, hintRevealed, next]);
 
   if (!freeMode && !current) {
     return (
@@ -89,18 +97,33 @@ export function TracingMode({ items, showRomajiHint }: TracingModeProps) {
         </div>
       )}
 
-      {/* Character display (kana mode) */}
+      {/* Prompt + dica (kana mode) */}
       {!freeMode && current && (
         <div className="flex items-center justify-between">
-          <div
-            className="text-5xl font-bold text-foreground"
-            style={{ fontFamily: "'Noto Sans JP', sans-serif" }}
-          >
-            {current.character}
-          </div>
+          {hintRevealed ? (
+            <div
+              className="text-5xl font-bold"
+              style={{ fontFamily: "'Noto Sans JP', sans-serif", color: '#E5484D' }}
+              data-testid="kana-tracing-character"
+            >
+              {current.character}
+            </div>
+          ) : (
+            <button
+              onClick={handleRevealHint}
+              className="flex items-center gap-1.5 text-sm text-muted-foreground border border-border rounded-lg px-3 py-2 hover:bg-muted transition-colors"
+              data-testid="kana-tracing-reveal-hint-btn"
+            >
+              <MaterialIcon name="visibility" size={15} />
+              Mostrar dica
+            </button>
+          )}
           <div className="text-right">
-            {showRomajiHint && (
+            {hintRevealed && showRomajiHint && (
               <p className="text-sm text-muted-foreground">{current.romaji}</p>
+            )}
+            {hintRevealed && (
+              <p className="text-xs" style={{ color: '#E5484D' }}>conta como errado</p>
             )}
             {practiceCount > 0 && (
               <p className="text-xs text-muted-foreground">praticado {practiceCount}×</p>
@@ -109,8 +132,12 @@ export function TracingMode({ items, showRomajiHint }: TracingModeProps) {
         </div>
       )}
 
+      {!freeMode && current && !hintRevealed && (
+        <p className="text-xs text-muted-foreground -mt-2">Desenhe este kana de memória.</p>
+      )}
+
       {/* Teste de desenho */}
-      {activeChar && <DrawingCanvas strokes={strokes} />}
+      {activeChar && <DrawingCanvas strokes={freeMode || hintRevealed ? strokes : []} />}
 
       {/* Actions (kana mode only) */}
       {!freeMode && current && (

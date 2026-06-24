@@ -3,6 +3,9 @@ import { motion } from 'framer-motion';
 import type { KanaItem } from '../../../types/kana';
 import { shuffle } from '../../../utils/scoring';
 import { recordKanaAttempt } from '../../../services/progress/progress.local';
+import { MaterialIcon } from '../../ui/MaterialIcon';
+
+const PAIR_COLORS = ['#0284C7', '#AC2B2F', '#7C3AED', '#0D9488', '#C2410C', '#65A30D'];
 
 interface MatchingPairsModeProps {
   items: KanaItem[];
@@ -32,6 +35,7 @@ export function MatchingPairsMode({ items }: MatchingPairsModeProps) {
   const [correct, setCorrect] = useState(0);
   const [total, setTotal] = useState(0);
   const [batchDone, setBatchDone] = useState(false);
+  const [matchColor, setMatchColor] = useState<Record<string, string>>({});
 
   const itemMap = useMemo(() => new Map(items.map(k => [k.id, k])), [items]);
 
@@ -61,6 +65,7 @@ export function MatchingPairsMode({ items }: MatchingPairsModeProps) {
         left: prev.left.map(i => i.kanaId === selectedLeft ? { ...i, state: 'correct' } : i),
         right: prev.right.map(i => i.kanaId === kanaId ? { ...i, state: 'correct' } : i),
       }));
+      setMatchColor(prev => ({ ...prev, [selectedLeft]: PAIR_COLORS[Object.keys(prev).length % PAIR_COLORS.length] }));
       setSelectedLeft(null);
       const newMatched = batch.left.filter(i => i.state === 'correct').length + 1;
       if (newMatched >= batch.left.length) {
@@ -85,14 +90,15 @@ export function MatchingPairsMode({ items }: MatchingPairsModeProps) {
     setBatch(buildBatch(items, size));
     setBatchDone(false);
     setSelectedLeft(null);
+    setMatchColor({});
   }, [items, size]);
 
   const getItemStyle = (item: PairItem, isLeft: boolean): string => {
     const isSelected = isLeft && item.kanaId === selectedLeft;
-    if (item.state === 'correct') return 'border-[#2F9E44] bg-[#DCFCE7] text-[#166534] opacity-60 cursor-default';
+    if (item.state === 'correct') return 'border-transparent bg-card/60 text-muted-foreground opacity-70 cursor-default';
     if (item.state === 'wrong') return 'border-[#E5484D] bg-[#FFE5E7] text-[#B4232A]';
-    if (isSelected) return 'border-primary bg-accent text-foreground';
-    return 'border-border bg-card text-foreground hover:bg-muted cursor-pointer';
+    if (isSelected) return 'border-primary bg-accent text-foreground shadow-sm';
+    return 'border-border bg-card text-foreground hover:border-primary/40 hover:bg-muted cursor-pointer';
   };
 
   if (size < 2) {
@@ -128,17 +134,24 @@ export function MatchingPairsMode({ items }: MatchingPairsModeProps) {
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      {total > 0 && (
-        <div className="text-sm text-center text-muted-foreground">
-          {matched}/{batch.left.length} pares encontrados
-          {' — '}
-          Acertos: <strong className="text-foreground">{correct}/{total}</strong>
-        </div>
-      )}
+      <div className="flex items-center justify-between">
+        <p className="text-xs text-muted-foreground">
+          Clique em um kana, depois no romaji correspondente.
+        </p>
+        {total > 0 && (
+          <p className="text-xs text-muted-foreground">
+            {matched}/{batch.left.length} pares · <strong className="text-foreground">{correct}/{total}</strong> acertos
+          </p>
+        )}
+      </div>
 
-      <p className="text-xs text-muted-foreground text-center">
-        Clique em um kana, depois no romaji correspondente.
-      </p>
+      <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
+        <motion.div
+          className="h-full bg-primary rounded-full"
+          animate={{ width: `${(matched / batch.left.length) * 100}%` }}
+          transition={{ duration: 0.3 }}
+        />
+      </div>
 
       <div className="grid grid-cols-2 gap-3" data-testid="kana-matching-grid">
         <div className="flex flex-col gap-2">
@@ -148,10 +161,19 @@ export function MatchingPairsMode({ items }: MatchingPairsModeProps) {
               onClick={() => handleLeftClick(item.kanaId)}
               disabled={item.state === 'correct'}
               whileTap={item.state !== 'correct' ? { scale: 0.97 } : {}}
-              className={`border-2 rounded-xl px-3 py-3 text-center transition-all text-2xl font-medium ${getItemStyle(item, true)}`}
+              animate={item.state === 'wrong' ? { x: [0, -6, 6, -4, 4, 0] } : {}}
+              className={`relative border-2 rounded-xl px-3 py-3 text-center transition-all text-2xl font-medium shadow-sm ${getItemStyle(item, true)}`}
               style={{ fontFamily: "'Noto Sans JP', sans-serif" }}
               data-testid={`kana-matching-left-${item.kanaId}`}
             >
+              {item.state === 'correct' && matchColor[item.kanaId] && (
+                <span
+                  className="absolute -left-1.5 -top-1.5 w-4 h-4 rounded-full border-2 border-background flex items-center justify-center"
+                  style={{ backgroundColor: matchColor[item.kanaId] }}
+                >
+                  <MaterialIcon name="check" size={10} className="text-white" />
+                </span>
+              )}
               {item.displayText}
             </motion.button>
           ))}
@@ -164,9 +186,18 @@ export function MatchingPairsMode({ items }: MatchingPairsModeProps) {
               onClick={() => handleRightClick(item.kanaId)}
               disabled={item.state === 'correct'}
               whileTap={item.state !== 'correct' ? { scale: 0.97 } : {}}
-              className={`border-2 rounded-xl px-3 py-3 text-center transition-all text-sm font-mono font-medium ${getItemStyle(item, false)}`}
+              animate={item.state === 'wrong' ? { x: [0, 6, -6, 4, -4, 0] } : {}}
+              className={`relative border-2 rounded-xl px-3 py-3 text-center transition-all text-sm font-mono font-medium shadow-sm ${getItemStyle(item, false)}`}
               data-testid={`kana-matching-right-${item.kanaId}`}
             >
+              {item.state === 'correct' && matchColor[item.kanaId] && (
+                <span
+                  className="absolute -left-1.5 -top-1.5 w-4 h-4 rounded-full border-2 border-background flex items-center justify-center"
+                  style={{ backgroundColor: matchColor[item.kanaId] }}
+                >
+                  <MaterialIcon name="check" size={10} className="text-white" />
+                </span>
+              )}
               {item.displayText}
             </motion.button>
           ))}

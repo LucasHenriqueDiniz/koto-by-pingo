@@ -1,10 +1,10 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { KanaItem } from '../../../types/kana';
 import { allKana } from '../../../data/kana';
 import { shuffle } from '../../../utils/scoring';
 import { recordKanaAttempt } from '../../../services/progress/progress.local';
 import { useKanaQueue } from '../../../hooks/useKanaQueue';
-import { KanaCharacterCard } from '../KanaCharacterCard';
 import { KanaStats } from '../KanaStats';
 
 interface MultipleChoiceModeProps {
@@ -46,8 +46,24 @@ export function MultipleChoiceMode({ items }: MultipleChoiceModeProps) {
   }
 
   return (
-    <div className="flex flex-col items-center gap-5 w-full max-w-sm mx-auto">
-      <KanaCharacterCard character={current.character} />
+    <div className="flex flex-col items-center gap-7 w-full max-w-md mx-auto">
+      <p className="text-[11px] font-bold text-[--color-text-secondary] uppercase tracking-[0.14em] text-center">
+        Escolha o romaji correto
+      </p>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={current.id}
+          initial={{ opacity: 0, scale: 0.94 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.94 }}
+          transition={{ duration: 0.18 }}
+          className="font-japanese select-none leading-none text-[7.5rem] sm:text-[8.5rem]"
+          data-testid="kana-mc-character-display"
+        >
+          {current.character}
+        </motion.div>
+      </AnimatePresence>
 
       <div className="grid grid-cols-2 gap-2 w-full" data-testid="kana-mc-options">
         {options.map(romaji => {
@@ -73,11 +89,26 @@ export function MultipleChoiceMode({ items }: MultipleChoiceModeProps) {
         })}
       </div>
 
+      <div className="h-5 text-center -mt-1">
+        {selected && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-sm font-bold"
+            style={{ color: selected === current.romaji ? '#00846d' : '#ba1a1a' }}
+          >
+            {selected === current.romaji ? 'Correto! Continue.' : (
+              <>Quase. A resposta era <span className="font-mono">{current.romaji}</span>.</>
+            )}
+          </motion.p>
+        )}
+      </div>
+
       {selected && (
         <button
           onClick={handleNext}
           autoFocus
-          className="w-full py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold"
+          className="px-12 py-3.5 rounded-full bg-primary text-primary-foreground font-bold text-sm hover:opacity-90 transition-opacity"
           data-testid="kana-mc-next-btn"
         >
           Próximo
