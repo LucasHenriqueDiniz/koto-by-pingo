@@ -29,7 +29,7 @@ export function MobileBottomNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border"
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border"
       aria-label="Navegação mobile"
     >
       <div className="flex items-stretch h-16">

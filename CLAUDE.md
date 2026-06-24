@@ -188,8 +188,8 @@ Container principal: `<div className="max-w-6xl mx-auto px-4 py-6">`.
 ```
 Desktop (>= 1024px):   DesktopSidebar (w-60 fixa) + main com lg:pl-60
                        xl+ mostra também RightStudyPanel
-Tablet (768–1023px):   sem sidebar, sem bottom nav
-Mobile (< 768px):      MobileTopBar + MobileBottomNav (pb-16 no main)
+Tablet (768–1023px):   sem sidebar — MobileTopBar + MobileBottomNav (mesmo padrão do mobile)
+Mobile (< 768px):      MobileTopBar + MobileBottomNav (pb-16 no main, até lg)
 ```
 
 O `AppLayout` → `ResponsiveAppShell` já cuida de tudo. Não recrie nav em páginas.
