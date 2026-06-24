@@ -45,15 +45,20 @@ export function KanaReviewPage() {
 
         <AdPlaceholder slot="banner" />
 
-        <section className="space-y-3">
+        <section className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-3">
           <div className="flex items-center justify-between flex-wrap gap-3">
-            <h2 className="text-sm font-semibold text-foreground">
-              Difíceis <span className="text-muted-foreground font-normal">({weakItems.length})</span>
-            </h2>
+            <div>
+              <h2 className="font-heading text-lg font-bold text-foreground">
+                Difíceis <span className="text-[--color-text-secondary] font-normal text-base">({weakItems.length})</span>
+              </h2>
+              <p className="text-xs text-[--color-text-secondary] mt-0.5">
+                Pelo menos 3 tentativas e menos de 60% de acerto.
+              </p>
+            </div>
             {weakItems.length > 0 && (
               <button
                 onClick={handlePracticeWeak}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium flex-shrink-0"
                 data-testid="kana-review-practice-weak-btn"
               >
                 <MaterialIcon name="bolt" filled size={16} />
@@ -83,10 +88,13 @@ export function KanaReviewPage() {
           )}
         </section>
 
-        <section className="space-y-3">
-          <h2 className="text-sm font-semibold text-foreground">
-            Nunca vistos <span className="text-muted-foreground font-normal">({neverSeenItems.length})</span>
-          </h2>
+        <section className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-3">
+          <div>
+            <h2 className="font-heading text-lg font-bold text-foreground">
+              Nunca vistos <span className="text-[--color-text-secondary] font-normal text-base">({neverSeenItems.length})</span>
+            </h2>
+            <p className="text-xs text-[--color-text-secondary] mt-0.5">Caracteres que você ainda não treinou nenhuma vez.</p>
+          </div>
           {neverSeenItems.length === 0 ? (
             <p className="text-sm text-muted-foreground">Você já praticou todos os caracteres ao menos uma vez.</p>
           ) : (
@@ -103,10 +111,13 @@ export function KanaReviewPage() {
           )}
         </section>
 
-        <section className="space-y-3">
-          <h2 className="text-sm font-semibold text-foreground">
-            Dominados <span className="text-muted-foreground font-normal">({masteredItems.length})</span>
-          </h2>
+        <section className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-3">
+          <div>
+            <h2 className="font-heading text-lg font-bold text-foreground">
+              Dominados <span className="text-[--color-text-secondary] font-normal text-base">({masteredItems.length})</span>
+            </h2>
+            <p className="text-xs text-[--color-text-secondary] mt-0.5">Pelo menos 5 tentativas e 85% ou mais de acerto.</p>
+          </div>
           {masteredItems.length === 0 ? (
             <p className="text-sm text-muted-foreground">Continue treinando para dominar seus primeiros caracteres.</p>
           ) : (

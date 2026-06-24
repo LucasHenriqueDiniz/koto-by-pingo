@@ -51,7 +51,7 @@ export function KanaLearnPage() {
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
         <KanaSubNav />
 
-        <div className="bg-muted/50 rounded-xl p-4">
+        <div className="bg-card border border-border rounded-2xl p-5 sm:p-6">
           <KanaGroupFilter
             script={script}
             onScriptChange={setScript}
@@ -69,8 +69,8 @@ export function KanaLearnPage() {
         )}
 
         {sections.map(({ group, rows }) => (
-          <section key={group} className="space-y-4">
-            <h2 className="text-sm font-semibold text-foreground">{KANA_GROUP_LABELS[group]}</h2>
+          <section key={group} className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4">
+            <h2 className="font-heading text-lg font-bold text-foreground">{KANA_GROUP_LABELS[group]}</h2>
             <div className="space-y-4">
               {rows.map(({ row, items }) => (
                 <div key={row}>

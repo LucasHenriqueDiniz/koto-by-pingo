@@ -121,7 +121,7 @@ export function TypingMode({ items, showRomajiHint = false }: TypingModeProps) {
             className="text-sm text-muted-foreground hover:text-foreground self-center font-semibold transition-colors"
             data-testid="kana-skip-btn"
           >
-            Pular
+            Não sei
           </button>
         </div>
       ) : (

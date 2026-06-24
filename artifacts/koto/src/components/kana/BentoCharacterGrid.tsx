@@ -19,7 +19,7 @@ export function BentoCharacterGrid({ items }: BentoCharacterGridProps) {
   const statsMap = useMemo(() => getKanaStatsMap(), []);
 
   return (
-    <div className="grid grid-cols-5 gap-3">
+    <div className="grid grid-cols-8 sm:grid-cols-10 lg:grid-cols-12 gap-2">
       {items.map(kana => {
         const s = statsMap[kana.id];
         const attempts = s?.attempts ?? 0;
@@ -37,12 +37,12 @@ export function BentoCharacterGrid({ items }: BentoCharacterGridProps) {
         return (
           <div key={kana.id} className="group">
             <div
-              className={`aspect-square rounded-lg border flex flex-col items-center justify-center relative transition-all group-hover:border-primary group-hover:shadow-sm ${cellClass}`}
+              className={`aspect-square rounded-md border flex flex-col items-center justify-center relative transition-all group-hover:border-primary group-hover:shadow-sm ${cellClass}`}
               title={`${kana.romaji.toUpperCase()} — ${attempts > 0 ? `${Math.round(ratio * 100)}% (${attempts}x)` : 'nunca visto'}`}
             >
-              <span className="text-2xl font-bold text-foreground font-japanese">{kana.character}</span>
+              <span className="text-base font-bold text-foreground font-japanese">{kana.character}</span>
               {attempts > 0 && (
-                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-2/3 h-1 bg-muted rounded-full overflow-hidden">
+                <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-2/3 h-0.5 bg-muted rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full ${state === 'mastered' ? 'bg-[hsl(var(--tertiary))]' : 'bg-primary'}`}
                     style={{ width: `${Math.max(10, Math.round(ratio * 100))}%` }}
@@ -50,7 +50,7 @@ export function BentoCharacterGrid({ items }: BentoCharacterGridProps) {
                 </div>
               )}
             </div>
-            <span className="block text-center text-[10px] text-[--color-text-secondary] mt-1 uppercase font-bold tracking-tight">
+            <span className="block text-center text-[9px] text-[--color-text-secondary] mt-0.5 uppercase font-bold tracking-tight">
               {kana.romaji}
             </span>
           </div>

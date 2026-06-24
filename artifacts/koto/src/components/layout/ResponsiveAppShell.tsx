@@ -52,10 +52,12 @@ export function ResponsiveAppShell({ children }: ResponsiveAppShellProps) {
           {children}
         </main>
 
-        {/* Desktop footer */}
-        <div className="hidden lg:block">
-          <Footer />
-        </div>
+        {/* Desktop footer — escondido durante treino/simulado ativo */}
+        {!isSessionActive && (
+          <div className="hidden lg:block">
+            <Footer />
+          </div>
+        )}
       </div>
 
       {/* Mobile bottom nav */}

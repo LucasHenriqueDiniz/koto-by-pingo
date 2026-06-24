@@ -44,8 +44,8 @@ export function KanaStatsPage() {
           <StatCard label="Difíceis" value={stats.weak} icon="warning" color="#ac2b2f" />
         </div>
 
-        <div className="bg-card border border-card-border rounded-2xl p-5 space-y-4">
-          <h2 className="text-sm font-semibold text-foreground">Precisão por grupo</h2>
+        <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4">
+          <h2 className="font-heading text-lg font-bold text-foreground">Precisão por grupo</h2>
           <div className="space-y-3">
             {groupStats.map(g => (
               <div key={g.group}>
@@ -63,11 +63,11 @@ export function KanaStatsPage() {
 
         <AdPlaceholder slot="banner" />
 
-        <div className="border-t border-border pt-6">
+        <div className="bg-card border border-border rounded-2xl p-5 sm:p-6">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div>
-              <p className="text-sm font-medium text-foreground">Resetar progresso de kana</p>
-              <p className="text-xs text-muted-foreground">Remove apenas o histórico de tentativas de kana, sem afetar vocabulário ou simulados.</p>
+              <p className="text-sm font-bold text-foreground">Resetar progresso de kana</p>
+              <p className="text-xs text-[--color-text-secondary] mt-0.5">Remove apenas o histórico de tentativas de kana, sem afetar vocabulário ou simulados.</p>
             </div>
             <div className="flex items-center gap-2">
               {confirmReset && (

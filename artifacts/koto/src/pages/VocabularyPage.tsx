@@ -8,6 +8,7 @@ import { MatchingPairsMode } from '../components/vocabulary/MatchingPairsMode';
 import { TranslationQuizMode } from '../components/vocabulary/TranslationQuizMode';
 import { PageHeader } from '../components/ui/PageHeader';
 import { AdPlaceholder } from '../components/ui/AdPlaceholder';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '../components/ui/sheet';
 import { updatePageSEO } from '../utils/seo';
 import { shuffle } from '../utils/scoring';
 import {
@@ -121,10 +122,8 @@ export function VocabularyPage() {
     <div>
       <PageHeader title="Treino · Vocabulário" description="Treine palavras N5 com quatro modos de estudo.">
         <button
-          onClick={() => setShowConfig(v => !v)}
-          className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
-            showConfig ? 'border-primary bg-accent text-primary' : 'border-border bg-card text-foreground hover:bg-muted'
-          }`}
+          onClick={() => setShowConfig(true)}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card text-foreground text-sm font-medium hover:bg-muted transition-colors"
           data-testid="vocab-configure-header"
         >
           <MaterialIcon name="tune" size={18} />
@@ -136,54 +135,6 @@ export function VocabularyPage() {
         {!inMode ? (
           <>
             <AdPlaceholder slot="banner" />
-
-            {/* Filtros inteligentes + categoria — atrás de "Configurar" */}
-            {showConfig && (
-              <section className="space-y-3 bg-card border border-border rounded-2xl p-5" data-testid="vocab-config-panel">
-                <div className="flex gap-1.5 flex-wrap">
-                  {([
-                    { value: 'todos', label: `Todas (${vocabulary.length})` },
-                    { value: 'neverSeen', label: `Novas (${stats.neverSeen})` },
-                    { value: 'weak', label: `Difíceis (${stats.weak})` },
-                    { value: 'mastered', label: `Dominadas (${stats.mastered})` },
-                  ] as { value: FilterType; label: string }[]).map(f => (
-                    <button
-                      key={f.value}
-                      onClick={() => handleFilterChange(f.value)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors ${
-                        filter === f.value ? 'bg-foreground text-background' : 'bg-background border border-border text-[--color-text-secondary] hover:text-foreground'
-                      }`}
-                      data-testid={`vocab-filter-${f.value}`}
-                    >
-                      {f.label}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex flex-wrap gap-1.5" data-testid="vocab-categories">
-                  <button
-                    onClick={() => handleCategoryChange('todos')}
-                    className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors border ${
-                      category === 'todos' ? 'bg-primary border-primary text-primary-foreground' : 'bg-background border-border text-[--color-text-secondary] hover:border-primary hover:text-primary'
-                    }`}
-                    data-testid="vocab-category-todos"
-                  >
-                    Todas as categorias
-                  </button>
-                  {categories.map(cat => (
-                    <button
-                      key={cat}
-                      onClick={() => handleCategoryChange(cat)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors border ${
-                        category === cat ? 'bg-primary border-primary text-primary-foreground' : 'bg-background border-border text-[--color-text-secondary] hover:border-primary hover:text-primary'
-                      }`}
-                      data-testid={`vocab-category-${cat}`}
-                    >
-                      {categoryLabels[cat] ?? cat}
-                    </button>
-                  ))}
-                </div>
-              </section>
-            )}
 
             {/* Modos de treino — cards estilo Kana */}
             <section>
@@ -290,6 +241,66 @@ export function VocabularyPage() {
           </div>
         )}
       </div>
+
+      {/* Configurar — drawer */}
+      <Sheet open={showConfig} onOpenChange={setShowConfig}>
+        <SheetContent data-testid="vocab-config-drawer">
+          <SheetHeader>
+            <SheetTitle>Configuração</SheetTitle>
+            <SheetDescription>Filtre quais palavras entram no treino</SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-5">
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-foreground">Escopo</p>
+              <div className="flex gap-1.5 flex-wrap">
+                {([
+                  { value: 'todos', label: `Todas (${vocabulary.length})` },
+                  { value: 'neverSeen', label: `Novas (${stats.neverSeen})` },
+                  { value: 'weak', label: `Difíceis (${stats.weak})` },
+                  { value: 'mastered', label: `Dominadas (${stats.mastered})` },
+                ] as { value: FilterType; label: string }[]).map(f => (
+                  <button
+                    key={f.value}
+                    onClick={() => handleFilterChange(f.value)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors ${
+                      filter === f.value ? 'bg-foreground text-background' : 'bg-background border border-border text-[--color-text-secondary] hover:text-foreground'
+                    }`}
+                    data-testid={`vocab-filter-${f.value}`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-foreground">Categoria</p>
+              <div className="flex flex-wrap gap-1.5" data-testid="vocab-categories">
+                <button
+                  onClick={() => handleCategoryChange('todos')}
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors border ${
+                    category === 'todos' ? 'bg-primary border-primary text-primary-foreground' : 'bg-background border-border text-[--color-text-secondary] hover:border-primary hover:text-primary'
+                  }`}
+                  data-testid="vocab-category-todos"
+                >
+                  Todas as categorias
+                </button>
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => handleCategoryChange(cat)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors border ${
+                      category === cat ? 'bg-primary border-primary text-primary-foreground' : 'bg-background border-border text-[--color-text-secondary] hover:border-primary hover:text-primary'
+                    }`}
+                    data-testid={`vocab-category-${cat}`}
+                  >
+                    {categoryLabels[cat] ?? cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
