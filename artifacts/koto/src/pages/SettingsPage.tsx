@@ -111,7 +111,7 @@ export function SettingsPage() {
                 ))}
               </div>
             </div>
-            <div className="border-t border-border">
+            <div className="border-t border-border divide-y divide-border">
               <SettingsToggleRow
                 icon="notifications"
                 label="Lembrete diário"
@@ -119,6 +119,14 @@ export function SettingsPage() {
                 checked={settings.dailyReminders}
                 onCheckedChange={v => patch({ dailyReminders: v })}
                 data-testid="setting-reminders"
+              />
+              <SettingsToggleRow
+                icon="chevron_left"
+                label="Recolher menu durante o treino"
+                description="Esconde a barra lateral automaticamente ao iniciar um treino ou simulado."
+                checked={settings.autoCollapseSidebarInTraining}
+                onCheckedChange={v => patch({ autoCollapseSidebarInTraining: v })}
+                data-testid="setting-auto-collapse-sidebar"
               />
             </div>
           </section>

@@ -10,6 +10,7 @@ export interface AppSettings {
   dailyReminders: boolean;
   showRomajiEverywhere: boolean;
   dailyGoalMinutes: number;
+  autoCollapseSidebarInTraining: boolean;
 }
 
 const KEY = 'app_settings';
@@ -20,6 +21,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   dailyReminders: false,
   showRomajiEverywhere: false,
   dailyGoalMinutes: 15,
+  autoCollapseSidebarInTraining: true,
 };
 
 export function getSettings(): AppSettings {

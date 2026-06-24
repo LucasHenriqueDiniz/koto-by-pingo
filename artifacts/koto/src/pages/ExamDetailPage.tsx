@@ -7,6 +7,7 @@ import { MaterialIcon, type MaterialIconName } from '../components/ui/MaterialIc
 import { updatePageSEO } from '../utils/seo';
 import { mockExams } from '../data/mockExams';
 import { saveExamAttempt } from '../services/progress/progress.local';
+import { useRegisterActiveSession, CONFIRM_LEAVE_SESSION_MESSAGE } from '../contexts/ActiveSessionContext';
 import type { Exam, Question, Section } from '../types/exams';
 
 type ViewState = 'hub' | 'exam' | 'results';
@@ -16,6 +17,7 @@ export function ExamDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const [location, navigate] = useLocation();
   const [view, setView] = useState<ViewState>('hub');
+  useRegisterActiveSession(view === 'exam');
   const [examMode, setExamMode] = useState<ExamMode>('simulado');
   const [selectedExam, setSelectedExam] = useState<Exam | null>(null);
   const [sectionIdx, setSectionIdx] = useState(0);
@@ -65,7 +67,7 @@ export function ExamDetailPage() {
   };
 
   const abandonExam = () => {
-    if (confirm('Deseja realmente abandonar o simulado?')) {
+    if (confirm(CONFIRM_LEAVE_SESSION_MESSAGE)) {
       setIsTimerActive(false);
       setView('hub');
     }

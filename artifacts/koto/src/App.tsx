@@ -25,6 +25,7 @@ import { SettingsPage } from './pages/SettingsPage';
 import NotFound from '@/pages/not-found';
 import { useEffect } from 'react';
 import { applyTheme } from './services/settings/settings.local';
+import { ActiveSessionProvider } from './contexts/ActiveSessionContext';
 
 const queryClient = new QueryClient();
 
@@ -78,10 +79,12 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-          <Router />
-        </WouterRouter>
-        <Toaster />
+        <ActiveSessionProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+            <Router />
+          </WouterRouter>
+          <Toaster />
+        </ActiveSessionProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

@@ -17,6 +17,7 @@ import {
   getVocabStats,
 } from '../services/progress/progress.local';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useRegisterActiveSession } from '../contexts/ActiveSessionContext';
 
 type FilterType = 'todos' | 'neverSeen' | 'weak' | 'mastered';
 
@@ -68,6 +69,7 @@ export function VocabularyPage() {
   const [renderKey, setRenderKey] = useState(0);
   const [inMode, setInMode] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
+  useRegisterActiveSession(inMode);
 
   useEffect(() => {
     updatePageSEO('Treino de Vocabulário', 'Estude vocabulário japonês N5 com flashcards, seleção de leitura, combinação de pares e quiz de tradução.');

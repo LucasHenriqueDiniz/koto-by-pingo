@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'wouter';
 import { MaterialIcon, type MaterialIconName } from '@/components/ui/MaterialIcon';
+import { useActiveSession, CONFIRM_LEAVE_SESSION_MESSAGE } from '../../contexts/ActiveSessionContext';
 
 interface Tab {
   href: string;
@@ -18,6 +19,13 @@ const tabs: Tab[] = [
 
 export function MobileBottomNav() {
   const [location] = useLocation();
+  const { isSessionActive } = useActiveSession();
+
+  const guardNav = (e: React.MouseEvent) => {
+    if (isSessionActive && !window.confirm(CONFIRM_LEAVE_SESSION_MESSAGE)) {
+      e.preventDefault();
+    }
+  };
 
   return (
     <nav
@@ -35,6 +43,7 @@ export function MobileBottomNav() {
                 isActive ? 'text-primary' : 'text-[--color-text-secondary]'
               }`}
               data-testid={`bottom-nav-${tab.label.toLowerCase()}`}
+              onClick={guardNav}
             >
               <MaterialIcon name={tab.icon} filled={isActive} size={22} />
               <span className="leading-none">{tab.label}</span>

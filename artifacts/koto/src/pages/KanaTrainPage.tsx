@@ -11,11 +11,14 @@ import { SettingsToggleRow } from '../components/ui/SettingsToggleRow';
 import { MaterialIcon } from '../components/ui/MaterialIcon';
 import { AdPlaceholder } from '../components/ui/AdPlaceholder';
 import { updatePageSEO } from '../utils/seo';
+import { useRegisterActiveSession } from '../contexts/ActiveSessionContext';
 import type { KanaTrainingMode } from '../types/kana';
 
 const HINT_MODES: KanaTrainingMode[] = ['typing', 'flashcards', 'tracing'];
 
 export function KanaTrainPage() {
+  useRegisterActiveSession(true);
+
   const {
     script, setScript, groupPrefs, setGroupPrefs, onlyWeak, setOnlyWeak, filteredItems,
   } = useKanaFilters();
