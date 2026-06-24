@@ -29,13 +29,14 @@ export function ExamDetailPage() {
   const timerInterval = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (slug) {
-      const exam = mockExams.find(e => e.slug === slug);
-      if (exam) {
-        setSelectedExam(exam);
-        setView('exam');
-        setExamMode('simulado');
-      }
+    const exam = slug ? mockExams.find(e => e.slug === slug) : undefined;
+    if (exam) {
+      setSelectedExam(exam);
+      setView('exam');
+      setExamMode('simulado');
+    } else {
+      setSelectedExam(null);
+      setView('hub');
     }
     updatePageSEO('Simulados JLPT', 'Treine com simulados baseados no formato oficial do JLPT.');
   }, [slug]);
@@ -145,73 +146,19 @@ export function ExamDetailPage() {
   if (!selectedExam && view === 'hub') {
     return (
       <div>
-        <PageHeader title="Simulados" description="Teste seus conhecimentos com simulados baseados no JLPT oficial." />
-        <div className="max-w-6xl mx-auto px-4 py-8 space-y-7">
-          {/* Mode selector */}
-          <div className="flex gap-3 mb-6">
-            <button
-              onClick={() => setExamMode('simulado')}
-              className={`flex items-center gap-3 px-5 py-4 rounded-xl border transition-all ${
-                examMode === 'simulado'
-                  ? 'bg-primary text-primary-foreground border-primary'
-                  : 'bg-card border-border hover:border-primary'
-              }`}
-            >
-              <MaterialIcon name="timer" filled size={20} />
-              <div className="text-left">
-                <div className="font-bold text-sm">Simulado Oficial</div>
-                <div className="text-xs opacity-70">Cronometrado · formato real</div>
-              </div>
-            </button>
-            <button
-              onClick={() => setExamMode('treino')}
-              className={`flex items-center gap-3 px-5 py-4 rounded-xl border transition-all ${
-                examMode === 'treino'
-                  ? 'bg-primary text-primary-foreground border-primary'
-                  : 'bg-card border-border hover:border-primary'
-              }`}
-            >
-              <MaterialIcon name="school" filled size={20} />
-              <div className="text-left">
-                <div className="font-bold text-sm">Treino Livre</div>
-                <div className="text-xs opacity-70">Sem timer · revise à vontade</div>
-              </div>
-            </button>
-          </div>
-
-          {/* Exam cards */}
-          <div>
-            <h2 className="font-heading text-xl font-bold mb-4">Escolha um simulado</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {mockExams.map(exam => (
-                <div key={exam.id} className="bg-card border border-border rounded-2xl p-6 hover:border-primary hover:shadow-sm transition-all">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <div className="font-heading text-3xl font-bold text-primary mb-1">{exam.level}</div>
-                      <div className="text-sm text-[--color-text-secondary] font-semibold">{exam.title}</div>
-                    </div>
-                    <div className="w-11 h-11 bg-accent rounded-lg flex items-center justify-center text-primary flex-shrink-0">
-                      <MaterialIcon name="assignment" filled size={22} />
-                    </div>
-                  </div>
-                  <p className="text-xs text-[--color-text-secondary] mb-4 leading-relaxed line-clamp-2">{exam.description}</p>
-                  <div className="bg-background border border-border rounded-lg p-3 mb-4 flex items-center gap-2 text-xs text-[--color-text-secondary]">
-                    <MaterialIcon name="schedule" size={16} />
-                    <span className="font-semibold">{exam.estimatedMinutes} min no total</span>
-                    <span className="ml-auto">
-                      {exam.sections.reduce((sum, sec) => sum + sec.questions.length, 0)} questões
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => startExam(exam, examMode)}
-                    className="w-full bg-primary text-primary-foreground font-bold py-3 rounded-lg hover:opacity-90 transition-opacity"
-                  >
-                    Iniciar
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
+        <PageHeader title="Simulado não encontrado" description="Este simulado não existe ou foi removido." />
+        <div className="max-w-md mx-auto px-4 py-16 text-center space-y-5">
+          <MaterialIcon name="search_off" size={48} className="text-muted-foreground mx-auto" />
+          <p className="text-sm text-[--color-text-secondary]">
+            Verifique o link ou volte para escolher outro simulado.
+          </p>
+          <Link
+            href="/simulados"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-bold hover:opacity-90 transition-opacity"
+          >
+            <MaterialIcon name="arrow_back" size={18} />
+            Ver simulados
+          </Link>
         </div>
       </div>
     );
