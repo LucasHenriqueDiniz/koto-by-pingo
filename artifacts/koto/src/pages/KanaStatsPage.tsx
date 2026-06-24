@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BookOpen, Eye, Star, AlertTriangle, RotateCcw } from 'lucide-react';
+import { MaterialIcon } from '../components/ui/MaterialIcon';
 import { getKanaStats, getKanaGroupStats, resetKanaProgress } from '../services/progress/progress.local';
 import { KANA_GROUP_LABELS } from '../components/kana/KanaGroupFilter';
 import { KanaSubNav } from '../components/kana/KanaSubNav';
@@ -38,10 +38,10 @@ export function KanaStatsPage() {
         <KanaSubNav />
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <StatCard label="Total" value={stats.total} icon={BookOpen} color="#16A34A" />
-          <StatCard label="Vistos" value={stats.seen} icon={Eye} color="#0284C7" />
-          <StatCard label="Dominados" value={stats.mastered} icon={Star} color="#F59F00" />
-          <StatCard label="Difíceis" value={stats.weak} icon={AlertTriangle} color="#E5484D" />
+          <StatCard label="Total" value={stats.total} icon="menu_book" color="#006856" />
+          <StatCard label="Vistos" value={stats.seen} icon="visibility" color="#565e74" />
+          <StatCard label="Dominados" value={stats.mastered} icon="star" iconFilled color="#F59F00" />
+          <StatCard label="Difíceis" value={stats.weak} icon="warning" color="#ac2b2f" />
         </div>
 
         <div className="bg-card border border-card-border rounded-2xl p-5 space-y-4">
@@ -88,7 +88,7 @@ export function KanaStatsPage() {
                 }`}
                 data-testid="reset-kana-progress-btn"
               >
-                <RotateCcw size={14} />
+                <MaterialIcon name="restart_alt" size={16} />
                 {confirmReset ? 'Confirmar reset' : 'Resetar'}
               </button>
             </div>

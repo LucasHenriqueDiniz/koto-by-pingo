@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Inter', sans-serif; color: #0b1c30; background: #F8FAFC; }
+  h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
+  button, input { font-family: inherit; font-size: inherit; color: inherit; }
+  .ms { font-family: 'Material Symbols Outlined'; font-weight: normal; font-style: normal; line-height: 1; letter-spacing: normal; text-transform: none; display: inline-block; white-space: nowrap; -webkit-font-smoothing: antialiased; }
+  .ms.fill { font-variation-settings: 'FILL' 1; }
+  .jp { font-family: 'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic',sans-serif; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+</style>
+</helmet>
+
+<div style="display:flex; align-items:stretch; min-height:100vh;">
+
+  <!-- SIDEBAR -->
+  <aside style="{{ sidebarStyle }}">
+    <div style="{{ logoAreaStyle }}">
+      <div style="width:40px; height:40px; background:#ac2b2f; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; flex:none;">
+        <span class="ms fill" style="font-size:24px;">translate</span>
+      </div>
+      <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+        <div style="min-width:0;">
+          <h1 style="font-size:20px; font-weight:800; line-height:1.1; white-space:nowrap;">Koto</h1>
+          <p style="margin:0; font-size:11px; color:#94a3b8;">by Pingo</p>
+        </div>
+      </sc-if>
+    </div>
+    <nav style="display:flex; flex-direction:column; gap:2px; flex:1;">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="7">
+        <a href="{{ n.href }}" style="{{ n.style }}" style-hover="opacity:.85;">
+          <span class="ms {{ n.fill }}" style="font-size:22px; flex:none;">{{ n.icon }}</span>
+          <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+            <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ n.label }}</span>
+          </sc-if>
+        </a>
+      </sc-for>
+    </nav>
+    <div style="display:flex; flex-direction:column; gap:2px;">
+      <a href="Configuracoes.dc.html" style="{{ cfgBotStyle }}" style-hover="background:#F8FAFC; color:#565e74; text-decoration:none;">
+        <span class="ms {{ cfgFill }}" style="font-size:22px; flex:none;">settings</span>
+        <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+          <span style="white-space:nowrap;">Configurações</span>
+        </sc-if>
+      </a>
+      <a href="Login.dc.html" style="{{ sbBotStyle }}" style-hover="background:#F8FAFC; color:#565e74; text-decoration:none;">
+        <span class="ms" style="font-size:22px; flex:none;">logout</span>
+        <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+          <span style="white-space:nowrap;">Sair</span>
+        </sc-if>
+      </a>
+    </div>
+    <button onClick="{{ toggleSidebar }}" style="{{ sidebarToggleStyle }}" style-hover="color:#ac2b2f; background:#FFF1F1;">
+      <span class="ms" style="font-size:20px;">{{ sidebarToggleIcon }}</span>
+      <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+        <span style="font-size:13px; font-weight:600; white-space:nowrap;">Recolher</span>
+      </sc-if>
+    </button>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="flex:1; min-width:0; display:flex; flex-direction:column; min-height:100vh;">
+
+    <!-- HEADER -->
+    <header style="position:sticky; top:0; z-index:40; background:rgba(248,250,252,.92); backdrop-filter:blur(8px); height:64px; display:flex; align-items:center; padding:0 32px; gap:16px; border-bottom:1px solid #E2E8F0; flex:none;">
+
+      <!-- Left: hub title OR back+info -->
+      <div style="flex:none;">
+        <sc-if value="{{ isHub }}" hint-placeholder-val="{{ true }}">
+          <h2 style="font-size:19px; font-weight:800; color:#ac2b2f; white-space:nowrap;">Treino · Vocabulário</h2>
+        </sc-if>
+        <sc-if value="{{ notHub }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <button onClick="{{ goHub }}" style="width:36px; height:36px; border-radius:999px; border:1.5px solid #E2E8F0; background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#565e74; flex:none;" style-hover="border-color:#ac2b2f; color:#ac2b2f;">
+              <span class="ms" style="font-size:20px;">arrow_back</span>
+            </button>
+            <div>
+              <div style="font-size:15px; font-weight:800; color:#0b1c30; line-height:1.2;">{{ modeTitle }}</div>
+              <div style="font-size:12px; color:#94a3b8; margin-top:1px;">{{ progressLabel }}</div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- Middle: progress bar (training only) -->
+      <div style="flex:1;">
+        <sc-if value="{{ isTraining }}" hint-placeholder-val="{{ false }}">
+          <div style="height:6px; background:#E2E8F0; border-radius:999px; overflow:hidden; max-width:320px;">
+            <div style="height:100%; width:{{ progressPct }}; background:#ac2b2f; border-radius:999px; transition:width .35s;"></div>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- Right: romaji toggle + avatar -->
+      <div style="flex:none; display:flex; align-items:center; gap:8px;">
+        <button onClick="{{ toggleRomaji }}" style="{{ romajiBtn }}">ローマ字</button>
+        <div style="width:33px; height:33px; border-radius:999px; background:#FFF1F1; border:2px solid #ce4445; display:flex; align-items:center; justify-content:center; color:#ac2b2f; font-weight:800; font-size:13px; cursor:pointer;">P</div>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main style="flex:1; display:flex; flex-direction:column;">
+
+      <!-- ══════════ HUB ══════════ -->
+      <sc-if value="{{ isHub }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:32px; max-width:1100px; width:100%; margin:0 auto; display:flex; flex-direction:column; gap:28px; animation:fadeUp .3s ease both;">
+
+          <!-- JLPT filter -->
+          <div style="display:flex; background:#fff; border:1px solid #E2E8F0; border-radius:999px; padding:4px; gap:2px; align-self:flex-start;">
+            <sc-for list="{{ jlptTabs }}" as="t" hint-placeholder-count="4">
+              <button onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }} <span style="opacity:.55; font-size:11px;">({{ t.count }})</span></button>
+            </sc-for>
+          </div>
+
+          <!-- Mode cards -->
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px;">
+            <sc-for list="{{ modeCards }}" as="mc" hint-placeholder-count="3">
+              <div onClick="{{ mc.onClick }}" style="background:{{ mc.bg }}; border-radius:20px; padding:32px 28px; display:flex; flex-direction:column; gap:18px; cursor:pointer; min-height:240px; overflow:hidden;" style-hover="filter:brightness(1.07); transform:translateY(-2px);">
+                <div style="width:52px; height:52px; background:rgba(255,255,255,.15); border-radius:14px; display:flex; align-items:center; justify-content:center; flex:none;">
+                  <span class="ms fill" style="color:#fff; font-size:28px;">{{ mc.icon }}</span>
+                </div>
+                <div style="flex:1;">
+                  <h3 style="font-size:21px; font-weight:800; color:#fff; margin:0 0 8px;">{{ mc.title }}</h3>
+                  <p style="font-size:14px; color:rgba(255,255,255,.6); margin:0; line-height:1.6;">{{ mc.desc }}</p>
+                </div>
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  <span style="font-size:12px; color:rgba(255,255,255,.4); font-weight:600;">{{ mc.count }} palavras</span>
+                  <div style="display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.15); border-radius:999px; padding:7px 16px;">
+                    <span style="color:#fff; font-size:13px; font-weight:700;">Iniciar</span>
+                    <span class="ms" style="color:#fff; font-size:16px;">arrow_forward</span>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- Stats row -->
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px;">
+            <div style="background:#fff; border:1px solid #E2E8F0; border-radius:16px; padding:20px 24px; display:flex; align-items:center; gap:16px;">
+              <div style="width:42px; height:42px; background:#FFF1F1; border-radius:12px; display:flex; align-items:center; justify-content:center; flex:none;">
+                <span class="ms fill" style="color:#ac2b2f; font-size:22px;">menu_book</span>
+              </div>
+              <div>
+                <div style="font-size:26px; font-weight:800;">{{ filteredCount }}</div>
+                <div style="font-size:12px; color:#94a3b8; font-weight:600; margin-top:2px;">Palavras disponíveis</div>
+              </div>
+            </div>
+            <div style="background:#fff; border:1px solid #E2E8F0; border-radius:16px; padding:20px 24px; display:flex; align-items:center; gap:16px;">
+              <div style="width:42px; height:42px; background:#FFF1F1; border-radius:12px; display:flex; align-items:center; justify-content:center; flex:none;">
+                <span class="ms fill" style="color:#ac2b2f; font-size:22px;">local_fire_department</span>
+              </div>
+              <div>
+                <div style="font-size:26px; font-weight:800;">7</div>
+                <div style="font-size:12px; color:#94a3b8; font-weight:600; margin-top:2px;">Dias de ofensiva</div>
+              </div>
+            </div>
+            <div style="background:#fff; border:1px solid #E2E8F0; border-radius:16px; padding:20px 24px; display:flex; align-items:center; gap:16px;">
+              <div style="width:42px; height:42px; background:#e6f7f1; border-radius:12px; display:flex; align-items:center; justify-content:center; flex:none;">
+                <span class="ms fill" style="color:#00846d; font-size:22px;">check_circle</span>
+              </div>
+              <div>
+                <div style="font-size:26px; font-weight:800; color:#00846d;">12</div>
+                <div style="font-size:12px; color:#94a3b8; font-weight:600; margin-top:2px;">Dominadas hoje</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </sc-if>
+
+      <!-- ══════════ FLASHCARD ══════════ -->
+      <sc-if value="{{ isFlashcard }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 32px; gap:32px; animation:fadeUp .3s ease both;">
+
+          <div onClick="{{ flipCard }}" style="width:100%; max-width:520px; min-height:300px; background:#fff; border:1px solid #E2E8F0; border-radius:24px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 24px rgba(0,0,0,.06); position:relative; overflow:hidden;" style-hover="box-shadow:0 8px 32px rgba(0,0,0,.1); transform:translateY(-2px);">
+
+            <div style="position:absolute; top:16px; right:16px; background:#FFF1F1; color:#ac2b2f; font-size:10px; font-weight:800; padding:3px 9px; border-radius:999px;">{{ currentWord.jlpt }}</div>
+            <div style="position:absolute; top:16px; left:16px; background:#F8FAFC; color:#94a3b8; font-size:10px; font-weight:700; padding:3px 9px; border-radius:999px;">{{ currentWord.cat }}</div>
+
+            <!-- Front -->
+            <sc-if value="{{ notFlipped }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:10px; padding:48px 40px; text-align:center; animation:fadeUp .2s ease;">
+                <div class="jp" style="font-size:80px; font-weight:700; color:#0b1c30; line-height:1;">{{ currentWord.kanji }}</div>
+                <div class="jp" style="font-size:20px; color:#94a3b8; letter-spacing:.07em; margin-top:4px;">{{ currentWord.reading }}</div>
+                <sc-if value="{{ showRomaji }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:14px; color:#b8c5d0; font-style:italic;">{{ currentWord.romaji }}</div>
+                </sc-if>
+                <div style="font-size:11px; color:#d4d8de; margin-top:16px; font-weight:700; letter-spacing:.1em;">TOQUE PARA REVELAR</div>
+              </div>
+            </sc-if>
+
+            <!-- Back -->
+            <sc-if value="{{ flipped }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:12px; padding:36px 40px; text-align:center; animation:fadeUp .2s ease;">
+                <div style="font-size:52px; line-height:1;">{{ currentWord.emoji }}</div>
+                <div style="font-size:36px; font-weight:800; color:#0b1c30; line-height:1.2;">{{ currentWord.meaning }}</div>
+                <div class="jp" style="font-size:18px; color:#94a3b8; letter-spacing:.06em;">{{ currentWord.reading }}</div>
+                <sc-if value="{{ showRomaji }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:13px; color:#b8c5d0; font-style:italic;">{{ currentWord.romaji }}</div>
+                </sc-if>
+              </div>
+            </sc-if>
+          </div>
+
+          <!-- SRS buttons -->
+          <sc-if value="{{ flipped }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; gap:14px; animation:fadeUp .25s ease both;">
+              <button onClick="{{ onHard }}" style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:18px 30px; border-radius:16px; border:2px solid #fecaca; background:#fff; cursor:pointer;" style-hover="background:#FFF1F1; border-color:#ac2b2f; transform:translateY(-2px);">
+                <span style="font-size:24px;">😟</span>
+                <span style="font-weight:800; font-size:14px; color:#ac2b2f;">Difícil</span>
+              </button>
+              <button onClick="{{ onOk }}" style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:18px 30px; border-radius:16px; border:2px solid #fde68a; background:#fff; cursor:pointer;" style-hover="background:#fffbeb; border-color:#f59e0b; transform:translateY(-2px);">
+                <span style="font-size:24px;">😊</span>
+                <span style="font-weight:800; font-size:14px; color:#92400e;">Ok</span>
+              </button>
+              <button onClick="{{ onEasy }}" style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:18px 30px; border-radius:16px; border:2px solid #a7f3d0; background:#fff; cursor:pointer;" style-hover="background:#e6f7f1; border-color:#00846d; transform:translateY(-2px);">
+                <span style="font-size:24px;">🤩</span>
+                <span style="font-weight:800; font-size:14px; color:#00846d;">Fácil</span>
+              </button>
+            </div>
+          </sc-if>
+
+        </div>
+      </sc-if>
+
+      <!-- ══════════ MÚLTIPLA ESCOLHA ══════════ -->
+      <sc-if value="{{ isChoice }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 32px; gap:28px; animation:fadeUp .3s ease both;">
+
+          <div style="width:100%; max-width:480px; background:#0b1c30; border-radius:24px; padding:40px; text-align:center; box-shadow:0 4px 24px rgba(11,28,48,.15);">
+            <sc-if value="{{ showChoiceNext }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:52px; line-height:1; margin-bottom:10px; animation:fadeUp .2s ease;">{{ choiceWord.emoji }}</div>
+            </sc-if>
+            <div class="jp" style="font-size:70px; font-weight:700; color:#fff; line-height:1;">{{ choiceWord.kanji }}</div>
+            <div class="jp" style="font-size:18px; color:rgba(255,255,255,.45); margin-top:10px; letter-spacing:.08em;">{{ choiceWord.reading }}</div>
+            <sc-if value="{{ showRomaji }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:13px; color:rgba(255,255,255,.3); font-style:italic; margin-top:6px;">{{ choiceWord.romaji }}</div>
+            </sc-if>
+            <div style="font-size:10px; font-weight:800; color:rgba(255,255,255,.2); letter-spacing:.12em; margin-top:18px;">QUAL É O SIGNIFICADO?</div>
+          </div>
+
+          <div style="width:100%; max-width:480px; display:flex; flex-direction:column; gap:10px;">
+            <sc-for list="{{ choiceItems }}" as="ci" hint-placeholder-count="4">
+              <button onClick="{{ ci.onClick }}" style="{{ ci.style }}">
+                <span style="width:28px; height:28px; border-radius:8px; background:rgba(0,0,0,.05); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; flex:none; color:inherit;">{{ ci.letter }}</span>
+                <span>{{ ci.meaning }}</span>
+              </button>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{ showChoiceNext }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ nextChoice }}" style="padding:14px 40px; border-radius:999px; background:#ac2b2f; color:#fff; border:none; font-weight:700; font-size:15px; cursor:pointer; animation:fadeUp .2s ease;" style-hover="filter:brightness(1.08); transform:translateY(-1px);">
+              Próxima <span class="ms" style="font-size:18px; vertical-align:middle; margin-left:4px;">arrow_forward</span>
+            </button>
+          </sc-if>
+
+        </div>
+      </sc-if>
+
+      <!-- ══════════ LIGAR PARES ══════════ -->
+      <sc-if value="{{ isPairs }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 32px; gap:20px; animation:fadeUp .3s ease both;">
+
+          <p style="font-size:14px; color:#94a3b8; margin:0; font-weight:500;">Selecione uma palavra e depois o seu significado</p>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; width:100%; max-width:720px;">
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <div style="font-size:10px; font-weight:800; color:#94a3b8; text-transform:uppercase; letter-spacing:.12em; padding:0 6px; margin-bottom:2px;">Palavras</div>
+              <sc-for list="{{ pairsWords }}" as="pw" hint-placeholder-count="6">
+                <div onClick="{{ pw.onClick }}" style="{{ pw.style }}">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="width:26px; height:26px; border-radius:7px; background:rgba(172,43,47,.1); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; color:#ac2b2f; flex:none;">{{ pw.num }}</div>
+                    <div>
+                      <div class="jp" style="font-size:24px; font-weight:700; color:#0b1c30; line-height:1.2;">{{ pw.kanji }}</div>
+                      <sc-if value="{{ showRomaji }}" hint-placeholder-val="{{ true }}">
+                        <div style="font-size:11px; color:#b8c5d0; font-style:italic; margin-top:2px;">{{ pw.romaji }}</div>
+                      </sc-if>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <div style="font-size:10px; font-weight:800; color:#94a3b8; text-transform:uppercase; letter-spacing:.12em; padding:0 6px; margin-bottom:2px;">Significados</div>
+              <sc-for list="{{ meaningsDisplay }}" as="md" hint-placeholder-count="6">
+                <div onClick="{{ md.onClick }}" style="{{ md.style }}">
+                  <div style="font-size:14px; font-weight:600; color:#0b1c30; line-height:1.4;">{{ md.meaning }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:12px; font-size:13px; color:#94a3b8;">
+            <span style="font-weight:600;">{{ pairsMatchedCount }} / {{ pairsTotalCount }} pares</span>
+            <sc-if value="{{ hasPairsErrors }}" hint-placeholder-val="{{ false }}">
+              <span style="color:#ac2b2f; font-weight:700;">· {{ pairsErrors }} {{ pairsErrLabel }}</span>
+            </sc-if>
+          </div>
+
+        </div>
+      </sc-if>
+
+      <!-- ══════════ RESULTADO ══════════ -->
+      <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 32px; gap:32px; animation:fadeUp .3s ease both; text-align:center;">
+
+          <div>
+            <div style="font-size:72px; margin-bottom:16px;">🎉</div>
+            <h2 style="font-size:34px; font-weight:800; margin:0 0 10px; line-height:1.15;">Sessão concluída!</h2>
+            <p style="color:#94a3b8; font-size:16px; margin:0;">{{ scoreLabel }}</p>
+          </div>
+
+          <sc-if value="{{ isFlashcardMode }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
+              <div style="background:#fff; border:2px solid #fecaca; border-radius:18px; padding:22px 32px; text-align:center; min-width:110px;">
+                <div style="font-size:32px; font-weight:800; color:#ac2b2f;">{{ hardCount }}</div>
+                <div style="font-size:13px; color:#94a3b8; margin-top:6px; font-weight:600;">Difícil</div>
+              </div>
+              <div style="background:#fff; border:2px solid #fde68a; border-radius:18px; padding:22px 32px; text-align:center; min-width:110px;">
+                <div style="font-size:32px; font-weight:800; color:#92400e;">{{ okCount }}</div>
+                <div style="font-size:13px; color:#94a3b8; margin-top:6px; font-weight:600;">Ok</div>
+              </div>
+              <div style="background:#fff; border:2px solid #a7f3d0; border-radius:18px; padding:22px 32px; text-align:center; min-width:110px;">
+                <div style="font-size:32px; font-weight:800; color:#00846d;">{{ easyCount }}</div>
+                <div style="font-size:13px; color:#94a3b8; margin-top:6px; font-weight:600;">Fácil</div>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+            <button onClick="{{ repeatMode }}" style="display:flex; align-items:center; gap:8px; padding:14px 28px; border-radius:999px; border:1.5px solid #E2E8F0; background:#fff; font-weight:700; font-size:14px; cursor:pointer; color:#0b1c30;" style-hover="border-color:#ac2b2f; color:#ac2b2f;">
+              <span class="ms" style="font-size:18px;">replay</span>Repetir
+            </button>
+            <button onClick="{{ goHub }}" style="padding:14px 28px; border-radius:999px; background:#ac2b2f; color:#fff; border:none; font-weight:700; font-size:14px; cursor:pointer;" style-hover="filter:brightness(1.08);">
+              Outro modo
+            </button>
+          </div>
+
+        </div>
+      </sc-if>
+
+    </main>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1280, &quot;height&quot;: 900}}">
+
+class Component extends DCLogic {
+  state = {
+    screen: 'hub',
+    jlptFilter: 'N5',
+    sessionWords: [],
+    cardIndex: 0,
+    flipped: false,
+    srsResults: [],
+    choiceOptions: [],
+    choiceSelected: null,
+    choiceScore: 0,
+    pairsBoard: [],
+    pairsMeanings: [],
+    pairsWordSel: null,
+    pairsMeanSel: null,
+    pairsMatched: [],
+    pairsErrors: 0,
+    pairsFlash: null,
+    showRomaji: true,
+    activeMode: null,
+  };
+
+  WORDS() {
+    return [
+      // N5 · Saudações
+      { kanji:'こんにちは', emoji:'👋',       reading:'こんにちは',       romaji:'konnichiwa',      meaning:'Olá (tarde)',              cat:'Saudações', jlpt:'N5' },
+      { kanji:'ありがとう', emoji:'🙏',       reading:'ありがとう',       romaji:'arigatou',        meaning:'Obrigado(a)',              cat:'Saudações', jlpt:'N5' },
+      { kanji:'すみません', emoji:'🙇',       reading:'すみません',       romaji:'sumimasen',       meaning:'Com licença / Desculpe',   cat:'Saudações', jlpt:'N5' },
+      { kanji:'さようなら', emoji:'👋',       reading:'さようなら',       romaji:'sayounara',       meaning:'Adeus',                   cat:'Saudações', jlpt:'N5' },
+      { kanji:'はじめまして', emoji:'🤝',     reading:'はじめまして',     romaji:'hajimemashite',   meaning:'Prazer em conhecê-lo(a)', cat:'Saudações', jlpt:'N5' },
+      // N5 · Verbos
+      { kanji:'食べる', emoji:'🍽️', reading:'たべる',   romaji:'taberu',   meaning:'Comer',              cat:'Verbos', jlpt:'N5' },
+      { kanji:'飲む', emoji:'🥤',   reading:'のむ',     romaji:'nomu',     meaning:'Beber',              cat:'Verbos', jlpt:'N5' },
+      { kanji:'行く', emoji:'🚶',   reading:'いく',     romaji:'iku',      meaning:'Ir',                 cat:'Verbos', jlpt:'N5' },
+      { kanji:'来る', emoji:'🏃',   reading:'くる',     romaji:'kuru',     meaning:'Vir',                cat:'Verbos', jlpt:'N5' },
+      { kanji:'見る', emoji:'👀',   reading:'みる',     romaji:'miru',     meaning:'Ver / assistir',     cat:'Verbos', jlpt:'N5' },
+      { kanji:'話す', emoji:'💬',   reading:'はなす',   romaji:'hanasu',   meaning:'Falar',              cat:'Verbos', jlpt:'N5' },
+      { kanji:'聞く', emoji:'👂',   reading:'きく',     romaji:'kiku',     meaning:'Ouvir / perguntar',  cat:'Verbos', jlpt:'N5' },
+      { kanji:'書く', emoji:'✏️',   reading:'かく',     romaji:'kaku',     meaning:'Escrever',           cat:'Verbos', jlpt:'N5' },
+      { kanji:'読む', emoji:'📖',   reading:'よむ',     romaji:'yomu',     meaning:'Ler',                cat:'Verbos', jlpt:'N5' },
+      // N5 · Comida
+      { kanji:'水', emoji:'💧',   reading:'みず',   romaji:'mizu',   meaning:'Água',             cat:'Comida', jlpt:'N5' },
+      { kanji:'ご飯', emoji:'🍚', reading:'ごはん', romaji:'gohan',  meaning:'Arroz / refeição', cat:'Comida', jlpt:'N5' },
+      { kanji:'肉', emoji:'🥩',   reading:'にく',   romaji:'niku',   meaning:'Carne',            cat:'Comida', jlpt:'N5' },
+      { kanji:'魚', emoji:'🐟',   reading:'さかな', romaji:'sakana', meaning:'Peixe',            cat:'Comida', jlpt:'N5' },
+      { kanji:'お茶', emoji:'🍵', reading:'おちゃ', romaji:'ocha',   meaning:'Chá',              cat:'Comida', jlpt:'N5' },
+      { kanji:'パン', emoji:'🍞', reading:'パン',   romaji:'pan',    meaning:'Pão',              cat:'Comida', jlpt:'N5' },
+      // N5 · Viagem & Escola
+      { kanji:'電車', emoji:'🚃',   reading:'でんしゃ', romaji:'densha',  meaning:'Trem',              cat:'Viagem', jlpt:'N5' },
+      { kanji:'駅', emoji:'🏢',     reading:'えき',    romaji:'eki',     meaning:'Estação de trem',   cat:'Viagem', jlpt:'N5' },
+      { kanji:'学校', emoji:'🏫',   reading:'がっこう', romaji:'gakkou',  meaning:'Escola',            cat:'Escola', jlpt:'N5' },
+      { kanji:'先生', emoji:'👨‍🏫',   reading:'せんせい', romaji:'sensei',  meaning:'Professor(a)',      cat:'Escola', jlpt:'N5' },
+      { kanji:'本', emoji:'📚',     reading:'ほん',    romaji:'hon',     meaning:'Livro',             cat:'Escola', jlpt:'N5' },
+      { kanji:'日本語', emoji:'🇯🇵', reading:'にほんご', romaji:'nihongo', meaning:'Língua japonesa',  cat:'Escola', jlpt:'N5' },
+      // N4 · Verbos
+      { kanji:'起きる', emoji:'⏰', reading:'おきる',    romaji:'okiru',    meaning:'Acordar / levantar',    cat:'Verbos', jlpt:'N4' },
+      { kanji:'寝る', emoji:'😴',   reading:'ねる',      romaji:'neru',     meaning:'Dormir / deitar',        cat:'Verbos', jlpt:'N4' },
+      { kanji:'働く', emoji:'💼',   reading:'はたらく',  romaji:'hataraku', meaning:'Trabalhar',              cat:'Verbos', jlpt:'N4' },
+      { kanji:'教える', emoji:'📝', reading:'おしえる',  romaji:'oshieru',  meaning:'Ensinar',                cat:'Verbos', jlpt:'N4' },
+      { kanji:'覚える', emoji:'🧠', reading:'おぼえる',  romaji:'oboeru',   meaning:'Memorizar / lembrar',   cat:'Verbos', jlpt:'N4' },
+      { kanji:'忘れる', emoji:'🫥', reading:'わすれる',  romaji:'wasureru', meaning:'Esquecer',               cat:'Verbos', jlpt:'N4' },
+      { kanji:'使う', emoji:'🔧',   reading:'つかう',    romaji:'tsukau',   meaning:'Usar',                   cat:'Verbos', jlpt:'N4' },
+      // N4 · Viagem & Escola
+      { kanji:'空港', emoji:'✈️',   reading:'くうこう',   romaji:'kuukou',   meaning:'Aeroporto',             cat:'Viagem', jlpt:'N4' },
+      { kanji:'ホテル', emoji:'🏨', reading:'ホテル',     romaji:'hoteru',   meaning:'Hotel',                 cat:'Viagem', jlpt:'N4' },
+      { kanji:'地図', emoji:'🗺️',   reading:'ちず',       romaji:'chizu',    meaning:'Mapa',                  cat:'Viagem', jlpt:'N4' },
+      { kanji:'切符', emoji:'🎫',   reading:'きっぷ',     romaji:'kippu',    meaning:'Passagem / bilhete',    cat:'Viagem', jlpt:'N4' },
+      { kanji:'病院', emoji:'🏥',   reading:'びょういん', romaji:'byouin',   meaning:'Hospital',              cat:'Substantivos', jlpt:'N4' },
+      { kanji:'薬', emoji:'💊',     reading:'くすり',     romaji:'kusuri',   meaning:'Remédio',               cat:'Substantivos', jlpt:'N4' },
+      { kanji:'勉強', emoji:'📓',   reading:'べんきょう', romaji:'benkyou',  meaning:'Estudo / estudar',      cat:'Escola', jlpt:'N4' },
+      { kanji:'試験', emoji:'📋',   reading:'しけん',     romaji:'shiken',   meaning:'Exame / prova',         cat:'Escola', jlpt:'N4' },
+      { kanji:'便利', emoji:'⭐',   reading:'べんり',     romaji:'benri',    meaning:'Conveniente / prático', cat:'Adjetivos', jlpt:'N4' },
+      { kanji:'大切', emoji:'💎',   reading:'たいせつ',   romaji:'taisetsu', meaning:'Importante / precioso', cat:'Adjetivos', jlpt:'N4' },
+      { kanji:'親切', emoji:'😊',   reading:'しんせつ',   romaji:'shinsetsu',meaning:'Gentil / prestativo',   cat:'Adjetivos', jlpt:'N4' },
+      // N3
+      { kanji:'集める', emoji:'🗂️', reading:'あつめる', romaji:'atsumeru',  meaning:'Colecionar / reunir',     cat:'Verbos', jlpt:'N3' },
+      { kanji:'選ぶ', emoji:'☑️',   reading:'えらぶ',   romaji:'erabu',     meaning:'Escolher / selecionar',   cat:'Verbos', jlpt:'N3' },
+      { kanji:'続ける', emoji:'🔄', reading:'つづける', romaji:'tsuzukeru', meaning:'Continuar',               cat:'Verbos', jlpt:'N3' },
+      { kanji:'変える', emoji:'🔀', reading:'かえる',   romaji:'kaeru',     meaning:'Mudar / alterar',         cat:'Verbos', jlpt:'N3' },
+      { kanji:'比べる', emoji:'⚖️', reading:'くらべる', romaji:'kuraberu',  meaning:'Comparar',                cat:'Verbos', jlpt:'N3' },
+      { kanji:'経験', emoji:'🌟',   reading:'けいけん', romaji:'keiken',    meaning:'Experiência',             cat:'Substantivos', jlpt:'N3' },
+      { kanji:'機会', emoji:'🚪',   reading:'きかい',   romaji:'kikai',     meaning:'Oportunidade',            cat:'Substantivos', jlpt:'N3' },
+      { kanji:'文化', emoji:'🎭',   reading:'ぶんか',   romaji:'bunka',     meaning:'Cultura',                 cat:'Substantivos', jlpt:'N3' },
+      { kanji:'社会', emoji:'🏙️',   reading:'しゃかい', romaji:'shakai',    meaning:'Sociedade',               cat:'Substantivos', jlpt:'N3' },
+      { kanji:'政治', emoji:'🏛️',   reading:'せいじ',   romaji:'seiji',     meaning:'Política',                cat:'Substantivos', jlpt:'N3' },
+      { kanji:'正確', emoji:'🎯',   reading:'せいかく', romaji:'seikaku',   meaning:'Preciso / exato',         cat:'Adjetivos', jlpt:'N3' },
+      { kanji:'複雑', emoji:'🧩',   reading:'ふくざつ', romaji:'fukuzatsu', meaning:'Complexo / complicado',   cat:'Adjetivos', jlpt:'N3' },
+    ];
+  }
+
+  shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  getFiltered() {
+    const { jlptFilter } = this.state;
+    const all = this.WORDS();
+    return jlptFilter === 'todos' ? all : all.filter(w => w.jlpt === jlptFilter);
+  }
+
+  buildChoices(word, allWords) {
+    const distractors = this.shuffle(allWords.filter(w => w.meaning !== word.meaning)).slice(0, 3);
+    return this.shuffle([
+      { meaning: word.meaning, correct: true },
+      ...distractors.map(d => ({ meaning: d.meaning, correct: false })),
+    ]);
+  }
+
+  startMode(mode) {
+    const filtered = this.getFiltered();
+    if (filtered.length < 2) return;
+    const words = this.shuffle(filtered);
+    if (mode === 'flashcard') {
+      this.setState({ screen:'flashcard', activeMode:'flashcard', sessionWords:words, cardIndex:0, flipped:false, srsResults:[] });
+    } else if (mode === 'choice') {
+      this.setState({
+        screen:'choice', activeMode:'choice', sessionWords:words, cardIndex:0,
+        choiceOptions: this.buildChoices(words[0], this.WORDS()),
+        choiceSelected:null, choiceScore:0,
+      });
+    } else if (mode === 'pairs') {
+      const board = words.slice(0, 6).map((w, i) => ({ id:i, kanji:w.kanji, reading:w.reading, romaji:w.romaji, meaning:w.meaning, emoji:w.emoji }));
+      const meanings = this.shuffle(board.map(p => ({ id:p.id, meaning:p.meaning })));
+      this.setState({ screen:'pairs', activeMode:'pairs', sessionWords:words, pairsBoard:board, pairsMeanings:meanings, pairsWordSel:null, pairsMeanSel:null, pairsMatched:[], pairsErrors:0, pairsFlash:null });
+    }
+  }
+
+  handleSRS(result) {
+    const { sessionWords, cardIndex, srsResults } = this.state;
+    const newResults = [...srsResults, { word: sessionWords[cardIndex], result }];
+    if (cardIndex >= sessionWords.length - 1) {
+      this.setState({ screen:'done', srsResults:newResults });
+    } else {
+      this.setState({ cardIndex:cardIndex+1, flipped:false, srsResults:newResults });
+    }
+  }
+
+  handleChoice(idx) {
+    const { choiceOptions, choiceScore } = this.state;
+    const opt = choiceOptions[idx];
+    this.setState({ choiceSelected:idx, choiceScore: opt.correct ? choiceScore+1 : choiceScore });
+  }
+
+  nextChoice() {
+    const { sessionWords, cardIndex } = this.state;
+    if (cardIndex >= sessionWords.length - 1) {
+      this.setState({ screen:'done' });
+    } else {
+      const next = sessionWords[cardIndex+1];
+      this.setState({ cardIndex:cardIndex+1, choiceOptions:this.buildChoices(next, this.WORDS()), choiceSelected:null });
+    }
+  }
+
+  handlePairWord(id) {
+    const { pairsMatched, pairsMeanSel, pairsErrors, pairsBoard } = this.state;
+    if (pairsMatched.includes(id)) return;
+    if (pairsMeanSel !== null) {
+      if (pairsMeanSel === id) {
+        const nm = [...pairsMatched, id];
+        this.setState({ pairsMatched:nm, pairsWordSel:null, pairsMeanSel:null });
+        if (nm.length === pairsBoard.length) setTimeout(() => this.setState({ screen:'done' }), 700);
+      } else {
+        this.setState({ pairsErrors:pairsErrors+1, pairsFlash:{ wId:id, mId:pairsMeanSel }, pairsWordSel:null, pairsMeanSel:null });
+        setTimeout(() => this.setState({ pairsFlash:null }), 600);
+      }
+    } else {
+      this.setState({ pairsWordSel:id });
+    }
+  }
+
+  handlePairMeaning(id) {
+    const { pairsMatched, pairsWordSel, pairsErrors, pairsBoard } = this.state;
+    if (pairsMatched.includes(id)) return;
+    if (pairsWordSel !== null) {
+      if (pairsWordSel === id) {
+        const nm = [...pairsMatched, id];
+        this.setState({ pairsMatched:nm, pairsWordSel:null, pairsMeanSel:null });
+        if (nm.length === pairsBoard.length) setTimeout(() => this.setState({ screen:'done' }), 700);
+      } else {
+        this.setState({ pairsErrors:pairsErrors+1, pairsFlash:{ wId:pairsWordSel, mId:id }, pairsWordSel:null, pairsMeanSel:null });
+        setTimeout(() => this.setState({ pairsFlash:null }), 600);
+      }
+    } else {
+      this.setState({ pairsMeanSel:id });
+    }
+  }
+
+
+  _sidebarVals(activeKey) {
+    const c = this.state.sidebarCollapsed || false;
+    const sidebarStyle = `width:${c?'68px':'256px'}; flex:none; position:sticky; top:0; height:100vh; background:#fff; border-right:1px solid #E2E8F0; display:flex; flex-direction:column; padding:${c?'20px 10px':'28px 14px'}; gap:20px; z-index:50; overflow:hidden; transition:width .25s ease, padding .25s ease;`;
+    const logoAreaStyle = `display:flex; align-items:center; gap:12px; padding:${c?'0':'0 8px'}; justify-content:${c?'center':'flex-start'};`;
+    const aS = c ? 'display:flex; align-items:center; justify-content:center; padding:12px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:11px 14px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; font-size:14px; font-weight:700; text-decoration:none;';
+    const iS = c ? 'display:flex; align-items:center; justify-content:center; padding:12px; color:#565e74; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:11px 14px; color:#565e74; border-radius:8px; font-size:14px; font-weight:600; text-decoration:none;';
+    const sbBotStyle = c ? 'display:flex; align-items:center; justify-content:center; padding:10px; color:#94a3b8; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:10px 14px; color:#94a3b8; border-radius:8px; font-size:14px; font-weight:600; text-decoration:none;';
+    const cfgBotStyle = activeKey === 'config' ? (c ? 'display:flex; align-items:center; justify-content:center; padding:12px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:11px 14px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; font-size:14px; font-weight:700; text-decoration:none;') : sbBotStyle;
+    const sidebarToggleStyle = c ? 'display:flex; align-items:center; justify-content:center; padding:10px; color:#94a3b8; border-radius:8px; width:100%; border:none; cursor:pointer; background:transparent;' : 'display:flex; align-items:center; gap:8px; padding:9px 14px; color:#94a3b8; border-radius:8px; width:100%; border:none; cursor:pointer; background:transparent;';
+    const NAV = [
+      { key:'inicio',      icon:'home',           label:'Início',       href:'Treino de Kana.dc.html' },
+      { key:'estudo',      icon:'auto_stories',   label:'Aulas Extras', href:'Treino de Kana.dc.html' },
+      { key:'kana',        icon:'translate',      label:'Kana',         href:'Treino de Kana.dc.html' },
+      { key:'vocabulario', icon:'menu_book',      label:'Vocabulário',  href:'Vocabulario.dc.html' },
+      { key:'treino',      icon:'sports_esports', label:'Treino Vocab', href:'Treino de Vocabulario.dc.html' },
+      { key:'simulados',   icon:'assignment',     label:'Simulados',    href:'Simulados.dc.html' },
+      { key:'progresso',   icon:'trending_up',    label:'Progresso',    href:'Progresso.dc.html' },
+    ];
+    const navItems = NAV.map(n => ({ ...n, style: n.key === activeKey ? aS : iS, fill: n.key === activeKey ? 'fill' : '' }));
+    return {
+      sidebarStyle, sidebarExpanded: !c, logoAreaStyle, navItems, sbBotStyle, cfgBotStyle, sidebarToggleStyle,
+      sidebarToggleIcon: c ? 'chevron_right' : 'chevron_left',
+      cfgFill: activeKey === 'config' ? 'fill' : '',
+      toggleSidebar: () => this.setState(s => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+    };
+  }
+
+  renderVals() {
+    const {
+      screen, jlptFilter, sessionWords, cardIndex, flipped, srsResults,
+      choiceOptions, choiceSelected, choiceScore,
+      pairsBoard, pairsMeanings, pairsWordSel, pairsMeanSel, pairsMatched, pairsErrors, pairsFlash,
+      showRomaji, activeMode,
+    } = this.state;
+
+    const all = this.WORDS();
+    const filtered = this.getFiltered();
+
+    const sb = this._sidebarVals('treino');
+
+    // JLPT tabs
+    const tOn  = 'padding:7px 18px; border-radius:999px; border:none; background:#ac2b2f; color:#fff; cursor:pointer; font-weight:800; font-size:13px;';
+    const tOff = 'padding:7px 18px; border-radius:999px; border:none; background:transparent; color:#565e74; cursor:pointer; font-weight:600; font-size:13px;';
+    const jlptTabs = [
+      { key:'todos', label:'Todos', count:all.length },
+      { key:'N5', label:'N5 · Básico',    count:all.filter(w=>w.jlpt==='N5').length },
+      { key:'N4', label:'N4 · Elementar', count:all.filter(w=>w.jlpt==='N4').length },
+      { key:'N3', label:'N3 · Médio',     count:all.filter(w=>w.jlpt==='N3').length },
+    ].map(t => ({ ...t, style: t.key === jlptFilter ? tOn : tOff, onClick: () => this.setState({ jlptFilter: t.key }) }));
+
+    // Mode cards
+    const modeCards = [
+      { mode:'flashcard', bg:'#0b1c30', icon:'flip',    title:'Flashcards',      desc:'Revise com sistema SRS: difícil, ok ou fácil.', count:filtered.length },
+      { mode:'choice',    bg:'#ac2b2f', icon:'quiz',    title:'Múltipla Escolha', desc:'Veja o kanji e escolha o significado correto.',  count:filtered.length },
+      { mode:'pairs',     bg:'#006b5b', icon:'shuffle', title:'Ligar Pares',      desc:'Conecte as palavras com seus significados.',      count:Math.min(filtered.length,6) },
+    ].map(c => ({ ...c, onClick: () => this.startMode(c.mode) }));
+
+    // Progress
+    const total = sessionWords.length;
+    let pN = cardIndex, pD = total;
+    if (screen === 'pairs') { pN = pairsMatched.length; pD = (pairsBoard||[]).length; }
+    const progressPct    = pD > 0 ? `${Math.round((pN / pD) * 100)}%` : '0%';
+    const progressLabel  = screen === 'pairs' ? `${pairsMatched.length} / ${(pairsBoard||[]).length}` : `${Math.min(cardIndex+1,total)} / ${total}`;
+    const modeTitle      = activeMode === 'flashcard' ? 'Flashcards' : activeMode === 'choice' ? 'Múltipla Escolha' : 'Ligar Pares';
+
+    // Flashcard
+    const currentWord = sessionWords[cardIndex] || null;
+
+    // Choice
+    const choiceWord  = sessionWords[cardIndex] || null;
+    const choiceItems = (choiceOptions||[]).map((opt, i) => {
+      let bg = '#fff', border = '#E2E8F0', color = '#0b1c30';
+      if (choiceSelected !== null) {
+        if (i === choiceSelected) {
+          if (opt.correct) { bg='#e6f7f1'; border='#00846d'; color='#00846d'; }
+          else             { bg='#FFF1F1'; border='#ac2b2f'; color='#ac2b2f'; }
+        } else if (opt.correct) { bg='#e6f7f1'; border='#00846d'; color='#00846d'; }
+      }
+      return {
+        ...opt, letter:['A','B','C','D'][i],
+        style: `display:flex; align-items:center; gap:14px; padding:15px 20px; border-radius:14px; border:2px solid ${border}; background:${bg}; color:${color}; cursor:${choiceSelected!==null?'default':'pointer'}; text-align:left; width:100%; font-size:15px; font-weight:600;`,
+        onClick: () => { if (choiceSelected === null) this.handleChoice(i); },
+      };
+    });
+
+    // Pairs
+    const pairsWords = (pairsBoard||[]).map(p => {
+      const matched   = pairsMatched.includes(p.id);
+      const selected  = pairsWordSel === p.id;
+      const isFlash   = pairsFlash && pairsFlash.wId === p.id;
+      let bg='#fff', border='#E2E8F0';
+      if (matched)       { bg='#e6f7f1'; border='#00846d'; }
+      else if (isFlash)  { bg='#FFF1F1'; border='#ac2b2f'; }
+      else if (selected) { bg='#FFF9F9'; border='#ac2b2f'; }
+      return { ...p, matched, num: p.id + 1,
+        style: `background:${bg}; border:2px solid ${border}; border-radius:12px; padding:14px 18px; cursor:${matched?'default':'pointer'}; min-height:62px; display:flex; flex-direction:column; justify-content:center; transition:all .15s;`,
+        onClick: matched ? () => {} : () => this.handlePairWord(p.id),
+      };
+    });
+    const meaningsDisplay = (pairsMeanings||[]).map(p => {
+      const matched   = pairsMatched.includes(p.id);
+      const selected  = pairsMeanSel === p.id;
+      const isFlash   = pairsFlash && pairsFlash.mId === p.id;
+      let bg='#fff', border='#E2E8F0';
+      if (matched)       { bg='#e6f7f1'; border='#00846d'; }
+      else if (isFlash)  { bg='#FFF1F1'; border='#ac2b2f'; }
+      else if (selected) { bg='#FFF9F9'; border='#ac2b2f'; }
+      return { ...p, matched,
+        style: `background:${bg}; border:2px solid ${border}; border-radius:12px; padding:14px 18px; cursor:${matched?'default':'pointer'}; min-height:62px; display:flex; flex-direction:column; justify-content:center; transition:all .15s;`,
+        onClick: matched ? () => {} : () => this.handlePairMeaning(p.id),
+      };
+    });
+
+    // Results
+    const easyCount = srsResults.filter(r => r.result==='easy').length;
+    const okCount   = srsResults.filter(r => r.result==='ok').length;
+    const hardCount = srsResults.filter(r => r.result==='hard').length;
+    let scoreLabel = '';
+    if (activeMode==='choice')    scoreLabel = `Acertou ${choiceScore} de ${total} palavras`;
+    else if (activeMode==='flashcard') scoreLabel = `${easyCount+okCount} de ${total} bem avaliadas`;
+    else scoreLabel = `${(pairsBoard||[]).length} pares — ${pairsErrors} erro(s)`;
+
+    // Romaji toggle
+    const romajiBtn = showRomaji
+      ? 'padding:5px 12px; border-radius:999px; border:none; background:#ac2b2f; color:#fff; cursor:pointer; font-size:11px; font-weight:700;'
+      : 'padding:5px 12px; border-radius:999px; border:1.5px solid #E2E8F0; background:#fff; color:#94a3b8; cursor:pointer; font-size:11px; font-weight:600;';
+
+    return {
+      ...sb, jlptTabs, modeCards,
+      filteredCount: filtered.length,
+      isHub:      screen === 'hub',
+      notHub:     screen !== 'hub',
+      isTraining: screen === 'flashcard' || screen === 'choice' || screen === 'pairs',
+      isFlashcard: screen === 'flashcard',
+      isChoice:    screen === 'choice',
+      isPairs:     screen === 'pairs',
+      isDone:      screen === 'done',
+      notFlipped:  !flipped,
+      flipped,
+      goHub: () => this.setState({ screen:'hub' }),
+      modeTitle, progressLabel, progressPct,
+      // Flashcard
+      currentWord,
+      flipCard: () => this.setState(s => ({ flipped: !s.flipped })),
+      onHard: () => this.handleSRS('hard'),
+      onOk:   () => this.handleSRS('ok'),
+      onEasy: () => this.handleSRS('easy'),
+      // Choice
+      choiceWord, choiceItems,
+      showChoiceNext: choiceSelected !== null,
+      nextChoice: () => this.nextChoice(),
+      // Pairs
+      pairsWords, meaningsDisplay,
+      pairsMatchedCount: pairsMatched.length,
+      pairsTotalCount:   (pairsBoard||[]).length,
+      pairsErrors,
+      hasPairsErrors: pairsErrors > 0,
+      pairsErrLabel:  pairsErrors === 1 ? 'erro' : 'erros',
+      // Results
+      scoreLabel, easyCount, okCount, hardCount,
+      isFlashcardMode: activeMode === 'flashcard',
+      repeatMode: () => this.startMode(activeMode),
+      // Romaji
+      showRomaji,
+      toggleRomaji: () => this.setState(s => ({ showRomaji: !s.showRomaji })),
+      romajiBtn,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

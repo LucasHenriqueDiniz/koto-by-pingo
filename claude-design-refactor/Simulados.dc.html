@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Inter', sans-serif; color: #0b1c30; background: #F8FAFC; }
+  h1,h2,h3,h4 { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
+  button, input { font-family: inherit; font-size: inherit; color: inherit; }
+  .ms { font-family: 'Material Symbols Outlined'; font-weight: normal; font-style: normal; line-height: 1; display: inline-block; white-space: nowrap; -webkit-font-smoothing: antialiased; }
+  .ms.fill { font-variation-settings: 'FILL' 1; }
+  .jp { font-family: 'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic',sans-serif; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  @keyframes countdown { from{width:100%} to{width:0%} }
+</style>
+</helmet>
+
+<div style="display:flex; align-items:stretch; min-height:100vh;">
+
+  <!-- SIDEBAR -->
+  <aside style="{{ sidebarStyle }}">
+    <div style="{{ logoAreaStyle }}">
+      <div style="width:40px; height:40px; background:#ac2b2f; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; flex:none;">
+        <span class="ms fill" style="font-size:24px;">translate</span>
+      </div>
+      <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+        <div style="min-width:0;">
+          <h1 style="font-size:20px; font-weight:800; line-height:1.1; white-space:nowrap;">Koto</h1>
+          <p style="margin:0; font-size:11px; color:#94a3b8;">by Pingo</p>
+        </div>
+      </sc-if>
+    </div>
+    <nav style="display:flex; flex-direction:column; gap:2px; flex:1;">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="7">
+        <a href="{{ n.href }}" style="{{ n.style }}" style-hover="opacity:.85;">
+          <span class="ms {{ n.fill }}" style="font-size:22px; flex:none;">{{ n.icon }}</span>
+          <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+            <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ n.label }}</span>
+          </sc-if>
+        </a>
+      </sc-for>
+    </nav>
+    <div style="display:flex; flex-direction:column; gap:2px;">
+      <a href="Configuracoes.dc.html" style="{{ cfgBotStyle }}" style-hover="background:#F8FAFC; color:#565e74; text-decoration:none;">
+        <span class="ms {{ cfgFill }}" style="font-size:22px; flex:none;">settings</span>
+        <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+          <span style="white-space:nowrap;">Configurações</span>
+        </sc-if>
+      </a>
+      <a href="Login.dc.html" style="{{ sbBotStyle }}" style-hover="background:#F8FAFC; color:#565e74; text-decoration:none;">
+        <span class="ms" style="font-size:22px; flex:none;">logout</span>
+        <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+          <span style="white-space:nowrap;">Sair</span>
+        </sc-if>
+      </a>
+    </div>
+    <button onClick="{{ toggleSidebar }}" style="{{ sidebarToggleStyle }}" style-hover="color:#ac2b2f; background:#FFF1F1;">
+      <span class="ms" style="font-size:20px;">{{ sidebarToggleIcon }}</span>
+      <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+        <span style="font-size:13px; font-weight:600; white-space:nowrap;">Recolher</span>
+      </sc-if>
+    </button>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="flex:1; min-width:0; display:flex; flex-direction:column; min-height:100vh;">
+
+    <header style="position:sticky; top:0; z-index:40; background:rgba(248,250,252,.92); backdrop-filter:blur(8px); height:64px; display:flex; justify-content:space-between; align-items:center; padding:0 32px; border-bottom:1px solid #E2E8F0; flex:none;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <h2 style="font-size:20px; font-weight:800; color:#ac2b2f; margin:0;">{{ headerTitle }}</h2>
+        <sc-if value="{{ inExam }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; align-items:center; background:#FFF1F1; border:1px solid #ce4445; padding:4px 14px; border-radius:999px; gap:8px;">
+            <span style="width:7px; height:7px; border-radius:999px; background:#ac2b2f; animation:pulse 1s infinite; flex:none;"></span>
+            <span style="font-size:13px; font-weight:700; color:#ac2b2f;">{{ sectionLabel }} · {{ timerDisplay }}</span>
+          </div>
+        </sc-if>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <sc-if value="{{ inExam }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ abandonExam }}" style="display:flex; align-items:center; gap:6px; padding:8px 16px; border-radius:999px; border:1.5px solid #E2E8F0; background:#fff; color:#94a3b8; cursor:pointer; font-size:13px; font-weight:600;" style-hover="border-color:#ba1a1a; color:#ba1a1a;">
+            <span class="ms" style="font-size:18px;">stop_circle</span>Abandonar
+          </button>
+        </sc-if>
+        <div style="width:33px; height:33px; border-radius:999px; background:#FFF1F1; border:2px solid #ce4445; display:flex; align-items:center; justify-content:center; color:#ac2b2f; font-weight:800; font-size:13px; cursor:pointer;">P</div>
+      </div>
+    </header>
+
+    <main style="flex:1; display:flex; flex-direction:column;">
+      <div style="flex:1; padding:32px; max-width:1100px; width:100%; margin:0 auto; display:flex; flex-direction:column; gap:24px;">
+
+        <!-- ═══ HUB ═══ -->
+        <sc-if value="{{ isHub }}" hint-placeholder-val="{{ true }}">
+
+          <!-- Hero -->
+          <div style="background:#0b1c30; border-radius:20px; padding:32px; display:flex; align-items:center; gap:32px; position:relative; overflow:hidden;">
+            <div class="jp" style="position:absolute; right:-10px; top:-20px; font-size:220px; font-weight:800; opacity:.05; color:#fff; line-height:1; pointer-events:none; user-select:none;">試</div>
+            <div style="flex:1; position:relative;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                <span style="background:#ac2b2f; color:#fff; font-size:11px; font-weight:800; padding:3px 10px; border-radius:999px; letter-spacing:.06em; text-transform:uppercase;">Simulado Oficial</span>
+                <span style="background:rgba(255,255,255,.1); color:rgba(255,255,255,.7); font-size:11px; font-weight:600; padding:3px 10px; border-radius:999px;">Formato JLPT real</span>
+              </div>
+              <h2 style="font-size:28px; font-weight:800; color:#fff; margin:0 0 8px;">Teste seus conhecimentos</h2>
+              <p style="color:rgba(255,255,255,.6); font-size:14px; margin:0; line-height:1.6; max-width:500px;">Simulados baseados no formato oficial do JLPT com seções de vocabulário, gramática, leitura e escuta.</p>
+            </div>
+            <div style="display:flex; gap:16px; flex:none;">
+              <div style="text-align:center;">
+                <div style="font-family:'Plus Jakarta Sans'; font-size:22px; font-weight:800; color:#fff;">3</div>
+                <div style="font-size:11px; color:rgba(255,255,255,.5); text-transform:uppercase; letter-spacing:.07em; margin-top:2px;">Simulados feitos</div>
+              </div>
+              <div style="width:1px; background:rgba(255,255,255,.1);"></div>
+              <div style="text-align:center;">
+                <div style="font-family:'Plus Jakarta Sans'; font-size:22px; font-weight:800; color:#ac2b2f;">72%</div>
+                <div style="font-size:11px; color:rgba(255,255,255,.5); text-transform:uppercase; letter-spacing:.07em; margin-top:2px;">Média geral</div>
+              </div>
+              <div style="width:1px; background:rgba(255,255,255,.1);"></div>
+              <div style="text-align:center;">
+                <div style="font-family:'Plus Jakarta Sans'; font-size:22px; font-weight:800; color:#fff;">N5</div>
+                <div style="font-size:11px; color:rgba(255,255,255,.5); text-transform:uppercase; letter-spacing:.07em; margin-top:2px;">Nível atual</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mode selector -->
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:16px; overflow:hidden; display:flex;">
+            <button onClick="{{ setSimuladoMode }}" style="{{ simuladoBtnStyle }}">
+              <span class="ms fill" style="font-size:22px; flex:none;">timer</span>
+              <div style="text-align:left;">
+                <div style="font-weight:800; font-size:14px; line-height:1.3;">Simulado Oficial</div>
+                <div style="font-size:11px; opacity:.65; margin-top:2px;">Cronometrado · formato JLPT real</div>
+              </div>
+            </button>
+            <div style="width:1px; background:#E2E8F0; flex:none;"></div>
+            <button onClick="{{ setTreinoMode }}" style="{{ treinoBtnStyle }}">
+              <span class="ms fill" style="font-size:22px; flex:none;">school</span>
+              <div style="text-align:left;">
+                <div style="font-weight:800; font-size:14px; line-height:1.3;">Treino Livre</div>
+                <div style="font-size:11px; opacity:.65; margin-top:2px;">Sem timer · revise à vontade</div>
+              </div>
+            </button>
+          </div>
+
+          <!-- Exam cards -->
+          <div>
+            <h3 style="font-size:19px; font-weight:800; margin:0 0 16px;">Escolha um simulado</h3>
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;">
+              <sc-for list="{{ examCards }}" as="ex" hint-placeholder-count="3">
+                <div style="{{ ex.cardStyle }}">
+                  <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px;">
+                    <div style="display:flex; flex-direction:column; gap:6px;">
+                      <span style="font-family:'Plus Jakarta Sans'; font-size:32px; font-weight:800; color:{{ ex.levelColor }}; line-height:1;">{{ ex.level }}</span>
+                      <span style="font-size:13px; color:#565e74; font-weight:600;">{{ ex.levelName }}</span>
+                    </div>
+                    <div style="width:44px; height:44px; border-radius:12px; background:{{ ex.iconBg }}; display:flex; align-items:center; justify-content:center; flex:none;">
+                      <span class="ms fill" style="font-size:24px; color:{{ ex.levelColor }};">{{ ex.icon }}</span>
+                    </div>
+                  </div>
+                  <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:18px;">
+                    <sc-for list="{{ ex.sections }}" as="sec" hint-placeholder-count="3">
+                      <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px;">
+                        <div style="display:flex; align-items:center; gap:6px; color:#565e74;">
+                          <span class="ms" style="font-size:15px; color:#94a3b8;">{{ sec.icon }}</span>{{ sec.name }}
+                        </div>
+                        <span style="color:#94a3b8; font-weight:600;">{{ sec.time }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:8px; padding:10px 14px; background:#F8FAFC; border-radius:10px; margin-bottom:16px; font-size:12px; color:#94a3b8;">
+                    <span class="ms" style="font-size:16px;">schedule</span>
+                    <span style="font-weight:600; color:#0b1c30;">{{ ex.totalTime }} no total</span>
+                    <span style="margin-left:auto;">{{ ex.questions }} questões</span>
+                  </div>
+                  <button onClick="{{ ex.onClick }}" style="{{ ex.btnStyle }}" style-hover="filter:brightness(1.08);">
+                    {{ ex.btnLabel }} <span class="ms" style="font-size:18px;">arrow_forward</span>
+                  </button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- History -->
+          <div>
+            <h3 style="font-size:19px; font-weight:800; margin:0 0 16px;">Histórico de simulados</h3>
+            <div style="background:#fff; border:1px solid #E2E8F0; border-radius:16px; overflow:hidden;">
+              <div style="display:grid; grid-template-columns:1fr 1fr 1fr 100px 80px; padding:10px 20px; border-bottom:1px solid #F0F4F8; font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em; gap:0;">
+                <span>Simulado</span><span>Data</span><span>Resultado</span><span>Tempo</span><span>Detalhe</span>
+              </div>
+              <sc-for list="{{ history }}" as="h" hint-placeholder-count="3">
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr 100px 80px; padding:16px 20px; border-bottom:1px solid #F8FAFC; align-items:center; gap:0;" style-hover="background:#FFF9F9;">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-family:'Plus Jakarta Sans'; font-size:18px; font-weight:800; color:#ac2b2f;">{{ h.level }}</span>
+                    <span style="font-size:13px; font-weight:600; color:#0b1c30;">Simulado</span>
+                  </div>
+                  <span style="font-size:13px; color:#565e74;">{{ h.date }}</span>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:80px; height:5px; background:#F0F4F8; border-radius:999px; overflow:hidden;">
+                      <div style="height:100%; width:{{ h.score }}%; background:{{ h.scoreColor }}; border-radius:999px;"></div>
+                    </div>
+                    <span style="font-size:13px; font-weight:700; color:{{ h.scoreColor }};">{{ h.score }}%</span>
+                  </div>
+                  <span style="font-size:13px; color:#94a3b8;">{{ h.time }}</span>
+                  <button style="display:flex; align-items:center; gap:4px; font-size:12px; font-weight:700; color:#ac2b2f; background:none; border:none; cursor:pointer; padding:0;" style-hover="opacity:.7;">
+                    Ver <span class="ms" style="font-size:16px;">chevron_right</span>
+                  </button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+        </sc-if>
+
+        <!-- ═══ EXAM IN PROGRESS ═══ -->
+        <sc-if value="{{ inExam }}" hint-placeholder-val="{{ false }}">
+
+          <!-- Timer bar (simulado) / treino livre badge -->
+          <sc-if value="{{ isSimuladoMode }}" hint-placeholder-val="{{ true }}">
+            <div style="width:100%; height:4px; background:#F0F4F8; border-radius:999px; overflow:hidden; margin-top:-8px;">
+              <div style="height:100%; background:#ac2b2f; border-radius:999px; width:{{ timerPct }}%; transition:width 1s linear;"></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isTreinoMode }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; align-items:center; gap:8px; padding:8px 18px; background:#e6f7f1; border:1px solid #a7f3d0; border-radius:10px; align-self:flex-start; margin-top:-4px;">
+              <span class="ms fill" style="color:#00846d; font-size:18px;">school</span>
+              <span style="font-size:13px; font-weight:700; color:#00846d;">Treino Livre — sem limite de tempo</span>
+            </div>
+          </sc-if>
+
+          <!-- Section tabs -->
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <sc-for list="{{ sectionTabs }}" as="st" hint-placeholder-count="3">
+              <div style="{{ st.style }}">
+                <span class="ms {{ st.iconFill }}" style="font-size:16px; flex:none;">{{ st.icon }}</span>
+                {{ st.label }}
+                <sc-if value="{{ st.done }}" hint-placeholder-val="{{ false }}">
+                  <span class="ms fill" style="font-size:14px; color:#00846d;">check_circle</span>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- Question card -->
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:20px; overflow:hidden;">
+            <!-- Section header -->
+            <div style="background:#0b1c30; padding:18px 28px; display:flex; align-items:center; gap:14px;">
+              <div style="width:40px; height:40px; border-radius:10px; background:#ac2b2f; display:flex; align-items:center; justify-content:center; flex:none;">
+                <span class="ms fill" style="font-size:22px; color:#fff;">{{ currentSectionIcon }}</span>
+              </div>
+              <div>
+                <div style="font-family:'Plus Jakarta Sans'; font-size:16px; font-weight:800; color:#fff;">{{ currentSectionTitle }}</div>
+                <div style="font-size:12px; color:rgba(255,255,255,.5); margin-top:2px;">{{ currentSectionDesc }}</div>
+              </div>
+              <div style="margin-left:auto; display:flex; align-items:center; gap:6px; color:rgba(255,255,255,.6); font-size:13px; font-weight:600;">
+                <span class="ms" style="font-size:18px;">help_outline</span>
+                Questão {{ currentQuestionNum }} de {{ totalQuestionsInSection }}
+              </div>
+            </div>
+
+            <!-- Question body -->
+            <div style="padding:32px 36px;">
+              <div style="font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.1em; margin-bottom:10px;">{{ questionTypeLabel }}</div>
+              <p style="font-size:17px; font-weight:600; color:#0b1c30; margin:0 0 8px; line-height:1.6;">{{ currentQ.prompt }}</p>
+              <sc-if value="{{ currentQ.hasContext }}" hint-placeholder-val="{{ false }}">
+                <div style="background:#F8FAFC; border-left:3px solid #ac2b2f; border-radius:0 8px 8px 0; padding:14px 18px; margin:12px 0 20px; font-size:15px; color:#0b1c30; line-height:1.7;" class="jp">{{ currentQ.context }}</div>
+              </sc-if>
+              <sc-if value="{{ currentQ.hasWord }}" hint-placeholder-val="{{ false }}">
+                <div style="text-align:center; margin:20px 0;">
+                  <span class="jp" style="font-size:52px; font-weight:700; color:#0b1c30; background:#F8FAFC; border:2px solid #E2E8F0; border-radius:12px; padding:12px 32px; display:inline-block;">{{ currentQ.word }}</span>
+                </div>
+              </sc-if>
+              <div style="display:flex; flex-direction:column; gap:10px; margin-top:24px;">
+                <sc-for list="{{ currentOptions }}" as="opt" hint-placeholder-count="4">
+                  <button onClick="{{ opt.onClick }}" style="{{ opt.style }}" style-hover="{{ opt.hoverStyle }}">
+                    <div style="width:28px; height:28px; border-radius:999px; background:{{ opt.numBg }}; border:2px solid {{ opt.numBorder }}; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:{{ opt.numColor }}; flex:none;">{{ opt.num }}</div>
+                    <span class="jp" style="font-size:16px; font-weight:600; flex:1; text-align:left;">{{ opt.text }}</span>
+                    <sc-if value="{{ opt.isCorrect }}" hint-placeholder-val="{{ false }}">
+                      <span class="ms fill" style="font-size:20px; color:#00846d; flex:none;">check_circle</span>
+                    </sc-if>
+                    <sc-if value="{{ opt.isWrong }}" hint-placeholder-val="{{ false }}">
+                      <span class="ms fill" style="font-size:20px; color:#ba1a1a; flex:none;">cancel</span>
+                    </sc-if>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+
+            <!-- Bottom nav -->
+            <div style="border-top:1px solid #F0F4F8; padding:18px 28px; display:flex; align-items:center; justify-content:space-between; background:#F8FAFC;">
+              <button onClick="{{ prevQuestion }}" style="{{ prevBtnStyle }}" style-hover="border-color:#0b1c30; color:#0b1c30;">
+                <span class="ms" style="font-size:18px;">arrow_back</span>Anterior
+              </button>
+              <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:center; max-width:400px;">
+                <sc-for list="{{ questionDots }}" as="d" hint-placeholder-count="10">
+                  <div style="{{ d.style }}"></div>
+                </sc-for>
+              </div>
+              <button onClick="{{ nextQuestion }}" style="{{ nextBtnStyle }}" style-hover="filter:brightness(1.08);">
+                {{ nextBtnLabel }}<span class="ms" style="font-size:18px;">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+
+        </sc-if>
+
+        <!-- ═══ RESULTS ═══ -->
+        <sc-if value="{{ isResults }}" hint-placeholder-val="{{ false }}">
+          <div style="max-width:700px; margin:0 auto; width:100%; display:flex; flex-direction:column; gap:24px;">
+            <!-- Score hero -->
+            <div style="background:#0b1c30; border-radius:20px; padding:40px 32px; text-align:center; position:relative; overflow:hidden;">
+              <div class="jp" style="position:absolute; font-size:280px; font-weight:800; opacity:.05; color:#fff; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none;">合</div>
+              <div style="position:relative;">
+                <div style="font-size:13px; font-weight:700; color:rgba(255,255,255,.5); text-transform:uppercase; letter-spacing:.12em; margin-bottom:16px;">Resultado · JLPT {{ examLevel }}</div>
+                <div style="font-family:'Plus Jakarta Sans'; font-size:80px; font-weight:800; color:{{ finalScoreColor }}; line-height:1; margin-bottom:8px;">{{ finalScore }}%</div>
+                <div style="font-size:18px; font-weight:700; color:#fff; margin-bottom:24px;">{{ resultVerdict }}</div>
+                <div style="display:flex; justify-content:center; gap:32px;">
+                  <div style="text-align:center;">
+                    <div style="font-family:'Plus Jakarta Sans'; font-size:24px; font-weight:800; color:#fff;">{{ correctCount }}</div>
+                    <div style="font-size:12px; color:rgba(255,255,255,.5); margin-top:3px;">Corretas</div>
+                  </div>
+                  <div style="width:1px; background:rgba(255,255,255,.12);"></div>
+                  <div style="text-align:center;">
+                    <div style="font-family:'Plus Jakarta Sans'; font-size:24px; font-weight:800; color:#ac2b2f;">{{ wrongCount }}</div>
+                    <div style="font-size:12px; color:rgba(255,255,255,.5); margin-top:3px;">Incorretas</div>
+                  </div>
+                  <div style="width:1px; background:rgba(255,255,255,.12);"></div>
+                  <div style="text-align:center;">
+                    <div style="font-family:'Plus Jakarta Sans'; font-size:24px; font-weight:800; color:rgba(255,255,255,.4);">{{ skippedCount }}</div>
+                    <div style="font-size:12px; color:rgba(255,255,255,.5); margin-top:3px;">Puladas</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Section breakdown -->
+            <div style="background:#fff; border:1px solid #E2E8F0; border-radius:16px; padding:24px; display:flex; flex-direction:column; gap:18px;">
+              <h3 style="font-size:17px; font-weight:800; margin:0;">Desempenho por seção</h3>
+              <sc-for list="{{ sectionResults }}" as="sr" hint-placeholder-count="3">
+                <div style="display:flex; align-items:center; gap:14px;">
+                  <div style="width:36px; height:36px; background:#FFF1F1; border-radius:10px; display:flex; align-items:center; justify-content:center; flex:none;">
+                    <span class="ms fill" style="font-size:20px; color:#ac2b2f;">{{ sr.icon }}</span>
+                  </div>
+                  <div style="flex:1; min-width:0;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                      <span style="font-weight:700; font-size:14px;">{{ sr.name }}</span>
+                      <span style="font-size:13px; font-weight:700; color:{{ sr.color }};">{{ sr.score }}%</span>
+                    </div>
+                    <div style="width:100%; height:6px; background:#F0F4F8; border-radius:999px; overflow:hidden;">
+                      <div style="height:100%; width:{{ sr.score }}%; background:{{ sr.color }}; border-radius:999px;"></div>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <!-- Actions -->
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+              <button onClick="{{ retryExam }}" style="flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:14px; border-radius:12px; background:#ac2b2f; color:#fff; border:none; font-weight:700; font-size:15px; cursor:pointer; min-width:160px;" style-hover="filter:brightness(1.08);">
+                <span class="ms" style="font-size:20px;">replay</span>Refazer simulado
+              </button>
+              <button onClick="{{ goHub }}" style="flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:14px; border-radius:12px; background:#fff; color:#0b1c30; border:1.5px solid #E2E8F0; font-weight:700; font-size:15px; cursor:pointer; min-width:160px;" style-hover="border-color:#ac2b2f; color:#ac2b2f;">
+                <span class="ms" style="font-size:20px;">home</span>Voltar aos simulados
+              </button>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+    </main>
+
+    <footer style="border-top:1px solid #E2E8F0; background:#fff;">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:24px 32px; flex-wrap:wrap; gap:12px;">
+        <p style="margin:0; font-size:12px; color:#94a3b8;">© 2026 Pingo Concursos · Koto v1.0</p>
+        <div style="display:flex; gap:20px;">
+          <a href="#" style="font-size:12px; color:#94a3b8; text-decoration:none;" style-hover="color:#ac2b2f;">Privacidade</a>
+          <a href="#" style="font-size:12px; color:#94a3b8; text-decoration:none;" style-hover="color:#ac2b2f;">Termos</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      view: 'hub',        // 'hub' | 'exam' | 'results'
+      examLevel: null,    // 'N5' | 'N4' | 'N3'
+      sectionIdx: 0,      // current section index
+      questionIdx: 0,     // current question within section
+      answers: {},        // { 'sec-q': optionIndex }
+      revealed: {},       // { 'sec-q': true } after answering
+      timerPct: 100,
+      examMode: 'simulado',
+      sidebarCollapsed: false,
+    };
+    this._timerRef = null;
+  }
+
+  // ─── JLPT N5 EXAM DATA ────────────────────────────────────
+  // Format:
+  //   sections[].questions[].prompt    – question text
+  //   sections[].questions[].word      – big JP word shown (optional)
+  //   sections[].questions[].context   – context sentence (optional)
+  //   sections[].questions[].options   – array of 4 option strings
+  //   sections[].questions[].answer    – correct option index (0-3)
+  //   sections[].questions[].type      – 'kanji'|'vocab'|'grammar'|'reading'
+  //
+  EXAMS() { return {
+    N5: {
+      level: 'N5', levelName: 'Básico',
+      sections: [
+        {
+          id: 'moji', name: '文字・語彙', nameDisplay: 'Vocabulário e Kanji',
+          icon: 'abc', desc: 'Leitura de kanji, ortografia e vocabulário em contexto',
+          time: 25, questions: [
+            { type:'kanji', prompt:'Como se lê o kanji sublinhado?', word:'食べる', options:['たべる','しょくべる','くべる','たぶる'], answer:0 },
+            { type:'kanji', prompt:'Como se lê o kanji sublinhado?', word:'水', options:['みな','みず','すい','しゅい'], answer:1 },
+            { type:'kanji', prompt:'Como se lê o kanji sublinhado?', word:'日本語', options:['にほんご','にほんごう','にっぽんご','にほんこ'], answer:0 },
+            { type:'vocab', prompt:'Escolha a palavra que melhor completa a frase.', context:'毎朝、私は______を飲みます。', options:['みず','ほん','でんしゃ','えき'], answer:0 },
+            { type:'vocab', prompt:'Qual palavra tem o mesmo significado que「大きい」?', options:['ちいさい','おおきい','あたらしい','たかい'], answer:1 },
+            { type:'vocab', prompt:'Escolha a palavra correta para completar a frase.', context:'______に乗って学校へ行きます。', options:['でんしゃ','みず','ごはん','ほん'], answer:0 },
+            { type:'kanji', prompt:'Qual é a leitura correta de「先生」?', options:['せんせい','せいせん','さきせい','まえせん'], answer:0 },
+            { type:'vocab', prompt:'O que significa「ありがとう」?', options:['Com licença','Bom dia','Obrigado(a)','Adeus'], answer:2 },
+          ],
+        },
+        {
+          id: 'bunpo', name: '文法・読解', nameDisplay: 'Gramática e Leitura',
+          icon: 'article', desc: 'Formas gramaticais, composição de frases e compreensão de textos',
+          time: 50, questions: [
+            { type:'grammar', prompt:'Escolha a forma correta para completar a frase.', context:'私______学生です。', options:['は','が','を','に'], answer:0 },
+            { type:'grammar', prompt:'Escolha a partícula correta.', context:'東京______行きます。', options:['は','が','を','に'], answer:3 },
+            { type:'grammar', prompt:'Qual é a forma negativa correta de「食べます」?', options:['食べません','食べないます','食べじゃない','食べくない'], answer:0 },
+            { type:'grammar', prompt:'Complete a frase com a forma verbal correta.', context:'明日、友達______会います。', options:['は','と','が','も'], answer:1 },
+            { type:'grammar', prompt:'Escolha a resposta correta para a pergunta: 「これは何ですか？」', options:['はい、そうです。','これはほんです。','わたしはがくせいです。','いいえ、ちがいます。'], answer:1 },
+            { type:'reading', prompt:'Leia o texto e responda: Quantos anos tem Yamada-san?', context:'山田さんは二十歳の学生です。毎日学校へ行きます。', options:['18 anos','20 anos','22 anos','25 anos'], answer:1 },
+            { type:'reading', prompt:'Com base no texto, o que Yamada-san faz todos os dias?', context:'山田さんは二十歳の学生です。毎日学校へ行きます。', options:['Trabalha no escritório','Vai à escola','Fica em casa','Viaja de trem'], answer:1 },
+            { type:'grammar', prompt:'Escolha a forma correta do adjetivo.', context:'このりんごは______です。', options:['あかい','あかく','あかくて','あか'], answer:0 },
+          ],
+        },
+        {
+          id: 'chokai', name: '聴解', nameDisplay: 'Compreensão Auditiva',
+          icon: 'hearing', desc: 'Identificação de kana e vocabulário por som (simulado visual)',
+          time: 30, questions: [
+            { type:'listen', prompt:'Qual kana representa o som "ka"?', options:['か','た','な','は'], answer:0 },
+            { type:'listen', prompt:'Qual kana representa o som "mi"?', options:['め','み','む','も'], answer:1 },
+            { type:'listen', prompt:'Qual palavra representa o que você ouviu? (Soa como "densha")', options:['でんしゃ','てんしゃ','でんさ','てんさ'], answer:0 },
+            { type:'listen', prompt:'Qual kana representa o som "tsu"?', options:['て','つ','と','た'], answer:1 },
+            { type:'listen', prompt:'Qual palavra representa "obrigado" em japonês?', options:['おはよう','すみません','ありがとう','さようなら'], answer:2 },
+            { type:'listen', prompt:'Qual kana representa o som "shi"?', options:['せ','さ','し','す'], answer:2 },
+          ],
+        },
+      ],
+    },
+  }; }
+
+  startExam(level) {
+    this.setState({ view:'exam', examLevel:level, sectionIdx:0, questionIdx:0, answers:{}, revealed:{}, timerPct:100 });
+  }
+  abandonExam()  { this.setState({ view:'hub', examLevel:null }); }
+  goHub()        { this.setState({ view:'hub' }); }
+  retryExam()    { this.startExam(this.state.examLevel); }
+
+  answerKey(si, qi) { return `${si}-${qi}`; }
+
+  selectOption(optIdx) {
+    const { sectionIdx, questionIdx, revealed } = this.state;
+    const k = this.answerKey(sectionIdx, questionIdx);
+    if (revealed[k]) return; // already answered
+    this.setState(s => ({
+      answers:  { ...s.answers,  [k]: optIdx },
+      revealed: { ...s.revealed, [k]: true  },
+    }));
+  }
+
+  nextQuestion() {
+    const exam = this.EXAMS()[this.state.examLevel];
+    if (!exam) return;
+    const sections = exam.sections;
+    const { sectionIdx, questionIdx } = this.state;
+    const curSection = sections[sectionIdx];
+    if (questionIdx < curSection.questions.length - 1) {
+      this.setState({ questionIdx: questionIdx + 1 });
+    } else if (sectionIdx < sections.length - 1) {
+      this.setState({ sectionIdx: sectionIdx + 1, questionIdx: 0 });
+    } else {
+      this.setState({ view: 'results' });
+    }
+  }
+
+  prevQuestion() {
+    const { sectionIdx, questionIdx } = this.state;
+    if (questionIdx > 0) {
+      this.setState({ questionIdx: questionIdx - 1 });
+    } else if (sectionIdx > 0) {
+      const exam = this.EXAMS()[this.state.examLevel];
+      const prevSec = exam.sections[sectionIdx - 1];
+      this.setState({ sectionIdx: sectionIdx - 1, questionIdx: prevSec.questions.length - 1 });
+    }
+  }
+
+
+  _sidebarVals(activeKey) {
+    const c = this.state.sidebarCollapsed || false;
+    const sidebarStyle = `width:${c?'68px':'256px'}; flex:none; position:sticky; top:0; height:100vh; background:#fff; border-right:1px solid #E2E8F0; display:flex; flex-direction:column; padding:${c?'20px 10px':'28px 14px'}; gap:20px; z-index:50; overflow:hidden; transition:width .25s ease, padding .25s ease;`;
+    const logoAreaStyle = `display:flex; align-items:center; gap:12px; padding:${c?'0':'0 8px'}; justify-content:${c?'center':'flex-start'};`;
+    const aS = c ? 'display:flex; align-items:center; justify-content:center; padding:12px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:11px 14px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; font-size:14px; font-weight:700; text-decoration:none;';
+    const iS = c ? 'display:flex; align-items:center; justify-content:center; padding:12px; color:#565e74; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:11px 14px; color:#565e74; border-radius:8px; font-size:14px; font-weight:600; text-decoration:none;';
+    const sbBotStyle = c ? 'display:flex; align-items:center; justify-content:center; padding:10px; color:#94a3b8; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:10px 14px; color:#94a3b8; border-radius:8px; font-size:14px; font-weight:600; text-decoration:none;';
+    const cfgBotStyle = activeKey === 'config' ? (c ? 'display:flex; align-items:center; justify-content:center; padding:12px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:11px 14px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; font-size:14px; font-weight:700; text-decoration:none;') : sbBotStyle;
+    const sidebarToggleStyle = c ? 'display:flex; align-items:center; justify-content:center; padding:10px; color:#94a3b8; border-radius:8px; width:100%; border:none; cursor:pointer; background:transparent;' : 'display:flex; align-items:center; gap:8px; padding:9px 14px; color:#94a3b8; border-radius:8px; width:100%; border:none; cursor:pointer; background:transparent;';
+    const NAV = [
+      { key:'inicio',      icon:'home',           label:'Início',       href:'Treino de Kana.dc.html' },
+      { key:'estudo',      icon:'auto_stories',   label:'Aulas Extras', href:'Treino de Kana.dc.html' },
+      { key:'kana',        icon:'translate',      label:'Kana',         href:'Treino de Kana.dc.html' },
+      { key:'vocabulario', icon:'menu_book',      label:'Vocabulário',  href:'Vocabulario.dc.html' },
+      { key:'treino',      icon:'sports_esports', label:'Treino Vocab', href:'Treino de Vocabulario.dc.html' },
+      { key:'simulados',   icon:'assignment',     label:'Simulados',    href:'Simulados.dc.html' },
+      { key:'progresso',   icon:'trending_up',    label:'Progresso',    href:'Progresso.dc.html' },
+    ];
+    const navItems = NAV.map(n => ({ ...n, style: n.key === activeKey ? aS : iS, fill: n.key === activeKey ? 'fill' : '' }));
+    return {
+      sidebarStyle, sidebarExpanded: !c, logoAreaStyle, navItems, sbBotStyle, cfgBotStyle, sidebarToggleStyle,
+      sidebarToggleIcon: c ? 'chevron_right' : 'chevron_left',
+      cfgFill: activeKey === 'config' ? 'fill' : '',
+      toggleSidebar: () => this.setState(s => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+    };
+  }
+
+  renderVals() {
+    const { view, examLevel, sectionIdx, questionIdx, answers, revealed } = this.state;
+    const exam = examLevel ? this.EXAMS()[examLevel] : null;
+
+    // ── Hub ──
+    const examCardBase = 'background:#fff; border:2px solid #E2E8F0; border-radius:18px; padding:24px; display:flex; flex-direction:column; transition:all .15s;';
+    const examCardActive = 'background:#fff; border:2px solid #ac2b2f; border-radius:18px; padding:24px; display:flex; flex-direction:column; box-shadow:0 4px 20px rgba(172,43,47,.12);';
+    const examCards = [
+      {
+        level:'N5', levelName:'Básico — Iniciante', levelColor:'#ac2b2f', iconBg:'#FFF1F1', icon:'school',
+        sections:[{icon:'abc',name:'Vocabulário e Kanji',time:'25 min'},{icon:'article',name:'Gramática e Leitura',time:'50 min'},{icon:'hearing',name:'Compreensão Auditiva',time:'30 min'}],
+        totalTime:'~105 min', questions:22,
+        cardStyle: examCardActive,
+        btnStyle:'display:flex; align-items:center; justify-content:center; gap:8px; padding:12px; border-radius:12px; background:#ac2b2f; color:#fff; border:none; font-weight:700; font-size:14px; cursor:pointer; width:100%;',
+        btnLabel:'Iniciar N5',
+        onClick: () => this.startExam('N5'),
+      },
+      {
+        level:'N4', levelName:'Elementar', levelColor:'#94a3b8', iconBg:'#F8FAFC', icon:'lock',
+        sections:[{icon:'abc',name:'Vocabulário e Kanji',time:'30 min'},{icon:'article',name:'Gramática e Leitura',time:'60 min'},{icon:'hearing',name:'Compreensão Auditiva',time:'35 min'}],
+        totalTime:'~125 min', questions:38,
+        cardStyle: examCardBase,
+        btnStyle:'display:flex; align-items:center; justify-content:center; gap:8px; padding:12px; border-radius:12px; background:#F8FAFC; color:#94a3b8; border:1.5px solid #E2E8F0; font-weight:700; font-size:14px; cursor:not-allowed; width:100%;',
+        btnLabel:'Bloqueado',
+        onClick: () => {},
+      },
+      {
+        level:'N3', levelName:'Intermediário', levelColor:'#94a3b8', iconBg:'#F8FAFC', icon:'lock',
+        sections:[{icon:'abc',name:'Vocabulário e Kanji',time:'30 min'},{icon:'article',name:'Gramática e Leitura',time:'70 min'},{icon:'hearing',name:'Compreensão Auditiva',time:'40 min'}],
+        totalTime:'~140 min', questions:52,
+        cardStyle: examCardBase,
+        btnStyle:'display:flex; align-items:center; justify-content:center; gap:8px; padding:12px; border-radius:12px; background:#F8FAFC; color:#94a3b8; border:1.5px solid #E2E8F0; font-weight:700; font-size:14px; cursor:not-allowed; width:100%;',
+        btnLabel:'Bloqueado',
+        onClick: () => {},
+      },
+    ];
+
+    const history = [
+      { level:'N5', date:'18 jun 2026', score:78, scoreColor:'#00846d', time:'1h 32m' },
+      { level:'N5', date:'12 jun 2026', score:65, scoreColor:'#ac2b2f',  time:'1h 48m' },
+      { level:'N5', date:'05 jun 2026', score:54, scoreColor:'#ac2b2f',  time:'1h 55m' },
+    ];
+
+    // ── Exam ──
+    let sectionTabs=[], currentSectionIcon='', currentSectionTitle='', currentSectionDesc='';
+    let currentQ=null, currentOptions=[], questionDots=[], timerDisplay='--:--';
+    let currentQuestionNum=1, totalQuestionsInSection=1, questionTypeLabel='';
+    let prevBtnStyle='', nextBtnStyle='', nextBtnLabel='Próxima';
+
+    if (exam) {
+      const sections = exam.sections;
+      const sec = sections[sectionIdx];
+      currentSectionIcon  = sec.icon;
+      currentSectionTitle = sec.nameDisplay;
+      currentSectionDesc  = sec.desc;
+      currentQuestionNum  = questionIdx + 1;
+      totalQuestionsInSection = sec.questions.length;
+
+      const typeLabels = { kanji:'Leitura de Kanji', vocab:'Vocabulário em contexto', grammar:'Gramática', reading:'Compreensão de texto', listen:'Identificação auditiva' };
+      const q = sec.questions[questionIdx];
+      currentQ = {
+        prompt: q.prompt,
+        hasContext: !!q.context,
+        context: q.context || '',
+        hasWord: !!q.word,
+        word: q.word || '',
+      };
+      questionTypeLabel = typeLabels[q.type] || q.type;
+
+      const k = this.answerKey(sectionIdx, questionIdx);
+      const chosen = answers[k];
+      const isRev  = !!revealed[k];
+
+      const numColors = ['#ac2b2f','#0b1c30','#00846d','#7c3aed'];
+      currentOptions = q.options.map((text, i) => {
+        const isCorrect = isRev && i === q.answer;
+        const isWrong   = isRev && i === chosen && i !== q.answer;
+        const isSel     = i === chosen && !isRev;
+        let bgStyle='background:#fff; border:2px solid #E2E8F0;';
+        let hoverStyle='border-color:#0b1c30;';
+        if (isSel)     { bgStyle='background:#e5eeff; border:2px solid #0b1c30;'; }
+        if (isCorrect) { bgStyle='background:#e6f7f1; border:2px solid #00846d;'; hoverStyle=''; }
+        if (isWrong)   { bgStyle='background:#ffdad6; border:2px solid #ba1a1a;'; hoverStyle=''; }
+        return {
+          num: i+1, text,
+          style: `display:flex; align-items:center; gap:14px; padding:14px 16px; border-radius:12px; cursor:pointer; ${bgStyle}`,
+          hoverStyle,
+          numBg: isSel ? '#0b1c30' : isCorrect ? '#00846d' : isWrong ? '#ba1a1a' : '#F8FAFC',
+          numBorder: isSel ? '#0b1c30' : isCorrect ? '#00846d' : isWrong ? '#ba1a1a' : '#E2E8F0',
+          numColor: (isSel||isCorrect||isWrong) ? '#fff' : '#565e74',
+          isCorrect, isWrong,
+          onClick: () => this.selectOption(i),
+        };
+      });
+
+      // dots
+      questionDots = sec.questions.map((_, i) => {
+        const dk = this.answerKey(sectionIdx, i);
+        const isAns = !!revealed[dk];
+        const isCurrent = i === questionIdx;
+        let bg = '#E2E8F0';
+        if (isAns) { const a=answers[dk]; bg = a===sec.questions[i].answer ? '#00846d' : '#ac2b2f'; }
+        if (isCurrent) bg = '#0b1c30';
+        return { style: `width:${isCurrent?'24px':'10px'}; height:10px; border-radius:999px; background:${bg}; transition:all .2s;` };
+      });
+
+      // section tabs
+      sectionTabs = sections.map((s, i) => {
+        const isCurrent = i === sectionIdx;
+        const isDone    = i < sectionIdx;
+        return {
+          id: s.id, icon: s.icon, iconFill: isDone ? 'fill' : '', label: s.nameDisplay,
+          done: isDone,
+          style: isCurrent
+            ? 'display:flex; align-items:center; gap:6px; padding:8px 16px; border-radius:999px; background:#0b1c30; color:#fff; font-size:13px; font-weight:700;'
+            : isDone
+            ? 'display:flex; align-items:center; gap:6px; padding:8px 16px; border-radius:999px; background:#e6f7f1; color:#00846d; border:1px solid #00846d; font-size:13px; font-weight:600;'
+            : 'display:flex; align-items:center; gap:6px; padding:8px 16px; border-radius:999px; background:#fff; color:#94a3b8; border:1px solid #E2E8F0; font-size:13px; font-weight:600;',
+        };
+      });
+
+      timerDisplay = `${sec.time}:00`;
+      const isLastQ = questionIdx === sec.questions.length - 1 && sectionIdx === sections.length - 1;
+      const isLastInSec = questionIdx === sec.questions.length - 1;
+      nextBtnLabel = isLastQ ? 'Ver resultado' : isLastInSec ? 'Próxima seção' : 'Próxima';
+      nextBtnStyle = `display:flex; align-items:center; gap:6px; padding:10px 20px; border-radius:999px; background:#ac2b2f; color:#fff; border:none; font-weight:700; font-size:14px; cursor:pointer;`;
+      prevBtnStyle = (sectionIdx === 0 && questionIdx === 0)
+        ? 'display:flex; align-items:center; gap:6px; padding:10px 20px; border-radius:999px; background:#F8FAFC; color:#94a3b8; border:1.5px solid #E2E8F0; font-size:14px; font-weight:600; cursor:not-allowed;'
+        : 'display:flex; align-items:center; gap:6px; padding:10px 20px; border-radius:999px; background:#fff; color:#565e74; border:1.5px solid #E2E8F0; font-size:14px; font-weight:600; cursor:pointer;';
+    }
+
+    // ── Results ──
+    let finalScore=0, correctCount=0, wrongCount=0, skippedCount=0, finalScoreColor='#94a3b8', resultVerdict='', sectionResults=[];
+    if (exam) {
+      let total=0, correct=0;
+      sectionResults = exam.sections.map(s => {
+        let sc=0, tc=s.questions.length;
+        s.questions.forEach((q,qi) => {
+          const k = this.answerKey(exam.sections.indexOf(s), qi);
+          total++;
+          if (revealed[k]) {
+            if (answers[k] === q.answer) { correct++; sc++; }
+            else wrongCount++;
+          } else skippedCount++;
+        });
+        const pct = Math.round(sc/tc*100);
+        return { name:s.nameDisplay, icon:s.icon, score:pct, color: pct>=60?'#00846d':'#ac2b2f' };
+      });
+      correctCount = correct;
+      wrongCount   = total - correct - skippedCount;
+      finalScore   = Math.round(correct/total*100);
+      finalScoreColor = finalScore>=80?'#00846d':finalScore>=60?'#565e74':'#ac2b2f';
+      resultVerdict   = finalScore>=80?'Aprovado! 🎉':finalScore>=60?'Quase lá — continue praticando!':'Precisa de mais estudo 📚';
+    }
+
+    const sb = this._sidebarVals('simulados');
+    const examMode = this.state.examMode || 'simulado';
+    const mOn  = 'flex:1; display:flex; align-items:center; gap:14px; padding:18px 24px; background:#0b1c30; color:#fff; border:none; cursor:pointer; font-family:inherit;';
+    const mOff = 'flex:1; display:flex; align-items:center; gap:14px; padding:18px 24px; background:transparent; color:#565e74; border:none; cursor:pointer; font-family:inherit;';
+    return {
+      ...sb,
+      isHub: view==='hub', inExam: view==='exam', isResults: view==='results',
+      headerTitle: view==='hub'?'Simulados': view==='exam'?`Simulado JLPT ${examLevel}`:'Resultado · JLPT N5',
+      examCards, history,
+      // exam
+      sectionLabel: exam ? exam.sections[sectionIdx]?.nameDisplay : '',
+      sectionTabs, currentSectionIcon, currentSectionTitle, currentSectionDesc,
+      currentQ, currentOptions, questionDots,
+      currentQuestionNum, totalQuestionsInSection, questionTypeLabel,
+      timerDisplay, timerPct: this.state.timerPct,
+      prevBtnStyle, nextBtnStyle, nextBtnLabel,
+      prevQuestion: () => this.prevQuestion(),
+      nextQuestion: () => this.nextQuestion(),
+      abandonExam: () => this.abandonExam(),
+      // results
+      finalScore, finalScoreColor, resultVerdict,
+      correctCount, wrongCount, skippedCount,
+      sectionResults, examLevel: examLevel||'N5',
+      retryExam: () => this.retryExam(),
+      goHub: () => this.goHub(),
+      isSimuladoMode: examMode === 'simulado',
+      isTreinoMode:   examMode === 'treino',
+      simuladoBtnStyle: examMode === 'simulado' ? mOn : mOff,
+      treinoBtnStyle:   examMode === 'treino'   ? mOn : mOff,
+      setSimuladoMode:  () => this.setState({ examMode: 'simulado' }),
+      setTreinoMode:    () => this.setState({ examMode: 'treino' }),
+      examModeLabel:    examMode === 'treino' ? 'Treino Livre' : 'Simulado Oficial',
+    };
+  }
+}
+</script>
+</body>
+</html>

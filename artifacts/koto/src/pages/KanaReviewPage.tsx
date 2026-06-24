@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useLocation } from 'wouter';
-import { Sparkles } from 'lucide-react';
+import { MaterialIcon } from '../components/ui/MaterialIcon';
 import { allKana } from '../data/kana';
 import type { KanaItem } from '../types/kana';
 import { getMasteredKana, getNeverSeenKana, getWeakKana, getKanaCharacterStats } from '../services/progress/progress.local';
@@ -56,7 +56,7 @@ export function KanaReviewPage() {
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium"
                 data-testid="kana-review-practice-weak-btn"
               >
-                <Sparkles size={14} />
+                <MaterialIcon name="bolt" filled size={16} />
                 Praticar agora
               </button>
             )}

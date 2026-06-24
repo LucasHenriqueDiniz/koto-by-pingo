@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Inter', sans-serif; color: #0b1c30; background: #F8FAFC; }
+  h1,h2,h3,h4 { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
+  button, input { font-family: inherit; font-size: inherit; color: inherit; }
+  input:focus { outline: none; }
+  .ms { font-family: 'Material Symbols Outlined'; font-weight: normal; font-style: normal; line-height: 1; letter-spacing: normal; text-transform: none; display: inline-block; white-space: nowrap; -webkit-font-smoothing: antialiased; }
+  .ms.fill { font-variation-settings: 'FILL' 1; }
+  .jp { font-family: 'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic',sans-serif; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+</style>
+</helmet>
+
+<div style="display:flex; align-items:stretch; min-height:100vh;">
+
+  <!-- SIDEBAR -->
+  <aside style="{{ sidebarStyle }}">
+    <div style="{{ logoAreaStyle }}">
+      <div style="width:40px; height:40px; background:#ac2b2f; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; flex:none;">
+        <span class="ms fill" style="font-size:24px;">translate</span>
+      </div>
+      <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+        <div style="min-width:0;">
+          <h1 style="font-size:20px; font-weight:800; line-height:1.1; white-space:nowrap;">Koto</h1>
+          <p style="margin:0; font-size:11px; color:#94a3b8;">by Pingo</p>
+        </div>
+      </sc-if>
+    </div>
+    <nav style="display:flex; flex-direction:column; gap:2px; flex:1;">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="7">
+        <a href="{{ n.href }}" style="{{ n.style }}" style-hover="opacity:.85;">
+          <span class="ms {{ n.fill }}" style="font-size:22px; flex:none;">{{ n.icon }}</span>
+          <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+            <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ n.label }}</span>
+          </sc-if>
+        </a>
+      </sc-for>
+    </nav>
+    <div style="display:flex; flex-direction:column; gap:2px;">
+      <a href="Configuracoes.dc.html" style="{{ cfgBotStyle }}" style-hover="background:#F8FAFC; color:#565e74; text-decoration:none;">
+        <span class="ms {{ cfgFill }}" style="font-size:22px; flex:none;">settings</span>
+        <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+          <span style="white-space:nowrap;">Configurações</span>
+        </sc-if>
+      </a>
+      <a href="Login.dc.html" style="{{ sbBotStyle }}" style-hover="background:#F8FAFC; color:#565e74; text-decoration:none;">
+        <span class="ms" style="font-size:22px; flex:none;">logout</span>
+        <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+          <span style="white-space:nowrap;">Sair</span>
+        </sc-if>
+      </a>
+    </div>
+    <button onClick="{{ toggleSidebar }}" style="{{ sidebarToggleStyle }}" style-hover="color:#ac2b2f; background:#FFF1F1;">
+      <span class="ms" style="font-size:20px;">{{ sidebarToggleIcon }}</span>
+      <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+        <span style="font-size:13px; font-weight:600; white-space:nowrap;">Recolher</span>
+      </sc-if>
+    </button>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="flex:1; min-width:0; display:flex; flex-direction:column; min-height:100vh;">
+
+    <header style="position:sticky; top:0; z-index:40; background:rgba(248,250,252,.92); backdrop-filter:blur(8px); height:64px; display:flex; justify-content:space-between; align-items:center; padding:0 32px; border-bottom:1px solid #E2E8F0; flex:none;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <h2 style="font-size:20px; font-weight:800; color:#ac2b2f; margin:0;">Vocabulário</h2>
+        <div style="display:flex; align-items:center; background:#e5eeff; padding:4px 12px; border-radius:999px; gap:7px;">
+          <span style="width:6px; height:6px; border-radius:999px; background:#ac2b2f; animation:pulse 2s infinite; flex:none;"></span>
+          <span style="font-size:12px; font-weight:500;">Sessão ativa · 12m</span>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button onClick="{{ toggleRomaji }}" style="{{ romajiBtn }}" style-hover="opacity:.85;">
+          <span class="ms" style="font-size:14px;">translate</span>ローマ字
+        </button>
+        <div style="width:1px; height:20px; background:#E2E8F0; flex:none;"></div>
+        <a href="Treino de Vocabulario.dc.html" style="display:flex; align-items:center; gap:6px; padding:8px 16px; border-radius:999px; background:#ac2b2f; color:#fff; text-decoration:none; font-size:13px; font-weight:700;" style-hover="filter:brightness(1.08);">
+          <span class="ms fill" style="font-size:16px;">sports_esports</span>Treinar
+        </a>
+        <div style="width:33px; height:33px; border-radius:999px; background:#FFF1F1; border:2px solid #ce4445; display:flex; align-items:center; justify-content:center; color:#ac2b2f; font-weight:800; font-size:13px; cursor:pointer;">P</div>
+      </div>
+    </header>
+
+    <main style="flex:1; display:flex; flex-direction:column;">
+      <div style="flex:1; padding:32px; max-width:1200px; width:100%; margin:0 auto; display:flex; flex-direction:column; gap:24px;">
+
+        <!-- Hero search + stats -->
+        <div style="background:#0b1c30; border-radius:20px; padding:28px 32px; display:flex; align-items:center; gap:24px; position:relative; overflow:hidden;">
+          <div class="jp" style="position:absolute; right:-20px; top:-20px; font-size:200px; font-weight:800; opacity:.06; color:#fff; line-height:1; pointer-events:none; user-select:none;">語</div>
+          <div style="flex:1; position:relative;">
+            <h2 style="font-size:22px; font-weight:800; color:#fff; margin:0 0 6px;">Banco de palavras</h2>
+            <p style="color:rgba(255,255,255,.6); font-size:14px; margin:0 0 20px;">{{ wordCount }} palavras · {{ masteredCount }} dominadas</p>
+            <div style="display:flex; align-items:center; background:rgba(255,255,255,.1); border:1.5px solid rgba(255,255,255,.2); border-radius:12px; padding:0 16px; max-width:480px;" style-focus-within="border-color:rgba(255,255,255,.5);">
+              <span class="ms" style="color:rgba(255,255,255,.5); font-size:22px; flex:none;">search</span>
+              <input type="text" placeholder="Buscar por palavra, kana ou significado…" value="{{ searchText }}" onChange="{{ onSearch }}" style="flex:1; border:none; padding:13px 10px; font-size:14px; background:transparent; color:#fff;">
+              <sc-if value="{{ hasSearch }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ clearSearch }}" style="background:none; border:none; color:rgba(255,255,255,.5); cursor:pointer; padding:4px; display:flex; align-items:center;" style-hover="color:#fff;">
+                  <span class="ms" style="font-size:18px;">close</span>
+                </button>
+              </sc-if>
+            </div>
+          </div>
+          <div style="display:flex; gap:16px; flex:none;">
+            <div style="background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:16px 20px; text-align:center; min-width:80px;">
+              <div style="font-family:'Plus Jakarta Sans'; font-size:26px; font-weight:800; color:#fff;">{{ masteredCount }}</div>
+              <div style="font-size:11px; font-weight:600; color:rgba(255,255,255,.5); text-transform:uppercase; letter-spacing:.07em; margin-top:3px;">Dominadas</div>
+            </div>
+            <div style="background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:16px 20px; text-align:center; min-width:80px;">
+              <div style="font-family:'Plus Jakarta Sans'; font-size:26px; font-weight:800; color:#ac2b2f;">{{ learningCount }}</div>
+              <div style="font-size:11px; font-weight:600; color:rgba(255,255,255,.5); text-transform:uppercase; letter-spacing:.07em; margin-top:3px;">Aprendendo</div>
+            </div>
+            <div style="background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:16px 20px; text-align:center; min-width:80px;">
+              <div style="font-family:'Plus Jakarta Sans'; font-size:26px; font-weight:800; color:rgba(255,255,255,.4);">{{ newCount }}</div>
+              <div style="font-size:11px; font-weight:600; color:rgba(255,255,255,.5); text-transform:uppercase; letter-spacing:.07em; margin-top:3px;">Novas</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- JLPT level tabs -->
+        <div style="display:flex; background:#fff; border:1px solid #E2E8F0; border-radius:999px; padding:4px; gap:2px; align-self:flex-start; flex-wrap:wrap;">
+          <sc-for list="{{ jlptTabs }}" as="t" hint-placeholder-count="4">
+            <button onClick="{{ t.onClick }}" style="{{ t.style }}">
+              {{ t.label }}
+              <span style="margin-left:6px; font-size:11px; opacity:.7;">({{ t.count }})</span>
+            </button>
+          </sc-for>
+        </div>
+
+        <!-- Categories + controls row -->
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="7">
+              <button onClick="{{ cat.onClick }}" style="{{ cat.style }}" style-hover="border-color:#ac2b2f; color:#ac2b2f;">
+                <sc-if value="{{ cat.emoji }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:14px;">{{ cat.emoji }}</span>
+                </sc-if>
+                {{ cat.label }}
+              </button>
+            </sc-for>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex:none;">
+            <!-- Sort -->
+            <div style="display:flex; align-items:center; gap:6px; padding:8px 14px; border:1.5px solid #E2E8F0; border-radius:10px; background:#fff; cursor:pointer; font-size:13px; font-weight:600; color:#565e74;" style-hover="border-color:#ac2b2f; color:#ac2b2f;">
+              <span class="ms" style="font-size:18px;">sort</span>{{ sortLabel }}
+            </div>
+            <!-- View toggle -->
+            <div style="display:flex; background:#fff; border:1.5px solid #E2E8F0; border-radius:10px; padding:3px; gap:2px;">
+              <button onClick="{{ setGrid }}" style="{{ gridBtnStyle }}"><span class="ms" style="font-size:18px;">grid_view</span></button>
+              <button onClick="{{ setList }}" style="{{ listBtnStyle }}"><span class="ms" style="font-size:18px;">view_list</span></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter status strip -->
+        <sc-if value="{{ hasActiveFilter }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; align-items:center; gap:10px; padding:10px 16px; background:#FFF1F1; border:1px solid #ce4445; border-radius:12px;">
+            <span class="ms fill" style="color:#ac2b2f; font-size:18px;">filter_list</span>
+            <span style="font-size:13px; font-weight:600; color:#ac2b2f; flex:1;">{{ filteredCount }} palavras · {{ activeFilterLabel }}</span>
+            <button onClick="{{ clearFilters }}" style="display:flex; align-items:center; gap:5px; font-size:12px; font-weight:700; color:#ac2b2f; background:none; border:none; cursor:pointer; padding:0;" style-hover="opacity:.7;">
+              <span class="ms" style="font-size:16px;">close</span>Limpar filtro
+            </button>
+          </div>
+        </sc-if>
+
+        <!-- GRID VIEW -->
+        <sc-if value="{{ isGridView }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:14px;">
+            <sc-for list="{{ filteredWords }}" as="w" hint-placeholder-count="12">
+              <div style="background:#fff; border:1px solid #E2E8F0; border-radius:16px; overflow:hidden; cursor:pointer;" style-hover="border-color:#ac2b2f; box-shadow:0 4px 16px rgba(172,43,47,.09); transform:translateY(-2px);">
+                <!-- Color top strip by status -->
+                <div style="height:4px; background:{{ w.statusColor }};"></div>
+                <div style="padding:18px 16px;">
+                  <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px;">
+                    <div class="jp" style="font-size:34px; font-weight:700; color:#0b1c30; line-height:1;">{{ w.kanji }}</div>
+                    <span style="font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; background:{{ w.badgeBg }}; color:{{ w.badgeColor }}; white-space:nowrap; flex:none;">{{ w.statusLabel }}</span>
+                  </div>
+                  <div class="jp" style="font-size:13px; color:#94a3b8; margin-bottom:2px; letter-spacing:.05em;">{{ w.reading }}</div>
+                  <sc-if value="{{ w.showWordRomaji }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size:11px; color:#b8c5d0; font-style:italic; margin-bottom:4px;">{{ w.romaji }}</div>
+                  </sc-if>
+                  <div style="font-size:13px; font-weight:600; color:#0b1c30; line-height:1.4;">{{ w.meaning }}</div>
+                  <div style="margin-top:10px; display:flex; align-items:center; justify-content:space-between;">
+                    <span style="font-size:11px; font-weight:600; padding:3px 8px; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:999px; color:#94a3b8; white-space:nowrap;">{{ w.category }}</span>
+                    <div style="display:flex; gap:5px;">
+                      <button style="width:28px; height:28px; border-radius:999px; border:1px solid #E2E8F0; background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#94a3b8;" style-hover="border-color:#ac2b2f; color:#ac2b2f; background:#FFF1F1;">
+                        <span class="ms" style="font-size:16px;">volume_up</span>
+                      </button>
+                      <button style="width:28px; height:28px; border-radius:999px; border:1px solid #E2E8F0; background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#94a3b8;" style-hover="border-color:#ac2b2f; color:#ac2b2f; background:#FFF1F1;">
+                        <span class="ms" style="font-size:16px;">bookmark</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- LIST VIEW -->
+        <sc-if value="{{ isListView }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff; border:1px solid #E2E8F0; border-radius:16px; overflow:hidden;">
+            <div style="display:grid; grid-template-columns:2fr 1.5fr 2fr 1fr 80px; gap:0; padding:10px 20px; border-bottom:1px solid #F0F4F8; font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em;">
+              <span>Palavra</span><span>Leitura</span><span>Significado</span><span>Categoria</span><span>Status</span>
+            </div>
+            <sc-for list="{{ filteredWords }}" as="w" hint-placeholder-count="10">
+              <div style="display:grid; grid-template-columns:2fr 1.5fr 2fr 1fr 80px; gap:0; padding:14px 20px; border-bottom:1px solid #F8FAFC; align-items:center; cursor:pointer;" style-hover="background:#FFF9F9;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div style="width:4px; height:36px; border-radius:999px; background:{{ w.statusColor }}; flex:none;"></div>
+                  <div class="jp" style="font-size:24px; font-weight:700; color:#0b1c30;">{{ w.kanji }}</div>
+                </div>
+                <div>
+                  <div class="jp" style="font-size:14px; color:#565e74; letter-spacing:.05em;">{{ w.reading }}</div>
+                  <sc-if value="{{ w.showWordRomaji }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size:11px; color:#b8c5d0; font-style:italic; margin-top:2px;">{{ w.romaji }}</div>
+                  </sc-if>
+                </div>
+                <div style="font-size:14px; font-weight:600; color:#0b1c30;">{{ w.meaning }}</div>
+                <span style="font-size:12px; font-weight:600; padding:3px 10px; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:999px; color:#94a3b8; justify-self:start; white-space:nowrap;">{{ w.category }}</span>
+                <span style="font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px; background:{{ w.badgeBg }}; color:{{ w.badgeColor }}; white-space:nowrap; justify-self:start;">{{ w.statusLabel }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- Empty state -->
+        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 32px; gap:16px; text-align:center;">
+            <span class="ms" style="font-size:72px; color:#E2E8F0;">search_off</span>
+            <h3 style="font-size:22px; font-weight:800;">Nenhuma palavra encontrada</h3>
+            <p style="color:#94a3b8; font-size:15px; margin:0;">Tente outro termo ou limpe os filtros.</p>
+            <button onClick="{{ clearFilters }}" style="padding:12px 28px; border-radius:999px; background:#ac2b2f; color:#fff; border:none; font-weight:700; cursor:pointer; margin-top:8px;" style-hover="filter:brightness(1.08);">Limpar filtros</button>
+          </div>
+        </sc-if>
+
+        <!-- Pagination -->
+        <sc-if value="{{ showPagination }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; align-items:center; justify-content:center; gap:6px; padding:8px 0 24px;">
+            <button style="width:38px; height:38px; border-radius:10px; border:1.5px solid #E2E8F0; background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#565e74;" style-hover="border-color:#ac2b2f; color:#ac2b2f;">
+              <span class="ms" style="font-size:20px;">chevron_left</span>
+            </button>
+            <sc-for list="{{ pages }}" as="pg" hint-placeholder-count="5">
+              <button style="{{ pg.style }}" style-hover="border-color:#ac2b2f; color:#ac2b2f;">{{ pg.n }}</button>
+            </sc-for>
+            <button style="width:38px; height:38px; border-radius:10px; border:1.5px solid #E2E8F0; background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#565e74;" style-hover="border-color:#ac2b2f; color:#ac2b2f;">
+              <span class="ms" style="font-size:20px;">chevron_right</span>
+            </button>
+          </div>
+        </sc-if>
+
+      </div>
+    </main>
+
+    <footer style="border-top:1px solid #E2E8F0; background:#fff;">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:24px 32px; max-width:1200px; margin:0 auto; flex-wrap:wrap; gap:12px;">
+        <p style="margin:0; font-size:12px; color:#94a3b8;">© 2026 Pingo Concursos · Koto v1.0</p>
+        <div style="display:flex; gap:20px;">
+          <a href="#" style="font-size:12px; color:#94a3b8; text-decoration:none;" style-hover="color:#ac2b2f;">Privacidade</a>
+          <a href="#" style="font-size:12px; color:#94a3b8; text-decoration:none;" style-hover="color:#ac2b2f;">Termos</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = {
+    view: 'grid',
+    activeCategory: 'todas',
+    activeJlpt: 'todos',
+    searchText: '',
+    currentPage: 1,
+    sortLabel: 'A–Z',
+    showRomaji: true,
+  };
+
+  // ─────────────────────────────────────────────────────────────
+  // BANCO DE PALAVRAS
+  // Para adicionar novas palavras, cole um objeto no array do
+  // nível correspondente (N5, N4, N3).
+  //
+  // Campos obrigatórios:
+  //   kanji    – forma escrita (kanji ou kana se não tiver kanji)
+  //   reading  – leitura em hiragana / katakana
+  //   meaning  – tradução em português
+  //   category – chave de categoria (ver CATEGORIES abaixo)
+  //   status   – 'mastered' | 'learning' | 'new'
+  //
+  // Categorias disponíveis:
+  //   'Saudações' | 'Verbos' | 'Substantivos' | 'Adjetivos'
+  //   'Comida'    | 'Viagem' | 'Escola'        | 'Números'
+  //   'Tempo'     | 'Família'
+  // ─────────────────────────────────────────────────────────────
+  WORDS() {
+    const N5 = [
+      // ── Saudações ──
+      { kanji:'こんにちは', reading:'こんにちは', romaji:'konnichiwa', meaning:'Olá (tarde)',             category:'Saudações', status:'mastered' },
+      { kanji:'おはようございます', reading:'おはようございます', romaji:'ohayou gozaimasu', meaning:'Bom dia (formal)', category:'Saudações', status:'mastered' },
+      { kanji:'こんばんは', reading:'こんばんは', romaji:'konbanwa', meaning:'Boa noite',               category:'Saudações', status:'mastered' },
+      { kanji:'ありがとう', reading:'ありがとう', romaji:'arigatou', meaning:'Obrigado(a)',             category:'Saudações', status:'mastered' },
+      { kanji:'すみません', reading:'すみません', romaji:'sumimasen', meaning:'Com licença / Desculpe',  category:'Saudações', status:'mastered' },
+      { kanji:'さようなら', reading:'さようなら', romaji:'sayounara', meaning:'Adeus',                   category:'Saudações', status:'learning' },
+      { kanji:'はじめまして', reading:'はじめまして', romaji:'hajimemashite', meaning:'Prazer em conhecê-lo(a)', category:'Saudações', status:'learning' },
+      // ── Verbos ──
+      { kanji:'食べる', reading:'たべる',   romaji:'taberu',   meaning:'Comer',              category:'Verbos', status:'mastered' },
+      { kanji:'飲む',   reading:'のむ',     romaji:'nomu',     meaning:'Beber',              category:'Verbos', status:'mastered' },
+      { kanji:'行く',   reading:'いく',     romaji:'iku',      meaning:'Ir',                 category:'Verbos', status:'mastered' },
+      { kanji:'来る',   reading:'くる',     romaji:'kuru',     meaning:'Vir',                category:'Verbos', status:'learning' },
+      { kanji:'見る',   reading:'みる',     romaji:'miru',     meaning:'Ver / assistir',     category:'Verbos', status:'learning' },
+      { kanji:'話す',   reading:'はなす',   romaji:'hanasu',   meaning:'Falar',              category:'Verbos', status:'learning' },
+      { kanji:'聞く',   reading:'きく',     romaji:'kiku',     meaning:'Ouvir / perguntar',  category:'Verbos', status:'new' },
+      { kanji:'書く',   reading:'かく',     romaji:'kaku',     meaning:'Escrever',           category:'Verbos', status:'new' },
+      { kanji:'読む',   reading:'よむ',     romaji:'yomu',     meaning:'Ler',                category:'Verbos', status:'new' },
+      // ── Substantivos ──
+      { kanji:'水',    reading:'みず',     romaji:'mizu',     meaning:'Água',               category:'Comida', status:'mastered' },
+      { kanji:'ご飯',  reading:'ごはん',   romaji:'gohan',    meaning:'Arroz / refeição',   category:'Comida', status:'mastered' },
+      { kanji:'肉',    reading:'にく',     romaji:'niku',     meaning:'Carne',              category:'Comida', status:'learning' },
+      { kanji:'魚',    reading:'さかな',   romaji:'sakana',   meaning:'Peixe',              category:'Comida', status:'new' },
+      { kanji:'野菜',  reading:'やさい',   romaji:'yasai',    meaning:'Legumes / verduras', category:'Comida', status:'new' },
+      { kanji:'お茶',  reading:'おちゃ',   romaji:'ocha',     meaning:'Chá',                category:'Comida', status:'mastered' },
+      { kanji:'パン',  reading:'ぱん',     romaji:'pan',      meaning:'Pão',                category:'Comida', status:'mastered' },
+      { kanji:'電車',  reading:'でんしゃ', romaji:'densha',   meaning:'Trem',               category:'Viagem', status:'learning' },
+      { kanji:'駅',    reading:'えき',     romaji:'eki',      meaning:'Estação de trem',    category:'Viagem', status:'mastered' },
+      { kanji:'学校',  reading:'がっこう', romaji:'gakkou',   meaning:'Escola',             category:'Escola', status:'learning' },
+      { kanji:'先生',  reading:'せんせい', romaji:'sensei',   meaning:'Professor(a)',       category:'Escola', status:'mastered' },
+      { kanji:'本',    reading:'ほん',     romaji:'hon',      meaning:'Livro',              category:'Escola', status:'mastered' },
+      { kanji:'日本語',reading:'にほんご', romaji:'nihongo',  meaning:'Língua japonesa',    category:'Escola', status:'learning' },
+    ];
+
+    const N4 = [
+      // ── Verbos ──
+      { kanji:'起きる', reading:'おきる',   romaji:'okiru',     meaning:'Acordar / levantar', category:'Verbos', status:'new' },
+      { kanji:'寝る',   reading:'ねる',     romaji:'neru',      meaning:'Dormir / deitar',    category:'Verbos', status:'new' },
+      { kanji:'働く',   reading:'はたらく', romaji:'hataraku',  meaning:'Trabalhar',          category:'Verbos', status:'new' },
+      { kanji:'教える', reading:'おしえる', romaji:'oshieru',   meaning:'Ensinar',            category:'Verbos', status:'new' },
+      { kanji:'覚える', reading:'おぼえる', romaji:'oboeru',    meaning:'Memorizar / lembrar',category:'Verbos', status:'new' },
+      { kanji:'忘れる', reading:'わすれる', romaji:'wasureru',  meaning:'Esquecer',           category:'Verbos', status:'new' },
+      { kanji:'使う',   reading:'つかう',   romaji:'tsukau',    meaning:'Usar',               category:'Verbos', status:'new' },
+      // ── Substantivos ──
+      { kanji:'空港',   reading:'くうこう', romaji:'kuukou',    meaning:'Aeroporto',          category:'Viagem', status:'new' },
+      { kanji:'ホテル', reading:'ほてる',   romaji:'hoteru',    meaning:'Hotel',              category:'Viagem', status:'new' },
+      { kanji:'地図',   reading:'ちず',     romaji:'chizu',     meaning:'Mapa',               category:'Viagem', status:'new' },
+      { kanji:'切符',   reading:'きっぷ',   romaji:'kippu',     meaning:'Passagem / bilhete', category:'Viagem', status:'new' },
+      { kanji:'病院',   reading:'びょういん',romaji:'byouin',   meaning:'Hospital',           category:'Substantivos', status:'new' },
+      { kanji:'薬',     reading:'くすり',   romaji:'kusuri',    meaning:'Remédio',            category:'Substantivos', status:'new' },
+      { kanji:'勉強',   reading:'べんきょう',romaji:'benkyou',  meaning:'Estudo / estudar',  category:'Escola', status:'new' },
+      { kanji:'試験',   reading:'しけん',   romaji:'shiken',    meaning:'Exame / prova',      category:'Escola', status:'new' },
+      // ── Adjetivos ──
+      { kanji:'便利',   reading:'べんり',   romaji:'benri',     meaning:'Conveniente / prático', category:'Adjetivos', status:'new' },
+      { kanji:'大切',   reading:'たいせつ', romaji:'taisetsu',  meaning:'Importante / precioso', category:'Adjetivos', status:'new' },
+      { kanji:'親切',   reading:'しんせつ', romaji:'shinsetsu', meaning:'Gentil / prestativo',   category:'Adjetivos', status:'new' },
+    ];
+
+    const N3 = [
+      // ── Verbos ──
+      { kanji:'集める', reading:'あつめる', romaji:'atsumeru',  meaning:'Colecionar / reunir', category:'Verbos', status:'new' },
+      { kanji:'選ぶ',   reading:'えらぶ',   romaji:'erabu',     meaning:'Escolher / selecionar',category:'Verbos', status:'new' },
+      { kanji:'続ける', reading:'つづける', romaji:'tsuzukeru', meaning:'Continuar',           category:'Verbos', status:'new' },
+      { kanji:'変える', reading:'かえる',   romaji:'kaeru',     meaning:'Mudar / alterar',     category:'Verbos', status:'new' },
+      { kanji:'比べる', reading:'くらべる', romaji:'kuraberu',  meaning:'Comparar',            category:'Verbos', status:'new' },
+      // ── Substantivos ──
+      { kanji:'経験',   reading:'けいけん', romaji:'keiken',    meaning:'Experiência',         category:'Substantivos', status:'new' },
+      { kanji:'機会',   reading:'きかい',   romaji:'kikai',     meaning:'Oportunidade',        category:'Substantivos', status:'new' },
+      { kanji:'文化',   reading:'ぶんか',   romaji:'bunka',     meaning:'Cultura',             category:'Substantivos', status:'new' },
+      { kanji:'社会',   reading:'しゃかい', romaji:'shakai',    meaning:'Sociedade',           category:'Substantivos', status:'new' },
+      { kanji:'政治',   reading:'せいじ',   romaji:'seiji',     meaning:'Política',            category:'Substantivos', status:'new' },
+      // ── Adjetivos ──
+      { kanji:'正確',   reading:'せいかく', romaji:'seikaku',   meaning:'Preciso / exato',     category:'Adjetivos', status:'new' },
+      { kanji:'複雑',   reading:'ふくざつ', romaji:'fukuzatsu', meaning:'Complexo / complicado',category:'Adjetivos', status:'new' },
+    ];
+
+    return [
+      ...N5.map(w => ({ ...w, jlpt:'N5' })),
+      ...N4.map(w => ({ ...w, jlpt:'N4' })),
+      ...N3.map(w => ({ ...w, jlpt:'N3' })),
+    ];
+  }
+
+  CATEGORIES() {
+    return [
+      { key:'todas',    label:'Todas',     emoji:'' },
+      { key:'Verbos',   label:'Verbos',    emoji:'⚡' },
+      { key:'Comida',   label:'Comida',    emoji:'🍱' },
+      { key:'Viagem',   label:'Viagem',    emoji:'✈️' },
+      { key:'Saudações',label:'Saudações', emoji:'👋' },
+      { key:'Escola',   label:'Escola',    emoji:'📚' },
+    ];
+  }
+
+  statusProps(s) {
+    if (s === 'mastered') return { statusColor:'#00846d', badgeBg:'#e6f7f1', badgeColor:'#00846d', statusLabel:'Dominada' };
+    if (s === 'learning') return { statusColor:'#ac2b2f', badgeBg:'#FFF1F1', badgeColor:'#ac2b2f', statusLabel:'Aprendendo' };
+    return { statusColor:'#cbd5e1', badgeBg:'#F8FAFC', badgeColor:'#94a3b8', statusLabel:'Nova' };
+  }
+
+
+  _sidebarVals(activeKey) {
+    const c = this.state.sidebarCollapsed || false;
+    const sidebarStyle = `width:${c?'68px':'256px'}; flex:none; position:sticky; top:0; height:100vh; background:#fff; border-right:1px solid #E2E8F0; display:flex; flex-direction:column; padding:${c?'20px 10px':'28px 14px'}; gap:20px; z-index:50; overflow:hidden; transition:width .25s ease, padding .25s ease;`;
+    const logoAreaStyle = `display:flex; align-items:center; gap:12px; padding:${c?'0':'0 8px'}; justify-content:${c?'center':'flex-start'};`;
+    const aS = c ? 'display:flex; align-items:center; justify-content:center; padding:12px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:11px 14px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; font-size:14px; font-weight:700; text-decoration:none;';
+    const iS = c ? 'display:flex; align-items:center; justify-content:center; padding:12px; color:#565e74; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:11px 14px; color:#565e74; border-radius:8px; font-size:14px; font-weight:600; text-decoration:none;';
+    const sbBotStyle = c ? 'display:flex; align-items:center; justify-content:center; padding:10px; color:#94a3b8; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:10px 14px; color:#94a3b8; border-radius:8px; font-size:14px; font-weight:600; text-decoration:none;';
+    const cfgBotStyle = activeKey === 'config' ? (c ? 'display:flex; align-items:center; justify-content:center; padding:12px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:11px 14px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; font-size:14px; font-weight:700; text-decoration:none;') : sbBotStyle;
+    const sidebarToggleStyle = c ? 'display:flex; align-items:center; justify-content:center; padding:10px; color:#94a3b8; border-radius:8px; width:100%; border:none; cursor:pointer; background:transparent;' : 'display:flex; align-items:center; gap:8px; padding:9px 14px; color:#94a3b8; border-radius:8px; width:100%; border:none; cursor:pointer; background:transparent;';
+    const NAV = [
+      { key:'inicio',      icon:'home',           label:'Início',       href:'Treino de Kana.dc.html' },
+      { key:'estudo',      icon:'auto_stories',   label:'Aulas Extras', href:'Treino de Kana.dc.html' },
+      { key:'kana',        icon:'translate',      label:'Kana',         href:'Treino de Kana.dc.html' },
+      { key:'vocabulario', icon:'menu_book',      label:'Vocabulário',  href:'Vocabulario.dc.html' },
+      { key:'treino',      icon:'sports_esports', label:'Treino Vocab', href:'Treino de Vocabulario.dc.html' },
+      { key:'simulados',   icon:'assignment',     label:'Simulados',    href:'Simulados.dc.html' },
+      { key:'progresso',   icon:'trending_up',    label:'Progresso',    href:'Progresso.dc.html' },
+    ];
+    const navItems = NAV.map(n => ({ ...n, style: n.key === activeKey ? aS : iS, fill: n.key === activeKey ? 'fill' : '' }));
+    return {
+      sidebarStyle, sidebarExpanded: !c, logoAreaStyle, navItems, sbBotStyle, cfgBotStyle, sidebarToggleStyle,
+      sidebarToggleIcon: c ? 'chevron_right' : 'chevron_left',
+      cfgFill: activeKey === 'config' ? 'fill' : '',
+      toggleSidebar: () => this.setState(s => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+    };
+  }
+
+  renderVals() {
+    const { view, activeCategory, activeJlpt, searchText, currentPage } = this.state;
+    const all = this.WORDS();
+
+    const byStatus = (s) => all.filter(w => w.status === s).length;
+
+    // filter
+    let filtered = all;
+    if (activeJlpt !== 'todos')    filtered = filtered.filter(w => w.jlpt === activeJlpt);
+    if (activeCategory !== 'todas') filtered = filtered.filter(w => w.category === activeCategory);
+    if (searchText.trim()) {
+      const q = searchText.trim().toLowerCase();
+      filtered = filtered.filter(w =>
+        w.kanji.includes(q) || w.reading.includes(q) || w.meaning.toLowerCase().includes(q)
+      );
+    }
+
+    const filteredWords = filtered.map(w => ({ ...w, ...this.statusProps(w.status), showWordRomaji: this.state.showRomaji && !!w.romaji }));
+
+    const hasSearch  = !!searchText.trim();
+    const hasActiveFilter = activeCategory !== 'todas' || activeJlpt !== 'todos' || hasSearch;
+    const activeFilterLabel = [
+      activeJlpt !== 'todos' ? activeJlpt : '',
+      activeCategory !== 'todas' ? activeCategory : '',
+      hasSearch ? `"${searchText}"` : '',
+    ].filter(Boolean).join(' + ');
+
+    // pagination
+    const perPage = view === 'grid' ? 12 : 10;
+    const totalPages = Math.max(1, Math.ceil(filteredWords.length / perPage));
+    const page = Math.min(currentPage, totalPages);
+    const pageWords = filteredWords.slice((page - 1) * perPage, page * perPage);
+    const pages = Array.from({ length: Math.min(totalPages, 7) }, (_, i) => ({
+      n: i + 1,
+      style: (i + 1) === page
+        ? 'width:38px; height:38px; border-radius:10px; border:1.5px solid #ac2b2f; background:#ac2b2f; cursor:pointer; font-weight:800; font-size:14px; color:#fff;'
+        : 'width:38px; height:38px; border-radius:10px; border:1.5px solid #E2E8F0; background:#fff; cursor:pointer; font-weight:600; font-size:14px; color:#565e74;',
+    }));
+
+    const sb = this._sidebarVals('vocabulario');
+
+    // category chips
+    const chipOn  = 'display:flex; align-items:center; gap:6px; padding:8px 16px; border-radius:999px; border:1.5px solid #ac2b2f; background:#ac2b2f; cursor:pointer; font-size:13px; font-weight:700; color:#fff; white-space:nowrap;';
+    const chipOff = 'display:flex; align-items:center; gap:6px; padding:8px 16px; border-radius:999px; border:1.5px solid #E2E8F0; background:#fff; cursor:pointer; font-size:13px; font-weight:600; color:#565e74; white-space:nowrap;';
+    const categories = this.CATEGORIES().map(c => ({
+      ...c,
+      style: activeCategory === c.key ? chipOn : chipOff,
+      onClick: () => this.setState({ activeCategory: c.key, currentPage: 1 }),
+    }));
+
+    // view toggle
+    const vOn  = 'width:34px; height:34px; border-radius:8px; border:none; background:#ac2b2f; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#fff;';
+    const vOff = 'width:34px; height:34px; border-radius:8px; border:none; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#94a3b8;';
+
+    // JLPT tabs
+    const jlptTabOn  = 'padding:8px 18px; border-radius:999px; border:none; cursor:pointer; font-size:13px; font-weight:800; background:#ac2b2f; color:#fff; white-space:nowrap;';
+    const jlptTabOff = 'padding:8px 18px; border-radius:999px; border:none; cursor:pointer; font-size:13px; font-weight:600; background:transparent; color:#565e74; white-space:nowrap;';
+    const jlptTabs = [
+      { key:'todos', label:'Todos', count: all.length },
+      { key:'N5', label:'N5 · Básico',      count: all.filter(w=>w.jlpt==='N5').length },
+      { key:'N4', label:'N4 · Elementar',   count: all.filter(w=>w.jlpt==='N4').length },
+      { key:'N3', label:'N3 · Intermediário', count: all.filter(w=>w.jlpt==='N3').length },
+    ].map(t => ({
+      ...t,
+      style: activeJlpt === t.key ? jlptTabOn : jlptTabOff,
+      onClick: () => this.setState({ activeJlpt: t.key, currentPage: 1 }),
+    }));
+
+    return {
+      ...sb, categories, jlptTabs, activeJlpt,
+      wordCount:     all.length,
+      masteredCount: byStatus('mastered'),
+      learningCount: byStatus('learning'),
+      newCount:      byStatus('new'),
+      searchText,
+      hasSearch,
+      onSearch:     (e) => this.setState({ searchText: e.target.value, currentPage: 1 }),
+      clearSearch:  () => this.setState({ searchText: '', currentPage: 1 }),
+      hasActiveFilter,
+      activeFilterLabel,
+      filteredCount: filteredWords.length,
+      clearFilters: () => this.setState({ activeCategory: 'todas', activeJlpt: 'todos', searchText: '', currentPage: 1 }),
+      filteredWords: pageWords,
+      isEmpty: filteredWords.length === 0,
+      isGridView: view === 'grid',
+      isListView: view === 'list',
+      setGrid: () => this.setState({ view: 'grid' }),
+      setList: () => this.setState({ view: 'list' }),
+      gridBtnStyle: view === 'grid' ? vOn : vOff,
+      listBtnStyle: view === 'list' ? vOn : vOff,
+      sortLabel: this.state.sortLabel,
+      showPagination: totalPages > 1,
+      pages, currentPage: page,
+      showRomaji: this.state.showRomaji,
+      toggleRomaji: () => this.setState(s => ({ showRomaji: !s.showRomaji })),
+      romajiBtn: this.state.showRomaji
+        ? 'display:flex; align-items:center; gap:4px; padding:6px 12px; border-radius:999px; border:none; background:#ac2b2f; color:#fff; cursor:pointer; font-size:12px; font-weight:700;'
+        : 'display:flex; align-items:center; gap:4px; padding:6px 12px; border-radius:999px; border:1.5px solid #E2E8F0; background:#fff; color:#94a3b8; cursor:pointer; font-size:12px; font-weight:600;',
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '@clerk/react';
-import { CloudUpload, Check, AlertTriangle } from 'lucide-react';
+import { MaterialIcon } from '@/components/ui/MaterialIcon';
 import { useCurrentUser } from '../../services/auth/auth.clerk';
 import { syncProgressToRemote } from '../../services/progress/progress.remote';
 import { hasSyncedToRemote, markSyncedToRemote } from '../../services/progress/progress.local';
@@ -33,7 +33,7 @@ export function SyncProgressBanner({ hasLocalProgress }: SyncProgressBannerProps
   return (
     <div className="bg-card border border-card-border rounded-2xl p-4 flex items-center justify-between flex-wrap gap-3" data-testid="sync-progress-banner">
       <div className="flex items-center gap-3">
-        <CloudUpload size={20} className="text-primary flex-shrink-0" />
+        <MaterialIcon name="cloud_upload" size={20} className="text-primary flex-shrink-0" />
         <div>
           <p className="text-sm font-medium text-foreground">Sincronize seu progresso</p>
           <p className="text-xs text-muted-foreground">
@@ -53,11 +53,11 @@ export function SyncProgressBanner({ hasLocalProgress }: SyncProgressBannerProps
           'Sincronizando...'
         ) : status === 'error' ? (
           <>
-            <AlertTriangle size={14} /> Tentar de novo
+            <MaterialIcon name="warning" size={14} /> Tentar de novo
           </>
         ) : (
           <>
-            <Check size={14} /> Sincronizar
+            <MaterialIcon name="check" size={14} /> Sincronizar
           </>
         )}
       </button>

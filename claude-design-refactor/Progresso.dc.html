@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:'Inter',sans-serif; color:#0b1c30; background:#F8FAFC; }
+    button,input { font-family:inherit; font-size:inherit; color:inherit; }
+    h1,h2,h3,h4,h5 { font-family:'Plus Jakarta Sans',sans-serif; margin:0; }
+    .ms { font-family:'Material Symbols Outlined'; font-weight:normal; font-style:normal; line-height:1; letter-spacing:normal; text-transform:none; display:inline-block; white-space:nowrap; word-wrap:normal; direction:ltr; -webkit-font-smoothing:antialiased; }
+    .ms.fill { font-variation-settings:'FILL' 1; }
+    .jp { font-family:'Hiragana Kaku Gothic ProN','Hiragana Sans','Yu Gothic',sans-serif; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  </style>
+</helmet>
+
+<div style="display:flex; min-height:100vh;">
+
+  <!-- SIDEBAR -->
+  <aside style="{{ sidebarStyle }}">
+    <div style="{{ logoAreaStyle }}">
+      <div style="width:40px; height:40px; background:#ac2b2f; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; flex:none;">
+        <span class="ms fill" style="font-size:24px;">translate</span>
+      </div>
+      <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+        <div style="min-width:0;">
+          <h1 style="font-size:20px; font-weight:800; line-height:1.1; white-space:nowrap;">Koto</h1>
+          <p style="margin:0; font-size:11px; color:#94a3b8;">by Pingo</p>
+        </div>
+      </sc-if>
+    </div>
+    <nav style="display:flex; flex-direction:column; gap:2px; flex:1;">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="7">
+        <a href="{{ n.href }}" style="{{ n.style }}" style-hover="opacity:.85;">
+          <span class="ms {{ n.fill }}" style="font-size:22px; flex:none;">{{ n.icon }}</span>
+          <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+            <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ n.label }}</span>
+          </sc-if>
+        </a>
+      </sc-for>
+    </nav>
+    <div style="display:flex; flex-direction:column; gap:2px;">
+      <a href="Configuracoes.dc.html" style="{{ cfgBotStyle }}" style-hover="background:#F8FAFC; color:#565e74; text-decoration:none;">
+        <span class="ms {{ cfgFill }}" style="font-size:22px; flex:none;">settings</span>
+        <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+          <span style="white-space:nowrap;">Configurações</span>
+        </sc-if>
+      </a>
+      <a href="Login.dc.html" style="{{ sbBotStyle }}" style-hover="background:#F8FAFC; color:#565e74; text-decoration:none;">
+        <span class="ms" style="font-size:22px; flex:none;">logout</span>
+        <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+          <span style="white-space:nowrap;">Sair</span>
+        </sc-if>
+      </a>
+    </div>
+    <button onClick="{{ toggleSidebar }}" style="{{ sidebarToggleStyle }}" style-hover="color:#ac2b2f; background:#FFF1F1;">
+      <span class="ms" style="font-size:20px;">{{ sidebarToggleIcon }}</span>
+      <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+        <span style="font-size:13px; font-weight:600; white-space:nowrap;">Recolher</span>
+      </sc-if>
+    </button>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <div style="flex:1; overflow-y:auto; padding:36px 40px; display:flex; flex-direction:column; gap:24px; min-width:0;">
+
+    <!-- Header -->
+    <div style="display:flex; align-items:center; justify-content:space-between; animation:fadeUp .3s ease both;">
+      <div>
+        <h1 style="font-size:28px; font-weight:800; color:#0b1c30; line-height:1.2; margin-bottom:4px;">Progresso</h1>
+        <p style="font-size:13px; color:#94a3b8; margin:0;">Domingo, 21 de junho de 2026</p>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="display:flex; align-items:center; gap:6px; padding:7px 14px; background:#fff; border:1.5px solid #E2E8F0; border-radius:999px;">
+          <span class="ms fill" style="font-size:16px; color:#ac2b2f;">local_fire_department</span>
+          <span style="font-size:13px; font-weight:800; color:#0b1c30;">14</span>
+          <span style="font-size:12px; color:#94a3b8;">dias</span>
+        </div>
+        <div style="width:38px; height:38px; border-radius:999px; background:#FFF1F1; border:2px solid #ce4445; display:flex; align-items:center; justify-content:center; color:#ac2b2f; font-weight:800; font-size:14px; flex:none; cursor:pointer;">P</div>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; animation:fadeUp .3s ease .08s both;">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div style="{{ s.cardStyle }}">
+          <div style="font-size:26px; line-height:1; margin-bottom:4px;">{{ s.emoji }}</div>
+          <div style="display:flex; align-items:baseline; gap:4px;">
+            <span style="font-family:'Plus Jakarta Sans'; font-size:30px; font-weight:800; color:#0b1c30; line-height:1;">{{ s.value }}</span>
+            <span style="font-size:13px; font-weight:600; color:#94a3b8;">{{ s.unit }}</span>
+          </div>
+          <div style="font-size:12px; font-weight:600; color:#565e74; margin-top:2px;">{{ s.label }}</div>
+          <div style="font-size:11px; font-weight:600; color:{{ s.trendColor }}; margin-top:4px;">{{ s.trend }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- Kana grid + Right column -->
+    <div style="display:grid; grid-template-columns:1fr 310px; gap:20px; align-items:start; animation:fadeUp .3s ease .16s both;">
+
+      <!-- Kana mastery -->
+      <div style="background:#fff; border-radius:20px; padding:28px; border:1.5px solid #E2E8F0;">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:14px; gap:12px;">
+          <div>
+            <h2 style="font-size:16px; font-weight:800; color:#0b1c30; margin-bottom:3px;">Domínio de Kana</h2>
+            <p style="font-size:12px; color:#94a3b8; margin:0;">{{ masteredKana }} de {{ totalKana }} dominados · {{ masteryPct }}% completo</p>
+          </div>
+          <div style="display:flex; gap:5px; flex:none;">
+            <button onClick="{{ setHiragana }}" style="{{ hiraBtn }}" style-hover="opacity:.85;">あ Hiragana</button>
+            <button onClick="{{ setKatakana }}" style="{{ kataBtn }}" style-hover="opacity:.85;">ア Katakana</button>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div style="background:#F0F4F8; border-radius:999px; height:5px; overflow:hidden; margin-bottom:18px;">
+          <div style="height:100%; width:{{ masteryPct }}%; background:linear-gradient(90deg,#ac2b2f 0%,#0b1c30 100%); border-radius:999px; transition:width .5s;"></div>
+        </div>
+
+        <!-- Kana grid 5 cols × 11 rows -->
+        <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:5px;">
+          <sc-for list="{{ kanaGrid }}" as="cell" hint-placeholder-count="55">
+            <div style="{{ cell.style }}">
+              <div class="jp" style="{{ cell.kanaStyle }}">{{ cell.kana }}</div>
+              <div style="{{ cell.romajiStyle }}">{{ cell.romaji }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <!-- Legend -->
+        <div style="display:flex; align-items:center; gap:20px; margin-top:16px; padding-top:14px; border-top:1px solid #F0F4F8; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:5px;">
+            <div style="width:12px; height:12px; border-radius:3px; background:#0b1c30; flex:none;"></div>
+            <span style="font-size:12px; color:#565e74;">Dominado ({{ masteredKana }})</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:5px;">
+            <div style="width:12px; height:12px; border-radius:3px; background:#FFF1F1; border:1px solid #fecaca; flex:none;"></div>
+            <span style="font-size:12px; color:#565e74;">Aprendendo ({{ learningKana }})</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:5px;">
+            <div style="width:12px; height:12px; border-radius:3px; background:#F8FAFC; border:1px solid #E2E8F0; flex:none;"></div>
+            <span style="font-size:12px; color:#565e74;">Novo</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div style="display:flex; flex-direction:column; gap:16px;">
+
+        <!-- Weekly activity -->
+        <div style="background:#fff; border-radius:20px; padding:22px 24px; border:1.5px solid #E2E8F0;">
+          <h3 style="font-size:15px; font-weight:800; color:#0b1c30; margin-bottom:2px;">Atividade semanal</h3>
+          <p style="font-size:12px; color:#94a3b8; margin:0 0 16px;">250 min estudados esta semana</p>
+          <div style="display:flex; align-items:flex-end; gap:6px; height:100px;">
+            <sc-for list="{{ weekBars }}" as="bar" hint-placeholder-count="7">
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; height:100%;">
+                <div style="flex:1; display:flex; align-items:flex-end; width:100%;">
+                  <div style="{{ bar.barStyle }}"></div>
+                </div>
+                <div style="{{ bar.labelStyle }}">{{ bar.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- Next reviews -->
+        <div style="background:#fff; border-radius:20px; padding:22px 24px; border:1.5px solid #E2E8F0;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+            <h3 style="font-size:15px; font-weight:800; color:#0b1c30;">Próximas revisões</h3>
+            <a href="Treino de Kana.dc.html" style="font-size:12px; font-weight:700; color:#ac2b2f; text-decoration:none;" style-hover="opacity:.7;">Ver todas →</a>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:7px;">
+            <sc-for list="{{ nextReviews }}" as="rev" hint-placeholder-count="4">
+              <div style="display:flex; align-items:center; gap:10px; padding:9px 12px; background:#F8FAFC; border-radius:11px; border:1px solid #F0F4F8;">
+                <div class="jp" style="font-size:24px; font-weight:700; color:#0b1c30; width:30px; text-align:center; line-height:1; flex:none;">{{ rev.kana }}</div>
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:13px; font-weight:700; color:#0b1c30;">{{ rev.romaji }}</div>
+                  <div style="font-size:11px; color:#94a3b8; margin-top:1px;">{{ rev.due }}</div>
+                </div>
+                <div style="{{ rev.urgStyle }}">{{ rev.urgLabel }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Activity calendar -->
+    <div style="background:#fff; border-radius:20px; padding:28px; border:1.5px solid #E2E8F0; animation:fadeUp .3s ease .24s both;">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 style="font-size:16px; font-weight:800; color:#0b1c30; margin-bottom:3px;">Calendário de atividade</h2>
+          <p style="font-size:12px; color:#94a3b8; margin:0;">Últimas 10 semanas</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:4px;">
+          <span style="font-size:11px; color:#94a3b8; margin-right:2px;">menos</span>
+          <div style="width:15px; height:15px; border-radius:3px; background:#E2E8F0;"></div>
+          <div style="width:15px; height:15px; border-radius:3px; background:#d5e5f5;"></div>
+          <div style="width:15px; height:15px; border-radius:3px; background:#94b8d9;"></div>
+          <div style="width:15px; height:15px; border-radius:3px; background:#4080ad;"></div>
+          <div style="width:15px; height:15px; border-radius:3px; background:#0b1c30;"></div>
+          <span style="font-size:11px; color:#94a3b8; margin-left:2px;">mais</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:4px; overflow-x:auto; align-items:flex-start;">
+        <!-- Day label column -->
+        <div style="display:flex; flex-direction:column; gap:4px; margin-right:2px; flex:none; padding-top:0;">
+          <sc-for list="{{ dayLabels }}" as="dl" hint-placeholder-count="7">
+            <div style="width:16px; height:24px; display:flex; align-items:center; justify-content:center; font-size:10px; color:#94a3b8; font-weight:600;">{{ dl }}</div>
+          </sc-for>
+        </div>
+        <!-- Weeks -->
+        <sc-for list="{{ calWeeks }}" as="week" hint-placeholder-count="10">
+          <div style="display:flex; flex-direction:column; gap:4px; flex:none;">
+            <sc-for list="{{ week.days }}" as="day" hint-placeholder-count="7">
+              <div style="{{ day.cellStyle }}"></div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- Achievements -->
+    <div style="background:#fff; border-radius:20px; padding:28px; border:1.5px solid #E2E8F0; animation:fadeUp .3s ease .32s both;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+        <div>
+          <h2 style="font-size:16px; font-weight:800; color:#0b1c30; margin-bottom:3px;">Conquistas</h2>
+          <p style="font-size:12px; color:#94a3b8; margin:0;">4 de 6 desbloqueadas</p>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:12px;">
+        <sc-for list="{{ achievements }}" as="a" hint-placeholder-count="6">
+          <div style="{{ a.cardStyle }}">
+            <div style="{{ a.emojiStyle }}">{{ a.emoji }}</div>
+            <div style="{{ a.titleStyle }}">{{ a.title }}</div>
+            <div style="font-size:11px; color:#94a3b8; line-height:1.4; text-align:center; margin-top:2px;">{{ a.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+class Component extends DCLogic {
+  state = { sidebarCollapsed: false, kanaSet: 'hiragana' };
+
+  GOJUON() {
+    // [hiragana, katakana, romaji] — null = empty grid position
+    return [
+      ['あ','ア','a'],  ['い','イ','i'],   ['う','ウ','u'],   ['え','エ','e'],  ['お','オ','o'],
+      ['か','カ','ka'], ['き','キ','ki'],  ['く','ク','ku'],  ['け','ケ','ke'], ['こ','コ','ko'],
+      ['さ','サ','sa'], ['し','シ','shi'], ['す','ス','su'],  ['せ','セ','se'], ['そ','ソ','so'],
+      ['た','タ','ta'], ['ち','チ','chi'], ['つ','ツ','tsu'], ['て','テ','te'], ['と','ト','to'],
+      ['な','ナ','na'], ['に','ニ','ni'],  ['ぬ','ヌ','nu'],  ['ね','ネ','ne'], ['の','ノ','no'],
+      ['は','ハ','ha'], ['ひ','ヒ','hi'],  ['ふ','フ','fu'],  ['へ','ヘ','he'], ['ほ','ホ','ho'],
+      ['ま','マ','ma'], ['み','ミ','mi'],  ['む','ム','mu'],  ['め','メ','me'], ['も','モ','mo'],
+      ['や','ヤ','ya'], [null,null,''],    ['ゆ','ユ','yu'],  [null,null,''],  ['よ','ヨ','yo'],
+      ['ら','ラ','ra'], ['り','リ','ri'],  ['る','ル','ru'],  ['れ','レ','re'], ['ろ','ロ','ro'],
+      ['わ','ワ','wa'], [null,null,''],    [null,null,''],   [null,null,''],  ['を','ヲ','wo'],
+      ['ん','ン','n'],  [null,null,''],    [null,null,''],   [null,null,''],  [null,null,''],
+    ];
+  }
+
+
+  _sidebarVals(activeKey) {
+    const c = this.state.sidebarCollapsed || false;
+    const sidebarStyle = `width:${c?'68px':'256px'}; flex:none; position:sticky; top:0; height:100vh; background:#fff; border-right:1px solid #E2E8F0; display:flex; flex-direction:column; padding:${c?'20px 10px':'28px 14px'}; gap:20px; z-index:50; overflow:hidden; transition:width .25s ease, padding .25s ease;`;
+    const logoAreaStyle = `display:flex; align-items:center; gap:12px; padding:${c?'0':'0 8px'}; justify-content:${c?'center':'flex-start'};`;
+    const aS = c ? 'display:flex; align-items:center; justify-content:center; padding:12px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:11px 14px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; font-size:14px; font-weight:700; text-decoration:none;';
+    const iS = c ? 'display:flex; align-items:center; justify-content:center; padding:12px; color:#565e74; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:11px 14px; color:#565e74; border-radius:8px; font-size:14px; font-weight:600; text-decoration:none;';
+    const sbBotStyle = c ? 'display:flex; align-items:center; justify-content:center; padding:10px; color:#94a3b8; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:10px 14px; color:#94a3b8; border-radius:8px; font-size:14px; font-weight:600; text-decoration:none;';
+    const cfgBotStyle = activeKey === 'config' ? (c ? 'display:flex; align-items:center; justify-content:center; padding:12px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; width:100%; text-decoration:none;' : 'display:flex; align-items:center; gap:12px; padding:11px 14px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; font-size:14px; font-weight:700; text-decoration:none;') : sbBotStyle;
+    const sidebarToggleStyle = c ? 'display:flex; align-items:center; justify-content:center; padding:10px; color:#94a3b8; border-radius:8px; width:100%; border:none; cursor:pointer; background:transparent;' : 'display:flex; align-items:center; gap:8px; padding:9px 14px; color:#94a3b8; border-radius:8px; width:100%; border:none; cursor:pointer; background:transparent;';
+    const NAV = [
+      { key:'inicio',      icon:'home',           label:'Início',       href:'Treino de Kana.dc.html' },
+      { key:'estudo',      icon:'auto_stories',   label:'Aulas Extras', href:'Treino de Kana.dc.html' },
+      { key:'kana',        icon:'translate',      label:'Kana',         href:'Treino de Kana.dc.html' },
+      { key:'vocabulario', icon:'menu_book',      label:'Vocabulário',  href:'Vocabulario.dc.html' },
+      { key:'treino',      icon:'sports_esports', label:'Treino Vocab', href:'Treino de Vocabulario.dc.html' },
+      { key:'simulados',   icon:'assignment',     label:'Simulados',    href:'Simulados.dc.html' },
+      { key:'progresso',   icon:'trending_up',    label:'Progresso',    href:'Progresso.dc.html' },
+    ];
+    const navItems = NAV.map(n => ({ ...n, style: n.key === activeKey ? aS : iS, fill: n.key === activeKey ? 'fill' : '' }));
+    return {
+      sidebarStyle, sidebarExpanded: !c, logoAreaStyle, navItems, sbBotStyle, cfgBotStyle, sidebarToggleStyle,
+      sidebarToggleIcon: c ? 'chevron_right' : 'chevron_left',
+      cfgFill: activeKey === 'config' ? 'fill' : '',
+      toggleSidebar: () => this.setState(s => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+    };
+  }
+
+  renderVals() {
+    const { kanaSet } = this.state;
+    const sb = this._sidebarVals('progresso');
+
+
+    // ── Kana grid ──
+    const goj = this.GOJUON();
+    const setIdx = kanaSet === 'katakana' ? 1 : 0;
+
+    const masteryOf = (i) => {
+      if (!goj[i][0]) return 'null';
+      const ri = Math.floor(i / 5);
+      if (ri < 2) return 'mastered';
+      if (ri < 4) return 'learning';
+      return 'new';
+    };
+
+    const kanaGrid = goj.map((row, i) => {
+      const isNull = !row[0];
+      const status = masteryOf(i);
+      const kana   = isNull ? '' : (row[setIdx] || '');
+      const romaji = isNull ? '' : row[2];
+      let bg, border, kanaColor, romajiColor;
+      if (isNull)                     { bg='transparent'; border='transparent'; kanaColor='transparent'; romajiColor='transparent'; }
+      else if (status === 'mastered') { bg='#0b1c30';  border='#0b1c30';  kanaColor='#fff';     romajiColor='rgba(255,255,255,.5)'; }
+      else if (status === 'learning') { bg='#FFF1F1';  border='#fecaca'; kanaColor='#ac2b2f';  romajiColor='#e88080'; }
+      else                            { bg='#F8FAFC';  border='#E2E8F0'; kanaColor='#CBD5E1';  romajiColor='#CBD5E1'; }
+      return {
+        kana, romaji, status, isNull,
+        style:       `background:${bg}; border:1.5px solid ${border}; border-radius:10px; padding:9px 4px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:2px;`,
+        kanaStyle:   `font-size:20px; font-weight:700; color:${kanaColor}; line-height:1;`,
+        romajiStyle: `font-size:10px; font-weight:600; color:${romajiColor}; letter-spacing:.04em;`,
+      };
+    });
+
+    const masteredKana = goj.filter((r, i) => r[0] && masteryOf(i) === 'mastered').length;
+    const learningKana = goj.filter((r, i) => r[0] && masteryOf(i) === 'learning').length;
+    const totalKana    = goj.filter(r => !!r[0]).length;
+    const masteryPct   = Math.round(masteredKana / totalKana * 100);
+
+    const hiraBtn = kanaSet === 'hiragana'
+      ? 'padding:5px 12px; border-radius:999px; border:none; cursor:pointer; font-family:inherit; font-size:12px; font-weight:700; background:#0b1c30; color:#fff;'
+      : 'padding:5px 12px; border-radius:999px; border:1px solid #E2E8F0; cursor:pointer; font-family:inherit; font-size:12px; font-weight:500; background:#fff; color:#565e74;';
+    const kataBtn = kanaSet === 'katakana'
+      ? 'padding:5px 12px; border-radius:999px; border:none; cursor:pointer; font-family:inherit; font-size:12px; font-weight:700; background:#0b1c30; color:#fff;'
+      : 'padding:5px 12px; border-radius:999px; border:1px solid #E2E8F0; cursor:pointer; font-family:inherit; font-size:12px; font-weight:500; background:#fff; color:#565e74;';
+
+    // ── Stats ──
+    const stats = [
+      { emoji:'🔥', value:'14', unit:'dias',     label:'Sequência ativa',      trend:'↑ 2 dias a mais vs semana passada', trendColor:'#00846d',
+        cardStyle:'background:#fff8f7; border:1.5px solid #fecaca; border-radius:18px; padding:22px; display:flex; flex-direction:column; gap:3px;' },
+      { emoji:'✅', value:String(masteredKana), unit:`/${totalKana} kana`, label:'Kana dominados', trend:`${masteryPct}% do total completo`, trendColor:'#565e74',
+        cardStyle:'background:#fff; border:1.5px solid #E2E8F0; border-radius:18px; padding:22px; display:flex; flex-direction:column; gap:3px;' },
+      { emoji:'📚', value:'47', unit:'palavras', label:'Vocabulário aprendido',  trend:'↑ 8 novas esta semana',            trendColor:'#00846d',
+        cardStyle:'background:#fff; border:1.5px solid #E2E8F0; border-radius:18px; padding:22px; display:flex; flex-direction:column; gap:3px;' },
+      { emoji:'⏱',  value:'4h', unit:'10min',   label:'Tempo esta semana',      trend:'↑ 35min vs semana passada',         trendColor:'#00846d',
+        cardStyle:'background:#fff; border:1.5px solid #E2E8F0; border-radius:18px; padding:22px; display:flex; flex-direction:column; gap:3px;' },
+    ];
+
+    // ── Weekly bars ──
+    const days = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+    const mins = [45, 20, 60, 0, 35, 75, 15];
+    const maxM = Math.max(...mins.filter(m => m > 0));
+    const weekBars = days.map((d, i) => {
+      const px = mins[i] > 0 ? Math.round(mins[i] / maxM * 72) + 8 : 4;
+      const isToday = i === 6;
+      const bg = isToday ? '#ac2b2f' : mins[i] > 0 ? '#0b1c30' : '#E2E8F0';
+      return {
+        label: d,
+        barStyle: `width:100%; height:${px}px; background:${bg}; border-radius:6px 6px 2px 2px; transition:height .3s;`,
+        labelStyle: `font-size:10px; font-weight:${isToday ? '800' : '600'}; color:${isToday ? '#ac2b2f' : '#94a3b8'};`,
+      };
+    });
+
+    // ── Activity calendar ──
+    const actData = [
+      0,1,2,1,0,1,2,
+      1,0,2,1,3,0,1,
+      0,1,2,3,1,0,2,
+      1,2,0,1,2,1,0,
+      0,1,3,2,1,2,1,
+      2,0,1,2,0,3,2,
+      1,0,2,1,3,2,1,
+      0,2,3,2,1,3,2,
+      3,1,4,3,2,3,1,
+      3,2,4,0,2,3,1,
+    ];
+    const calColors = ['#E2E8F0','#d5e5f5','#94b8d9','#4080ad','#0b1c30'];
+    const calWeeks = Array.from({length:10}, (_, wi) => ({
+      days: Array.from({length:7}, (_, di) => ({
+        cellStyle: `width:24px; height:24px; border-radius:4px; background:${calColors[actData[wi*7+di]]};`,
+      }))
+    }));
+
+    // ── Next reviews ──
+    const nextReviews = [
+      { kana:'さ', romaji:'sa',  due:'Agora',  urgLabel:'Urgente', urgStyle:'font-size:11px; font-weight:700; padding:3px 8px; border-radius:999px; background:#FFF1F1; color:#ac2b2f; white-space:nowrap;' },
+      { kana:'し', romaji:'shi', due:'Em 2h',  urgLabel:'Breve',   urgStyle:'font-size:11px; font-weight:700; padding:3px 8px; border-radius:999px; background:#fff7e6; color:#d97706; white-space:nowrap;' },
+      { kana:'す', romaji:'su',  due:'Hoje',   urgLabel:'Hoje',    urgStyle:'font-size:11px; font-weight:700; padding:3px 8px; border-radius:999px; background:#F0F4F8; color:#565e74; white-space:nowrap;' },
+      { kana:'せ', romaji:'se',  due:'Amanhã', urgLabel:'Amanhã',  urgStyle:'font-size:11px; font-weight:700; padding:3px 8px; border-radius:999px; background:#F8FAFC; color:#94a3b8; white-space:nowrap;' },
+    ];
+
+    // ── Achievements ──
+    const achievements = [
+      { emoji:'🔥', title:'Chama Viva',       desc:'14 dias seguidos',        earned:true  },
+      { emoji:'⚡', title:'Primeiros Passos',  desc:'Vogais dominadas',        earned:true  },
+      { emoji:'📚', title:'Vocabularista',     desc:'47 palavras aprendidas',  earned:true  },
+      { emoji:'🎯', title:'1º Simulado',       desc:'JLPT N5 completo',        earned:true  },
+      { emoji:'🌙', title:'Coruja Noturna',    desc:'Estudar após 23h',        earned:false },
+      { emoji:'🏆', title:'Mestre Katakana',   desc:'Dominar todos os 46',     earned:false },
+    ].map(a => ({
+      ...a,
+      cardStyle:  `display:flex; flex-direction:column; align-items:center; padding:20px 10px; border-radius:16px; text-align:center; border:1.5px solid ${a.earned ? '#0b1c30' : '#E2E8F0'}; background:${a.earned ? '#fff' : '#F8FAFC'};`,
+      emojiStyle: `font-size:30px; margin-bottom:8px;${a.earned ? '' : ' filter:grayscale(1); opacity:.35;'}`,
+      titleStyle: `font-size:12px; font-weight:800; color:${a.earned ? '#0b1c30' : '#94a3b8'}; margin-bottom:2px;`,
+    }));
+
+    return {
+      ...sb,
+      kanaSet, kanaGrid, masteredKana, learningKana, totalKana, masteryPct,
+      hiraBtn, kataBtn,
+      setHiragana: () => this.setState({ kanaSet: 'hiragana' }),
+      setKatakana: () => this.setState({ kanaSet: 'katakana' }),
+      stats, weekBars, calWeeks,
+      dayLabels: ['S','T','Q','Q','S','S','D'],
+      nextReviews, achievements,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

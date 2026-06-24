@@ -1,5 +1,5 @@
 import { useRef, useEffect, useCallback } from 'react';
-import { Eraser } from 'lucide-react';
+import { MaterialIcon } from '@/components/ui/MaterialIcon';
 
 interface DrawingCanvasProps {
   strokes: string[];
@@ -152,7 +152,7 @@ export function DrawingCanvas({ strokes }: DrawingCanvasProps) {
         onClick={handleClear}
         className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-border text-sm text-muted-foreground hover:bg-muted transition-colors"
       >
-        <Eraser size={14} />
+        <MaterialIcon name="ink_eraser" size={14} />
         Limpar
       </button>
     </div>

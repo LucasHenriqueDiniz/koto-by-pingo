@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Inter', sans-serif; color: #0b1c30; }
+  button, input, textarea, select { font-family: inherit; font-size: inherit; color: inherit; }
+  h1, h2, h3, h4, h5 { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
+  .ms { font-family:'Material Symbols Outlined'; font-weight:normal; font-style:normal; line-height:1; letter-spacing:normal; text-transform:none; display:inline-block; white-space:nowrap; word-wrap:normal; direction:ltr; -webkit-font-smoothing:antialiased; }
+  .ms.fill { font-variation-settings:'FILL' 1; }
+  .jp { font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic',sans-serif; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  @keyframes wave  { 0%,100%{transform:scaleY(.3)} 50%{transform:scaleY(1)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+</style>
+</helmet>
+
+<!-- ═══ ONBOARDING OVERLAY ═══ -->
+<div style="{{ onboardingStyle }}">
+
+  <!-- STEP 1 · Welcome (two-panel) -->
+  <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+    <!-- Left red panel -->
+    <div style="flex:0 0 42%; background:#ac2b2f; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; overflow:hidden; padding:48px;">
+      <div class="jp" style="position:absolute; font-size:420px; font-weight:800; color:#fff; opacity:.07; line-height:1; user-select:none; pointer-events:none; top:50%; left:50%; transform:translate(-50%,-50%);">あ</div>
+      <div style="position:relative; text-align:center; display:flex; flex-direction:column; align-items:center; gap:24px;">
+        <div style="background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); border-radius:12px; padding:10px 20px; display:flex; align-items:center; gap:10px;">
+          <span class="ms fill" style="color:#fff; font-size:20px;">translate</span>
+          <span style="color:#fff; font-family:'Plus Jakarta Sans'; font-weight:800; font-size:18px;">Koto</span>
+        </div>
+        <div class="jp" style="font-size:72px; font-weight:700; color:#fff; line-height:1.1; opacity:.8;">日本語</div>
+        <div style="width:40px; height:2px; background:rgba(255,255,255,.4); border-radius:999px;"></div>
+        <p style="color:rgba(255,255,255,.75); font-size:15px; line-height:1.6; margin:0; max-width:200px; text-align:center;">A forma mais elegante de aprender japonês</p>
+      </div>
+    </div>
+    <!-- Right white panel -->
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:72px 80px; animation:fadeUp .5s ease both;">
+      <div style="display:flex; gap:8px; margin-bottom:56px;">
+        <div style="width:8px; height:8px; border-radius:999px; background:#ac2b2f;"></div>
+        <div style="width:8px; height:8px; border-radius:999px; background:#E2E8F0;"></div>
+        <div style="width:8px; height:8px; border-radius:999px; background:#E2E8F0;"></div>
+      </div>
+      <h1 style="font-family:'Plus Jakarta Sans'; font-size:52px; font-weight:800; color:#0b1c30; margin:0 0 16px; line-height:1.05;">Bem-vindo.</h1>
+      <p style="font-size:18px; color:#94a3b8; margin:0 0 56px; line-height:1.7; max-width:380px;">Começamos do início ou de onde você parou — você escolhe.</p>
+      <button onClick="{{ nextStep }}" style="display:inline-flex; align-items:center; gap:10px; padding:18px 40px; border-radius:999px; background:#ac2b2f; color:#fff; border:none; font-weight:700; font-size:17px; cursor:pointer; font-family:'Plus Jakarta Sans'; align-self:flex-start; box-shadow:0 8px 24px rgba(172,43,47,.3);" style-hover="filter:brightness(1.08); transform:translateY(-1px);">
+        Começar <span class="ms" style="font-size:22px;">arrow_forward</span>
+      </button>
+    </div>
+  </sc-if>
+
+  <!-- STEPS 2 & 3 · Centered -->
+  <sc-if value="{{ isStep23 }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+      <!-- Top bar -->
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:24px 48px; border-bottom:1px solid #F0F4F8;">
+        <div style="display:flex; align-items:center; gap:10px; color:#ac2b2f;">
+          <span class="ms fill" style="font-size:20px;">translate</span>
+          <span style="font-family:'Plus Jakarta Sans'; font-weight:800; font-size:18px;">Koto</span>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <div style="width:8px; height:8px; border-radius:999px; background:#E2E8F0;"></div>
+          <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ true }}">
+            <div style="width:8px; height:8px; border-radius:999px; background:#ac2b2f;"></div>
+            <div style="width:8px; height:8px; border-radius:999px; background:#E2E8F0;"></div>
+          </sc-if>
+          <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+            <div style="width:8px; height:8px; border-radius:999px; background:#ac2b2f;"></div>
+            <div style="width:8px; height:8px; border-radius:999px; background:#ac2b2f;"></div>
+          </sc-if>
+        </div>
+        <button onClick="{{ prevStep }}" style="display:flex; align-items:center; gap:6px; background:none; border:none; color:#94a3b8; cursor:pointer; font-family:inherit; font-size:14px; font-weight:600;" style-hover="color:#0b1c30;">
+          <span class="ms" style="font-size:18px;">arrow_back</span>Voltar
+        </button>
+      </div>
+
+      <!-- STEP 2 · Level -->
+      <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:28px 48px; animation:fadeUp .4s ease both; overflow-y:auto;">
+          <h2 style="font-family:'Plus Jakarta Sans'; font-size:32px; font-weight:800; color:#0b1c30; margin:0 0 6px; text-align:center;">Qual é o seu nível?</h2>
+          <p style="color:#94a3b8; font-size:15px; margin:0 0 20px; text-align:center;">Seu percurso será adaptado ao que você já sabe.</p>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; max-width:640px; margin-bottom:24px;">
+            <sc-for list="{{ levels }}" as="l" hint-placeholder-count="4">
+              <button onClick="{{ l.onClick }}" style="{{ l.style }}" style-hover="border-color:#ac2b2f; transform:translateY(-2px);">
+                <div style="font-size:36px; margin-bottom:10px;">{{ l.icon }}</div>
+                <div style="font-family:'Plus Jakarta Sans'; font-size:18px; font-weight:800; color:#0b1c30; margin-bottom:4px;">{{ l.title }}</div>
+                <div style="font-size:13px; color:#565e74; margin-bottom:10px;">{{ l.desc }}</div>
+                <div style="font-size:12px; color:#94a3b8; line-height:1.5; font-style:italic;">{{ l.hint }}</div>
+                <sc-if value="{{ l.isActive }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex; align-items:center; gap:5px; margin-top:14px; padding-top:12px; border-top:1px solid #f5c6c6; color:#ac2b2f; font-size:13px; font-weight:700;">
+                    <span class="ms fill" style="font-size:17px;">check_circle</span>Selecionado
+                  </div>
+                </sc-if>
+              </button>
+            </sc-for>
+          </div>
+          <button onClick="{{ nextStep }}" style="{{ step2BtnStyle }}" style-hover="filter:brightness(1.06);">
+            Próximo <span class="ms" style="font-size:20px;">arrow_forward</span>
+          </button>
+        </div>
+      </sc-if>
+
+      <!-- STEP 3 · Goal -->
+      <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:28px 48px; animation:fadeUp .4s ease both; overflow-y:auto;">
+          <h2 style="font-family:'Plus Jakarta Sans'; font-size:36px; font-weight:800; color:#0b1c30; margin:0 0 8px; text-align:center;">O que quer focar primeiro?</h2>
+          <p style="color:#94a3b8; font-size:16px; margin:0 0 40px; text-align:center;">Você pode mudar isso a qualquer momento.</p>
+          <div style="display:flex; gap:16px; width:100%; max-width:680px; margin-bottom:40px;">
+            <sc-for list="{{ goals }}" as="g" hint-placeholder-count="3">
+              <button onClick="{{ g.onClick }}" style="{{ g.style }}" style-hover="border-color:#ac2b2f; transform:translateY(-2px);">
+                <sc-if value="{{ g.recommended }}" hint-placeholder-val="{{ false }}">
+                  <span style="background:#ac2b2f; color:#fff; font-size:10px; font-weight:700; padding:3px 10px; border-radius:999px; letter-spacing:.06em; text-transform:uppercase;">✦ Recomendado</span>
+                </sc-if>
+                <div class="jp" style="font-size:72px; font-weight:700; line-height:1; color:{{ g.charColor }}; margin-bottom:8px;">{{ g.char }}</div>
+                <div style="font-family:'Plus Jakarta Sans'; font-size:17px; font-weight:800; color:#0b1c30; margin-bottom:6px;">{{ g.title }}</div>
+                <div style="font-size:12px; color:#94a3b8; line-height:1.5;">{{ g.desc }}</div>
+                <sc-if value="{{ g.isActive }}" hint-placeholder-val="{{ false }}">
+                  <span class="ms fill" style="color:#ac2b2f; font-size:22px; margin-top:10px;">check_circle</span>
+                </sc-if>
+              </button>
+            </sc-for>
+          </div>
+          <button onClick="{{ completeOnboarding }}" style="{{ step3BtnStyle }}" style-hover="filter:brightness(1.06);">
+            Começar jornada <span class="ms" style="font-size:20px;">arrow_forward</span>
+          </button>
+        </div>
+      </sc-if>
+
+    </div>
+  </sc-if>
+</div>
+
+<!-- ═══ TRAINING CONFIG DRAWER ═══ -->
+<div style="{{ drawerBackdropStyle }}" onClick="{{ closeDrawer }}"></div>
+<div style="{{ drawerStyle }}">
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:28px;">
+    <div>
+      <h3 style="font-family:'Plus Jakarta Sans'; font-size:20px; font-weight:800; margin:0 0 4px;">Configuração</h3>
+      <p style="margin:0; font-size:13px; color:#94a3b8;">Ajuste o escopo e duração do treino</p>
+    </div>
+    <button onClick="{{ closeDrawer }}" style="width:36px; height:36px; border-radius:999px; background:#F8FAFC; border:1px solid #E2E8F0; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#565e74;" style-hover="background:#FFF1F1; color:#ac2b2f;">
+      <span class="ms" style="font-size:20px;">close</span>
+    </button>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:28px; overflow-y:auto; flex:1; min-height:0;">
+    <!-- Escopo -->
+    <div>
+      <div style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.09em; margin-bottom:12px;">Escopo do treino</div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        <sc-for list="{{ scopeOpts }}" as="o" hint-placeholder-count="6">
+          <button onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <!-- Duração -->
+    <div>
+      <div style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.09em; margin-bottom:12px;">Duração da sessão</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <sc-for list="{{ lengthOpts }}" as="o" hint-placeholder-count="4">
+          <button onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <!-- Opções -->
+    <div>
+      <div style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.09em; margin-bottom:16px;">Opções</div>
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid #F0F4F8;">
+        <div>
+          <div style="font-size:14px; font-weight:600; color:#0b1c30;">Mostrar mnemônicos</div>
+          <div style="font-size:12px; color:#94a3b8; margin-top:2px;">Imagens e dicas no verso do card</div>
+        </div>
+        <div onClick="{{ toggleMnemonics }}" style="{{ mnemonicTrackStyle }}">
+          <div style="{{ mnemonicThumbStyle }}"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APP LAYOUT ═══ -->
+<div style="display:flex; align-items:stretch; min-height:100vh; background:#F8FAFC;">
+
+  <!-- SIDEBAR -->
+  <aside style="{{ sidebarStyle }}">
+    <!-- Logo -->
+    <div style="{{ logoAreaStyle }}">
+      <div style="width:40px; height:40px; background:#ac2b2f; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; flex:none;">
+        <span class="ms fill" style="font-size:24px;">translate</span>
+      </div>
+      <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+        <div style="min-width:0;">
+          <h1 style="font-size:20px; font-weight:800; line-height:1.1; white-space:nowrap;">Koto</h1>
+          <p style="margin:0; font-size:11px; color:#94a3b8;">by Pingo</p>
+        </div>
+      </sc-if>
+    </div>
+    <!-- Nav -->
+    <nav style="display:flex; flex-direction:column; gap:2px; flex:1;">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
+        <button onClick="{{ n.onClick }}" style="{{ n.style }}" style-hover="opacity:.85;">
+          <span class="ms {{ n.fill }}" style="font-size:22px; flex:none;">{{ n.icon }}</span>
+          <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+            <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ n.label }}</span>
+          </sc-if>
+        </button>
+      </sc-for>
+    </nav>
+    <!-- Bottom -->
+    <div style="display:flex; flex-direction:column; gap:2px;">
+      <!-- Collapse toggle -->
+      <button onClick="{{ toggleSidebar }}" style="{{ sidebarToggleStyle }}" style-hover="color:#ac2b2f; background:#FFF1F1;">
+        <span class="ms" style="font-size:20px;">{{ sidebarToggleIcon }}</span>
+        <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+          <span style="font-size:13px; font-weight:600; white-space:nowrap;">Recolher</span>
+        </sc-if>
+      </button>
+      <a href="Configuracoes.dc.html" style="{{ sbBtnStyle }}" style-hover="background:#F8FAFC; color:#565e74; text-decoration:none;">
+        <span class="ms" style="font-size:22px; flex:none;">settings</span>
+        <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+          <span style="white-space:nowrap;">Configurações</span>
+        </sc-if>
+      </a>
+      <a href="Login.dc.html" style="{{ sbBtnStyle }}" style-hover="background:#F8FAFC; color:#565e74; text-decoration:none;">
+        <span class="ms" style="font-size:22px; flex:none;">login</span>
+        <sc-if value="{{ sidebarExpanded }}" hint-placeholder-val="{{ true }}">
+          <span style="white-space:nowrap;">Entrar</span>
+        </sc-if>
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN COLUMN -->
+  <div style="flex:1; min-width:0; display:flex; flex-direction:column; min-height:100vh;">
+
+    <!-- TOP BAR -->
+    <header style="position:sticky; top:0; z-index:40; background:rgba(248,250,252,.92); backdrop-filter:blur(8px); height:66px; display:flex; justify-content:space-between; align-items:center; padding:0 32px; border-bottom:1px solid #E2E8F0;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <h2 style="margin:0; font-family:'Plus Jakarta Sans'; font-size:21px; font-weight:800; color:#ac2b2f;">{{ pageTitle }}</h2>
+        <div style="display:flex; align-items:center; background:#e5eeff; padding:4px 12px; border-radius:999px; gap:7px;">
+          <span style="width:6px; height:6px; border-radius:999px; background:#ac2b2f; animation:pulse 2s infinite; flex:none;"></span>
+          <span style="font-size:12px; font-weight:500;">Sessão ativa · 12m</span>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button style="width:36px; height:36px; display:flex; align-items:center; justify-content:center; color:#94a3b8; background:none; border:none; cursor:pointer; border-radius:8px;" style-hover="color:#ac2b2f; background:#FFF1F1;">
+          <span class="ms" style="font-size:22px;">notifications</span>
+        </button>
+        <div style="width:33px; height:33px; border-radius:999px; background:#FFF1F1; border:2px solid #ce4445; display:flex; align-items:center; justify-content:center; color:#ac2b2f; font-weight:800; font-size:13px; cursor:pointer;">P</div>
+      </div>
+    </header>
+
+    <main style="flex:1; padding:40px 32px; max-width:1200px; margin:0 auto; width:100%;">
+
+      <!-- ══ INÍCIO · Home dashboard ══ -->
+      <sc-if value="{{ isInicioPage }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; flex-direction:column; gap:28px;">
+
+          <!-- Greeting -->
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+            <div>
+              <h2 style="font-family:'Plus Jakarta Sans'; font-size:30px; font-weight:800; margin:0 0 8px;">Olá! Bom trabalho 🌸</h2>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="background:#FFF1F1; color:#ac2b2f; font-size:12px; font-weight:700; padding:4px 12px; border-radius:999px; border:1px solid #ce4445;">{{ levelLabel }}</span>
+                <span style="display:flex; align-items:center; gap:5px; color:#94a3b8; font-size:13px;">
+                  <span class="ms fill" style="color:#ac2b2f; font-size:18px;">local_fire_department</span>7 dias de ofensiva
+                </span>
+              </div>
+            </div>
+            <button onClick="{{ goEstudo }}" style="display:flex; align-items:center; gap:8px; padding:12px 24px; border-radius:999px; background:#fff; border:1px solid #E2E8F0; color:#0b1c30; font-weight:600; font-size:14px; cursor:pointer; font-family:inherit;" style-hover="border-color:#ac2b2f; color:#ac2b2f;">
+              Ver percurso <span class="ms" style="font-size:18px;">arrow_forward</span>
+            </button>
+          </div>
+
+          <!-- Main two-col -->
+          <div style="display:grid; grid-template-columns:1fr 340px; gap:20px; align-items:start;">
+
+            <!-- Left col -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+              <!-- Continue card -->
+              <div style="background:#ac2b2f; border-radius:20px; padding:28px; color:#fff; display:flex; align-items:center; gap:24px; position:relative; overflow:hidden;">
+                <div class="jp" style="position:absolute; right:-20px; bottom:-30px; font-size:160px; font-weight:800; opacity:.1; line-height:1; pointer-events:none; user-select:none;">さ</div>
+                <div style="flex:1; position:relative;">
+                  <div style="font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; opacity:.7; margin-bottom:8px;">Continue de onde parou</div>
+                  <div style="font-family:'Plus Jakarta Sans'; font-size:24px; font-weight:800; margin-bottom:4px;">Lição 03 · Linha S</div>
+                  <div class="jp" style="font-size:20px; letter-spacing:.15em; opacity:.85; margin-bottom:16px;">さしすせそ</div>
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="flex:1; height:4px; background:rgba(255,255,255,.25); border-radius:999px; overflow:hidden;">
+                      <div style="height:100%; width:40%; background:#fff; border-radius:999px;"></div>
+                    </div>
+                    <span style="font-size:12px; opacity:.8;">40%</span>
+                  </div>
+                </div>
+                <button onClick="{{ goKana }}" style="display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.35); color:#fff; padding:12px 20px; border-radius:999px; cursor:pointer; font-family:inherit; font-weight:700; font-size:14px; white-space:nowrap; flex:none;" style-hover="background:rgba(255,255,255,.28);">
+                  Continuar <span class="ms" style="font-size:18px;">arrow_forward</span>
+                </button>
+              </div>
+
+              <!-- Quick modes -->
+              <div>
+                <div style="font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em; margin-bottom:14px;">Acesso rápido</div>
+                <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px;">
+                  <sc-for list="{{ quickModes }}" as="q" hint-placeholder-count="4">
+                    <button onClick="{{ q.onClick }}" style="background:#fff; border:1px solid #E2E8F0; border-radius:14px; padding:18px 12px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:10px; font-family:inherit;" style-hover="border-color:#ac2b2f; background:#FFF1F1; transform:translateY(-1px);">
+                      <div style="width:44px; height:44px; background:#FFF1F1; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#ac2b2f;">
+                        <span class="ms fill" style="font-size:24px;">{{ q.icon }}</span>
+                      </div>
+                      <span style="font-size:13px; font-weight:700; color:#0b1c30;">{{ q.label }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+
+              <!-- Stats mini row -->
+              <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px;">
+                <div style="background:#fff; border:1px solid #E2E8F0; padding:16px; border-radius:12px;">
+                  <div style="font-size:11px; color:#94a3b8; font-weight:600; text-transform:uppercase; letter-spacing:.07em; margin-bottom:6px;">Kana dominados</div>
+                  <div style="font-family:'Plus Jakarta Sans'; font-size:24px; font-weight:800;">42<span style="font-size:15px; color:#cbd5e1;">/46</span></div>
+                </div>
+                <div style="background:#fff; border:1px solid #E2E8F0; padding:16px; border-radius:12px;">
+                  <div style="font-size:11px; color:#94a3b8; font-weight:600; text-transform:uppercase; letter-spacing:.07em; margin-bottom:6px;">Precisão</div>
+                  <div style="font-family:'Plus Jakarta Sans'; font-size:24px; font-weight:800; color:#00846d;">88%</div>
+                </div>
+                <div style="background:#fff; border:1px solid #E2E8F0; padding:16px; border-radius:12px;">
+                  <div style="font-size:11px; color:#94a3b8; font-weight:600; text-transform:uppercase; letter-spacing:.07em; margin-bottom:6px;">Tempo hoje</div>
+                  <div style="font-family:'Plus Jakarta Sans'; font-size:24px; font-weight:800;">12m</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right col -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+              <!-- Kanji do dia -->
+              <div style="background:#0b1c30; border-radius:20px; overflow:hidden; position:relative;">
+                <div style="padding:22px 22px 0; position:relative;">
+                  <div style="font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#94a3b8; margin-bottom:12px;">Kanji do dia</div>
+                  <div class="jp" style="font-size:120px; font-weight:800; color:#fff; line-height:1; margin-bottom:8px;">日</div>
+                  <div class="jp" style="position:absolute; right:16px; top:30px; font-size:200px; font-weight:800; color:#fff; opacity:.04; line-height:1; pointer-events:none;">日</div>
+                </div>
+                <div style="background:#ac2b2f; margin:0; padding:16px 22px; display:flex; align-items:center; gap:12px;">
+                  <span style="font-size:28px;">☀️</span>
+                  <div>
+                    <div style="font-family:'Plus Jakarta Sans'; font-size:16px; font-weight:800; color:#fff; text-transform:uppercase; letter-spacing:.04em;">Sol · Dia · にち</div>
+                    <div style="font-size:11px; color:rgba(255,255,255,.7); margin-top:2px;">Uma janela para o sol nascente</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- XP card -->
+              <div style="background:#fff; border:1px solid #E2E8F0; border-radius:16px; padding:20px;">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+                  <span class="ms fill" style="color:#ac2b2f; font-size:24px;">local_fire_department</span>
+                  <div>
+                    <div style="font-weight:700; font-size:14px;">Ofensiva de 7 dias</div>
+                    <div style="font-size:12px; color:#94a3b8;">Continue assim!</div>
+                  </div>
+                  <span style="margin-left:auto; color:#ac2b2f; font-weight:700; font-size:13px;">480 XP</span>
+                </div>
+                <div style="width:100%; height:6px; background:#FFF1F1; border-radius:999px; overflow:hidden;">
+                  <div style="height:100%; width:48%; background:#ac2b2f; border-radius:999px;"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:11px; color:#94a3b8;">
+                  <span>480 / 1000 XP</span><span>Próximo nível</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ══ ESTUDO · Curriculum ══ -->
+      <sc-if value="{{ isEstudoPage }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-direction:column; gap:28px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+            <div>
+              <h2 style="font-family:'Plus Jakarta Sans'; font-size:28px; font-weight:800; margin:0 0 6px;">Aulas extras</h2>
+              <p style="margin:0; color:#94a3b8; font-size:15px;">Material complementar baseado em Cure Dolly — assista no seu ritmo, sem pressão</p>
+            </div>
+            <div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:12px 20px; display:flex; align-items:center; gap:12px;">
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <div style="font-size:12px; color:#94a3b8; font-weight:600;">Progresso geral</div>
+                <div style="font-family:'Plus Jakarta Sans'; font-size:20px; font-weight:800; color:#ac2b2f;">18%</div>
+              </div>
+              <div style="width:56px; height:56px; border-radius:999px; background:#FFF1F1; display:flex; align-items:center; justify-content:center; border:3px solid #ac2b2f;">
+                <span class="ms fill" style="color:#ac2b2f; font-size:26px;">school</span>
+              </div>
+            </div>
+          </div>
+          <sc-for list="{{ chapters }}" as="ch" hint-placeholder-count="3">
+            <div style="{{ ch.cardStyle }}">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+                <div style="display:flex; align-items:center; gap:14px;">
+                  <div style="width:48px; height:48px; border-radius:14px; background:{{ ch.iconBg }}; display:flex; align-items:center; justify-content:center; flex:none;">
+                    <span class="ms fill" style="font-size:26px; color:{{ ch.iconColor }};">{{ ch.icon }}</span>
+                  </div>
+                  <div>
+                    <div style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em; margin-bottom:2px;">{{ ch.num }}</div>
+                    <div style="font-family:'Plus Jakarta Sans'; font-size:20px; font-weight:800; color:{{ ch.titleColor }};">{{ ch.title }}</div>
+                  </div>
+                </div>
+                <sc-if value="{{ ch.locked }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:flex; align-items:center; gap:6px; font-size:13px; color:#94a3b8; font-weight:600; background:#F8FAFC; padding:6px 14px; border-radius:999px; border:1px solid #E2E8F0;">
+                    <span class="ms" style="font-size:18px;">lock</span>Bloqueado
+                  </span>
+                </sc-if>
+                <sc-if value="{{ ch.showProgress }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="width:100px; height:5px; background:#F0F4F8; border-radius:999px; overflow:hidden;">
+                      <div style="height:100%; width:{{ ch.progress }}%; background:{{ ch.iconColor }}; border-radius:999px;"></div>
+                    </div>
+                    <span style="font-size:13px; font-weight:700; color:{{ ch.iconColor }};">{{ ch.progress }}%</span>
+                  </div>
+                </sc-if>
+              </div>
+              <sc-if value="{{ ch.showLessons }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <sc-for list="{{ ch.lessons }}" as="l" hint-placeholder-count="6">
+                    <div style="{{ l.itemStyle }}">
+                      <div style="width:40px; height:40px; border-radius:10px; background:#fff; border:1px solid #E2E8F0; display:flex; align-items:center; justify-content:center; font-family:'Plus Jakarta Sans'; font-weight:800; font-size:13px; color:#0b1c30; flex:none;">{{ l.num }}</div>
+                      <div style="flex:1; min-width:0;">
+                        <div style="font-weight:700; font-size:15px; color:#0b1c30; margin-bottom:2px;">{{ l.title }}</div>
+                        <div class="jp" style="font-size:16px; color:#94a3b8; letter-spacing:.1em;">{{ l.kana }}</div>
+                      </div>
+                      <span class="ms fill" style="font-size:24px; color:{{ l.statusColor }}; flex:none;">{{ l.statusIcon }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- ══ KANA · Hub & Modes ══ -->
+      <sc-if value="{{ isKanaPage }}" hint-placeholder-val="{{ false }}">
+
+        <!-- HUB -->
+        <sc-if value="{{ isHub }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; flex-direction:column; gap:28px;">
+            <sc-if value="{{ showStats }}" hint-placeholder-val="{{ true }}">
+              <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px;">
+                <div style="background:#fff; border:1px solid #E2E8F0; padding:18px; border-radius:12px;">
+                  <div style="font-size:11px; color:#94a3b8; font-weight:700; text-transform:uppercase; letter-spacing:.07em; margin-bottom:8px;">Kana dominados</div>
+                  <div style="font-family:'Plus Jakarta Sans'; font-size:26px; font-weight:800;">42<span style="color:#cbd5e1; font-size:15px;">/46</span></div>
+                  <div style="width:100%; height:4px; background:#FFF1F1; border-radius:999px; overflow:hidden; margin-top:10px;"><div style="height:100%; background:#ac2b2f; width:91%; border-radius:999px;"></div></div>
+                </div>
+                <div style="background:#fff; border:1px solid #E2E8F0; padding:18px; border-radius:12px;">
+                  <div style="font-size:11px; color:#94a3b8; font-weight:700; text-transform:uppercase; letter-spacing:.07em; margin-bottom:8px;">Precisão</div>
+                  <div style="font-family:'Plus Jakarta Sans'; font-size:26px; font-weight:800; color:#00846d;">88%</div>
+                  <div style="width:100%; height:4px; background:#e6f7f1; border-radius:999px; overflow:hidden; margin-top:10px;"><div style="height:100%; background:#00846d; width:88%; border-radius:999px;"></div></div>
+                </div>
+                <div style="background:#fff; border:1px solid #E2E8F0; padding:18px; border-radius:12px;">
+                  <div style="font-size:11px; color:#94a3b8; font-weight:700; text-transform:uppercase; letter-spacing:.07em; margin-bottom:8px;">Ofensiva</div>
+                  <div style="font-family:'Plus Jakarta Sans'; font-size:26px; font-weight:800;">7 dias</div>
+                  <div style="display:flex; gap:3px; margin-top:10px;">
+                    <div style="flex:1; height:4px; background:#ac2b2f; border-radius:999px;"></div><div style="flex:1; height:4px; background:#ac2b2f; border-radius:999px;"></div><div style="flex:1; height:4px; background:#ac2b2f; border-radius:999px;"></div><div style="flex:1; height:4px; background:#ac2b2f; border-radius:999px;"></div><div style="flex:1; height:4px; background:#ac2b2f; border-radius:999px;"></div><div style="flex:1; height:4px; background:#ac2b2f; border-radius:999px;"></div><div style="flex:1; height:4px; background:#ac2b2f; border-radius:999px;"></div>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- Modes heading + config btn -->
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+              <h3 style="font-family:'Plus Jakarta Sans'; font-size:22px; font-weight:800; margin:0;">Modos de treino
+                <span style="font-size:14px; font-weight:500; color:#94a3b8; margin-left:8px;">· {{ setLabel }}</span>
+              </h3>
+              <button onClick="{{ openDrawer }}" style="display:flex; align-items:center; gap:8px; padding:10px 18px; border-radius:999px; background:#fff; border:1px solid #E2E8F0; color:#565e74; cursor:pointer; font-family:inherit; font-size:14px; font-weight:600;" style-hover="border-color:#ac2b2f; color:#ac2b2f;">
+                <span class="ms" style="font-size:20px;">tune</span>Configurar
+              </button>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;">
+              <sc-for list="{{ cards }}" as="c" hint-placeholder-count="6">
+                <button onClick="{{ c.onClick }}" style="text-align:left; cursor:pointer; background:#fff; border:1px solid #E2E8F0; border-radius:16px; padding:22px; display:flex; flex-direction:column; gap:14px; font-family:inherit;" style-hover="border-color:#ac2b2f; box-shadow:0 6px 20px rgba(172,43,47,.09); transform:translateY(-2px);">
+                  <div style="display:flex; align-items:center; justify-content:space-between;">
+                    <div style="width:48px; height:48px; border-radius:12px; background:#FFF1F1; display:flex; align-items:center; justify-content:center; color:#ac2b2f; flex:none;">
+                      <span class="ms fill" style="font-size:25px;">{{ c.icon }}</span>
+                    </div>
+                    <span style="font-size:11px; font-weight:700; color:#94a3b8; background:#F8FAFC; border:1px solid #E2E8F0; padding:3px 9px; border-radius:999px;">{{ c.tag }}</span>
+                  </div>
+                  <div>
+                    <h4 style="margin:0 0 4px; font-family:'Plus Jakarta Sans'; font-size:16px; font-weight:800; color:#0b1c30;">{{ c.title }}</h4>
+                    <p style="margin:0; color:#94a3b8; font-size:12px; line-height:1.5;">{{ c.desc }}</p>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:4px; color:#ac2b2f; font-size:13px; font-weight:700;">
+                    Praticar <span class="ms" style="font-size:16px;">arrow_forward</span>
+                  </div>
+                </button>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ showProgress }}" hint-placeholder-val="{{ true }}">
+              <div style="background:#fff; border:1px solid #E2E8F0; border-radius:16px; padding:24px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+                  <h3 style="margin:0; font-family:'Plus Jakarta Sans'; font-size:18px; font-weight:800;">Seu progresso</h3>
+                  <div style="display:flex; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:999px; padding:3px;">
+                    <button onClick="{{ setHira }}" style="{{ hiraBtnStyle }}">あ Hiragana</button>
+                    <button onClick="{{ setKata }}" style="{{ kataBtnStyle }}">ア Katakana</button>
+                  </div>
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(10,1fr); gap:7px;">
+                  <sc-for list="{{ grid }}" as="g" hint-placeholder-count="46">
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:3px; opacity:{{ g.opacity }};">
+                      <div style="width:100%; aspect-ratio:1; border-radius:8px; background:{{ g.bg }}; border:1px solid {{ g.border }}; display:flex; align-items:center; justify-content:center; position:relative;">
+                        <span class="jp" style="font-size:16px; font-weight:600; color:{{ g.text }};">{{ g.kana }}</span>
+                        <div style="position:absolute; bottom:3px; left:22%; right:22%; height:2px; border-radius:999px; background:{{ g.bar }};"></div>
+                      </div>
+                      <span style="font-size:8px; font-weight:700; letter-spacing:.04em; color:#94a3b8; text-transform:uppercase;">{{ g.romaji }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- MODE VIEWS -->
+        <sc-if value="{{ inMode }}" hint-placeholder-val="{{ false }}">
+          <div style="max-width:720px; margin:0 auto; display:flex; flex-direction:column; gap:22px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <button onClick="{{ goHub }}" style="display:flex; align-items:center; gap:7px; background:#fff; border:1px solid #E2E8F0; color:#565e74; padding:9px 16px; border-radius:999px; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600; flex:none;" style-hover="border-color:#ac2b2f; color:#ac2b2f;">
+                <span class="ms" style="font-size:20px;">arrow_back</span>Modos
+              </button>
+              <div style="flex:1; text-align:center;">
+                <h3 style="margin:0; font-family:'Plus Jakarta Sans'; font-size:20px; font-weight:800;">{{ modeTitle }}</h3>
+                <span style="font-size:12px; color:#94a3b8;">{{ setLabel }}</span>
+              </div>
+              <div style="width:88px; flex:none;"></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:12px; font-weight:600; color:#565e74;">3 / 10</span>
+              <div style="flex:1; height:4px; background:#FFF1F1; border-radius:999px; overflow:hidden;"><div style="height:100%; width:30%; background:#ac2b2f; border-radius:999px;"></div></div>
+              <span style="font-size:12px; color:#94a3b8;">7 restantes</span>
+            </div>
+
+            <!-- FLASHCARDS -->
+            <sc-if value="{{ isFlashcards }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <div onClick="{{ toggleFlip }}" style="cursor:pointer; perspective:1200px; max-width:440px; margin:0 auto;">
+                  <div style="position:relative; width:100%; aspect-ratio:4/5; transition:transform .65s cubic-bezier(.4,0,.2,1); transform-style:preserve-3d; transform:{{ flipTransform }};">
+                    <div style="position:absolute; inset:0; backface-visibility:hidden; background:#fff; border:2px solid #E2E8F0; border-radius:20px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px; box-shadow:0 4px 16px rgba(11,28,48,.06);">
+                      <span class="ms" style="position:absolute; top:16px; left:16px; color:#ac2b2f; opacity:.12; font-size:28px;">stylus</span>
+                      <div class="jp" style="font-size:148px; font-weight:700; line-height:1; margin-bottom:20px;">{{ ex.kana }}</div>
+                      <div style="color:#94a3b8; font-size:13px; display:flex; align-items:center; gap:5px;"><span class="ms" style="font-size:17px;">touch_app</span>Toque para revelar</div>
+                    </div>
+                    <div style="position:absolute; inset:0; backface-visibility:hidden; transform:rotateY(180deg); border-radius:20px; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 8px 24px rgba(11,28,48,.14);">
+                      <div style="flex:0 0 42%; background:#ac2b2f; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:10px 20px;">
+                        <div class="jp" style="font-size:88px; font-weight:700; line-height:1; color:#fff;">{{ ex.kana }}</div>
+                        <div style="font-family:'Plus Jakarta Sans'; font-size:28px; font-weight:800; color:rgba(255,255,255,.92); text-transform:uppercase;">{{ ex.romaji }}</div>
+                        <div style="font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.5);">{{ setLabel }}</div>
+                      </div>
+                      <sc-if value="{{ showMnemonics }}" hint-placeholder-val="{{ true }}">
+                        <div style="flex:0 0 30%; background:#fff; border-bottom:1px solid #F0F4F8; display:flex; align-items:center; gap:14px; padding:10px 18px;">
+                          <div style="font-size:40px; flex:none; line-height:1;">{{ ex.emoji }}</div>
+                          <div>
+                            <div style="font-family:'Plus Jakarta Sans'; font-size:18px; font-weight:800; text-transform:uppercase; letter-spacing:.04em;">{{ ex.word }}</div>
+                            <div style="font-size:11px; color:#94a3b8; line-height:1.4; margin-top:2px;">{{ ex.mnemonic }}</div>
+                          </div>
+                        </div>
+                      </sc-if>
+                      <div style="flex:1; background:#F8FAFC; padding:10px 18px; display:flex; flex-direction:column; gap:5px; min-height:0;">
+                        <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.09em; display:flex; align-items:center; gap:5px;"><span class="ms" style="font-size:14px;">edit_note</span>Suas notas</div>
+                        <textarea value="{{ currentNote }}" onChange="{{ onNoteChange }}" placeholder="Adicione uma anotação…" style="flex:1; border:none; outline:none; resize:none; font-family:'Inter',sans-serif; font-size:13px; color:#0b1c30; background:transparent; line-height:1.5; min-height:0; width:100%;"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; justify-content:center; gap:14px; margin-top:22px;">
+                  <button style="width:50px; height:50px; border-radius:999px; background:#fff; border:1px solid #E2E8F0; color:#ba1a1a; cursor:pointer; display:flex; align-items:center; justify-content:center;" style-hover="background:#ffdad6;"><span class="ms" style="font-size:22px;">replay</span></button>
+                  <button style="padding:14px 44px; border-radius:999px; background:#ac2b2f; color:#fff; border:none; font-weight:700; font-size:15px; cursor:pointer; font-family:inherit;" style-hover="filter:brightness(1.08);">Próximo</button>
+                  <button style="width:50px; height:50px; border-radius:999px; background:#fff; border:1px solid #E2E8F0; color:#00846d; cursor:pointer; display:flex; align-items:center; justify-content:center;" style-hover="background:#e6f7f1;"><span class="ms" style="font-size:22px;">check</span></button>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- QUIZ -->
+            <sc-if value="{{ isQuiz }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; flex-direction:column; gap:20px;">
+                <div style="background:#fff; border:1px solid #E2E8F0; border-radius:20px; padding:44px 32px; text-align:center;">
+                  <div style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.14em; margin-bottom:14px;">Qual kana representa</div>
+                  <div style="font-family:'Plus Jakarta Sans'; font-size:84px; font-weight:800; color:#ac2b2f; line-height:1; text-transform:uppercase;">{{ quizEx.romaji }}</div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                  <sc-for list="{{ quizOptions }}" as="o" hint-placeholder-count="4">
+                    <button style="{{ o.style }}" style-hover="border-color:#ac2b2f; background:#FFF1F1;">
+                      <span class="jp" style="font-size:54px; font-weight:600;">{{ o.kana }}</span>
+                      <sc-if value="{{ o.correct }}" hint-placeholder-val="{{ false }}">
+                        <span class="ms fill" style="position:absolute; top:10px; right:10px; color:#00846d; font-size:20px;">check_circle</span>
+                      </sc-if>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- MATCH -->
+            <sc-if value="{{ isMatch }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#fff; border:1px solid #E2E8F0; border-radius:20px; padding:24px; display:flex; flex-direction:column; gap:18px;">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  <div>
+                    <h4 style="margin:0 0 3px; font-family:'Plus Jakarta Sans'; font-size:18px; font-weight:800;">Ligue cada kana ao seu romaji</h4>
+                    <p style="margin:0; color:#94a3b8; font-size:13px;">Toque no kana e depois no romaji correspondente</p>
+                  </div>
+                  <span style="background:#FFF1F1; color:#ac2b2f; font-size:12px; font-weight:700; padding:5px 12px; border-radius:999px; border:1px solid #ce4445; flex:none;">2 / 5</span>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px 20px;">
+                  <div style="display:flex; flex-direction:column; gap:7px;">
+                    <div style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em; text-align:center; padding-bottom:4px; border-bottom:1px solid #F0F4F8;">Kana</div>
+                    <sc-for list="{{ matchLeft }}" as="m" hint-placeholder-count="5">
+                      <button style="{{ m.style }}" style-hover="border-color:#ac2b2f;">
+                        <span class="jp" style="font-size:32px; font-weight:700; color:{{ m.textColor }}; flex:1; text-align:center;">{{ m.kana }}</span>
+                        <sc-if value="{{ m.isDone }}" hint-placeholder-val="{{ false }}"><span class="ms fill" style="font-size:15px; color:#00846d; flex:none;">check_circle</span></sc-if>
+                      </button>
+                    </sc-for>
+                  </div>
+                  <div style="display:flex; flex-direction:column; gap:7px;">
+                    <div style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em; text-align:center; padding-bottom:4px; border-bottom:1px solid #F0F4F8;">Romaji</div>
+                    <sc-for list="{{ matchRight }}" as="m" hint-placeholder-count="5">
+                      <button style="{{ m.style }}" style-hover="border-color:#ac2b2f;">
+                        <sc-if value="{{ m.isDone }}" hint-placeholder-val="{{ false }}"><span class="ms fill" style="font-size:15px; color:#00846d; flex:none;">check_circle</span></sc-if>
+                        <span style="font-size:20px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:{{ m.textColor }}; flex:1; text-align:center;">{{ m.romaji }}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- WRITE -->
+            <sc-if value="{{ isWrite }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; flex-direction:column; gap:16px;">
+                <div style="background:#fff; border:1px solid #E2E8F0; border-radius:20px; padding:48px 32px; text-align:center;">
+                  <div style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.14em; margin-bottom:14px;">Escreva o romaji deste kana</div>
+                  <div class="jp" style="font-size:140px; font-weight:700; line-height:1;">{{ writeEx.kana }}</div>
+                </div>
+                <div style="display:flex; align-items:center; background:#fff; border:2px solid #E2E8F0; border-radius:14px; padding:4px;">
+                  <span class="ms" style="color:#cbd5e1; font-size:20px; padding:12px 14px;">keyboard</span>
+                  <input type="text" placeholder="Digite o romaji…" style="flex:1; border:none; outline:none; font-family:'Inter',sans-serif; font-size:20px; padding:12px 8px; background:transparent; color:#0b1c30; min-width:0;">
+                  <button style="padding:12px 26px; border-radius:10px; background:#ac2b2f; color:#fff; border:none; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit; margin:2px;" style-hover="filter:brightness(1.08);">Verificar</button>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- LISTEN -->
+            <sc-if value="{{ isListen }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; flex-direction:column; gap:20px;">
+                <div style="background:#fff; border:1px solid #E2E8F0; border-radius:20px; padding:44px 32px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:20px;">
+                  <div style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.14em;">Ouça e escolha o kana correto</div>
+                  <button style="width:92px; height:92px; border-radius:999px; background:#ac2b2f; color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 24px rgba(172,43,47,.28);" style-hover="filter:brightness(1.08); transform:scale(1.04);">
+                    <span class="ms fill" style="font-size:42px;">volume_up</span>
+                  </button>
+                  <div style="display:flex; align-items:center; gap:4px; height:30px;">
+                    <span style="width:3px; height:100%; background:#e0bfbc; border-radius:999px; animation:wave 1s infinite; animation-delay:0s;"></span><span style="width:3px; height:100%; background:#ce4445; border-radius:999px; animation:wave 1s infinite; animation-delay:.1s;"></span><span style="width:3px; height:100%; background:#ac2b2f; border-radius:999px; animation:wave 1s infinite; animation-delay:.2s;"></span><span style="width:3px; height:100%; background:#ce4445; border-radius:999px; animation:wave 1s infinite; animation-delay:.3s;"></span><span style="width:3px; height:100%; background:#e0bfbc; border-radius:999px; animation:wave 1s infinite; animation-delay:.4s;"></span><span style="width:3px; height:100%; background:#ce4445; border-radius:999px; animation:wave 1s infinite; animation-delay:.5s;"></span><span style="width:3px; height:100%; background:#ac2b2f; border-radius:999px; animation:wave 1s infinite; animation-delay:.6s;"></span>
+                  </div>
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px;">
+                  <sc-for list="{{ listenOptions }}" as="o" hint-placeholder-count="4">
+                    <button style="background:#fff; border:2px solid #E2E8F0; border-radius:14px; padding:26px 0; cursor:pointer; display:flex; align-items:center; justify-content:center;" style-hover="border-color:#ac2b2f; background:#FFF1F1;">
+                      <span class="jp" style="font-size:44px; font-weight:600;">{{ o.kana }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- DRAW -->
+            <sc-if value="{{ isDraw }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; flex-direction:column; gap:16px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+                  <div>
+                    <div style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.1em;">Desenhe o kana para</div>
+                    <div style="font-family:'Plus Jakarta Sans'; font-size:28px; font-weight:800; color:#ac2b2f; text-transform:uppercase; line-height:1.1;">{{ ex.romaji }}</div>
+                  </div>
+                  <div style="display:flex; gap:8px;">
+                    <button onClick="{{ clearCanvas }}" style="display:flex; align-items:center; gap:5px; padding:8px 14px; background:#fff; border:1px solid #E2E8F0; border-radius:10px; color:#565e74; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600;" style-hover="border-color:#ac2b2f; color:#ac2b2f;"><span class="ms" style="font-size:18px;">refresh</span>Limpar</button>
+                    <button onClick="{{ toggleGuide }}" style="display:flex; align-items:center; gap:5px; padding:8px 14px; background:#fff; border:1px solid #E2E8F0; border-radius:10px; color:#565e74; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600;" style-hover="border-color:#ac2b2f; color:#ac2b2f;"><span class="ms" style="font-size:18px;">{{ guideIcon }}</span>{{ guideLabel }}</button>
+                  </div>
+                </div>
+                <div style="position:relative; background:#fff; border:1px solid #E2E8F0; border-radius:20px; overflow:hidden; aspect-ratio:1/1; max-width:480px; margin:0 auto; width:100%;">
+                  <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none;">
+                    <span class="jp" style="font-size:340px; font-weight:600; color:#0b1c30; opacity:{{ guideOpacity }}; line-height:1; user-select:none;">{{ ex.kana }}</span>
+                  </div>
+                  <div style="position:absolute; inset:0; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; pointer-events:none;">
+                    <div style="border-right:1px dashed #F0F0F0; border-bottom:1px dashed #F0F0F0;"></div><div style="border-bottom:1px dashed #F0F0F0;"></div><div style="border-right:1px dashed #F0F0F0;"></div><div></div>
+                  </div>
+                  <canvas ref="{{ setCanvas }}" style="position:absolute; inset:0; width:100%; height:100%; cursor:crosshair; touch-action:none;"></canvas>
+                </div>
+                <div style="display:flex; justify-content:center;">
+                  <button style="padding:13px 44px; border-radius:999px; background:#ac2b2f; color:#fff; border:none; font-weight:700; font-size:15px; cursor:pointer; font-family:inherit;" style-hover="filter:brightness(1.08);">Próximo kana</button>
+                </div>
+              </div>
+            </sc-if>
+
+          </div>
+        </sc-if>
+      </sc-if>
+
+      <!-- PLACEHOLDER -->
+      <sc-if value="{{ isPlaceholderPage }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:60vh; gap:16px; text-align:center;">
+          <span class="ms" style="font-size:76px; color:#E2E8F0;">{{ placeholderIcon }}</span>
+          <h2 style="font-family:'Plus Jakarta Sans'; font-size:28px; font-weight:800; margin:0;">{{ placeholderTitle }}</h2>
+          <p style="color:#94a3b8; font-size:15px; margin:0;">Esta seção está em desenvolvimento.</p>
+        </div>
+      </sc-if>
+
+    </main>
+
+    <footer style="border-top:1px solid #E2E8F0; background:#fff; margin-top:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:32px; max-width:1200px; margin:0 auto; flex-wrap:wrap; gap:16px;">
+        <div>
+          <p style="margin:0; font-family:'Plus Jakarta Sans'; font-weight:800; font-size:14px;">Koto por Pingo Concursos</p>
+          <p style="margin:3px 0 0; font-size:12px; color:#94a3b8;">© 2026 Pingo Concursos. Todos os direitos reservados.</p>
+        </div>
+        <div style="display:flex; gap:20px;">
+          <a href="#" style="font-size:12px; color:#94a3b8; text-decoration:none;" style-hover="color:#ac2b2f;">Sobre</a>
+          <a href="#" style="font-size:12px; color:#94a3b8; text-decoration:none;" style-hover="color:#ac2b2f;">Privacidade</a>
+          <a href="#" style="font-size:12px; color:#94a3b8; text-decoration:none;" style-hover="color:#ac2b2f;">Termos</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: {&quot;width&quot;: 1280, &quot;height&quot;: 900},
+  &quot;forceOnboarding&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}
+}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      view: 'hub',
+      page: 'inicio',
+      set: 'hiragana',
+      scope: ['hiragana'],
+      sessionLength: 'medio',
+      flipped: false,
+      showGuide: false,
+      showMnemonics: true,
+      sidebarCollapsed: false,
+      userLevel: null,
+      pendingLevel: null,
+      pendingGoal: null,
+      onboardingStep: 1,
+      showTrainingConfig: false,
+      notes: {},
+    };
+    this.canvas = null;
+    this.drawing = false;
+    this.last = null;
+    this.setCanvas = this.setCanvas.bind(this);
+  }
+
+  GOJUON() {
+    return [
+      ['あ','ア','a'],['い','イ','i'],['う','ウ','u'],['え','エ','e'],['お','オ','o'],
+      ['か','カ','ka'],['き','キ','ki'],['く','ク','ku'],['け','ケ','ke'],['こ','コ','ko'],
+      ['さ','サ','sa'],['し','シ','shi'],['す','ス','su'],['せ','セ','se'],['そ','ソ','so'],
+      ['た','タ','ta'],['ち','チ','chi'],['つ','ツ','tsu'],['て','テ','te'],['と','ト','to'],
+      ['な','ナ','na'],['に','ニ','ni'],['ぬ','ヌ','nu'],['ね','ネ','ne'],['の','ノ','no'],
+      ['は','ハ','ha'],['ひ','ヒ','hi'],['ふ','フ','fu'],['へ','ヘ','he'],['ほ','ホ','ho'],
+      ['ま','マ','ma'],['み','ミ','mi'],['む','ム','mu'],['め','メ','me'],['も','モ','mo'],
+      ['や','ヤ','ya'],['ゆ','ユ','yu'],['よ','ヨ','yo'],
+      ['ら','ラ','ra'],['り','リ','ri'],['る','ル','ru'],['れ','レ','re'],['ろ','ロ','ro'],
+      ['わ','ワ','wa'],['を','ヲ','wo'],['ん','ン','n'],
+    ];
+  }
+
+  MNEMONICS() {
+    return {
+      'あ':{ emoji:'🍎', word:'Apple',    hint:'Parece uma maçã com um caule torcido' },
+      'ア':{ emoji:'🍎', word:'Apple',    hint:'Pedaço de maçã cortado na diagonal' },
+      'い':{ emoji:'🦎', word:'Eel',      hint:'Duas enguias paralelas nadando' },
+      'イ':{ emoji:'🦎', word:'Eel',      hint:'Traço reto de uma enguia' },
+      'う':{ emoji:'☂️', word:'Umbrella', hint:'Um U aberto como guarda-chuva' },
+      'ウ':{ emoji:'☂️', word:'Umbrella', hint:'A forma de um U com hastes' },
+      'え':{ emoji:'🕊️', word:'Eagle',   hint:'Uma águia em voo rasante' },
+      'エ':{ emoji:'🕊️', word:'Eagle',   hint:'A trave de uma gaiola de pássaro' },
+      'お':{ emoji:'🍊', word:'Orange',   hint:'O com uma laranja ao lado' },
+      'オ':{ emoji:'🍊', word:'Orange',   hint:'Ramo segurando uma laranja' },
+      'か':{ emoji:'🪁', word:'Kite',     hint:'Uma pipa voando com sua linha' },
+      'カ':{ emoji:'🪁', word:'Kite',     hint:'Diagonal de uma pipa no ar' },
+    };
+  }
+
+  LEVEL_DATA() {
+    return [
+      { key:'total',     icon:'🌱', title:'Total Iniciante', desc:'Nunca aprendi japonês',       hint:'Do zero — vogais, hiragana e tudo passo a passo.' },
+      { key:'iniciante', icon:'🌿', title:'Iniciante',       desc:'Sei alguns hiragana',         hint:'Consolidamos o que você já sabe e avançamos no seu ritmo.' },
+      { key:'medio',     icon:'🌳', title:'Médio',           desc:'Leio hiragana e katakana',    hint:'Vocabulário, leitura de frases e expressões do dia a dia.' },
+      { key:'avancado',  icon:'⚡', title:'Avançado',         desc:'Tenho vocabulário básico',    hint:'Gramática, kanji e conversação — vamos a fundo.' },
+    ];
+  }
+
+  LESSON_DATA() {
+    return [
+      { num:'01', title:'Vogais',    kana:'あいうえお', done:true,  current:false },
+      { num:'02', title:'Linha K',   kana:'かきくけこ', done:true,  current:false },
+      { num:'03', title:'Linha S',   kana:'さしすせそ', done:false, current:true  },
+      { num:'04', title:'Linha T',   kana:'たちつてと', done:false, current:false },
+      { num:'05', title:'Linha N',   kana:'なにぬねの', done:false, current:false },
+      { num:'06', title:'Linha H/M', kana:'はまやら…',  done:false, current:false },
+    ];
+  }
+
+  go(view) { this.setState({ view, flipped: false, sidebarCollapsed: true }); if (this.canvas) this.clear(); }
+  setPage(p) { this.setState({ page: p, view: 'hub', sidebarCollapsed: false, flipped: false }); if (this.canvas) this.clear(); }
+  toggleScope(key) {
+    this.setState(s => {
+      const arr = s.scope;
+      const idx = arr.indexOf(key);
+      if (idx >= 0) {
+        if (arr.length === 1) return {};
+        return { scope: arr.filter(k => k !== key) };
+      }
+      return { scope: [...arr, key] };
+    });
+  }
+  setSessionLength(l) { this.setState({ sessionLength: l }); }
+  setSet(s) { this.setState({ set: s }); }
+
+  setCanvas(el) {
+    if (!el) { this.canvas = null; return; }
+    if (this.canvas === el) return;
+    this.canvas = el;
+    const ctx = el.getContext('2d');
+    const resize = () => {
+      const r = el.getBoundingClientRect();
+      el.width = r.width; el.height = r.height;
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.strokeStyle = '#ac2b2f'; ctx.lineWidth = 10;
+    };
+    requestAnimationFrame(resize);
+    const pos = (e) => { const r = el.getBoundingClientRect(); const t = e.touches ? e.touches[0] : e; return { x: t.clientX - r.left, y: t.clientY - r.top }; };
+    el.addEventListener('pointerdown', (e) => { e.preventDefault(); this.drawing = true; this.last = pos(e); });
+    el.addEventListener('pointermove', (e) => {
+      if (!this.drawing) return; e.preventDefault();
+      const p = pos(e); ctx.beginPath(); ctx.moveTo(this.last.x, this.last.y); ctx.lineTo(p.x, p.y); ctx.stroke(); this.last = p;
+    });
+    window.addEventListener('pointerup', () => { this.drawing = false; });
+  }
+  clear() { if (!this.canvas) return; const c = this.canvas.getContext('2d'); c.clearRect(0, 0, this.canvas.width, this.canvas.height); }
+
+  renderVals() {
+    const { view, page, set, scope, sessionLength, flipped, showGuide, showMnemonics, sidebarCollapsed, userLevel, pendingLevel, pendingGoal, onboardingStep, showTrainingConfig, notes } = this.state;
+
+    const goj = this.GOJUON();
+    const scopeIdx = (scope.length === 1 && scope[0] === 'katakana') ? 1 : 0;
+    const setIdx   = set   === 'katakana' ? 1 : 0;
+
+    // Exercise example
+    const exRow  = goj[0];
+    const mnemo  = this.MNEMONICS();
+    const exKana = exRow[scopeIdx];
+    const m = mnemo[exKana] || { emoji:'✨', word: exRow[2].toUpperCase(), hint:'Um símbolo único do japonês' };
+    const ex = { kana: exKana, romaji: exRow[2], emoji: m.emoji, word: m.word, mnemonic: m.hint };
+
+    const scopeNames = { hiragana:'Hiragana', katakana:'Katakana', dakuten:'Dakuten', handakuten:'Handakuten', combinacoes:'Combinações' };
+    const setLabel = scope.length > 0 ? scope.map(s => scopeNames[s] || s).join(' + ') : 'Hiragana';
+
+    // Titles
+    const modeTitles = { flashcards:'Flashcards', quiz:'Qual é o kana?', match:'Ligar pares', write:'Escrever', listen:'Escuta', draw:'Desenhar o traço' };
+    const pageTitles = { inicio:'Início', estudo:'Aulas Extras', kana:'Kana', vocabulario:'Vocabulário', simulados:'Simulados', progresso:'Progresso' };
+    const placeholderIcons = { vocabulario:'menu_book', simulados:'assignment', progresso:'trending_up' };
+
+    // Nav
+    const collapsed = sidebarCollapsed;
+    const sidebarExpanded = !collapsed;
+    const sidebarStyle = `width:${collapsed ? '68px' : '256px'}; flex:none; position:sticky; top:0; height:100vh; background:#fff; border-right:1px solid #E2E8F0; display:flex; flex-direction:column; padding:${collapsed ? '20px 10px' : '28px 14px'}; gap:20px; z-index:50; transition:width .25s ease, padding .25s ease; overflow:hidden;`;
+    const logoAreaStyle = `display:flex; align-items:center; gap:12px; padding:${collapsed ? '0' : '0 8px'}; justify-content:${collapsed ? 'center' : 'flex-start'};`;
+    const sidebarToggleStyle = collapsed
+      ? 'display:flex; align-items:center; justify-content:center; padding:10px; color:#94a3b8; border-radius:8px; width:100%; border:none; cursor:pointer; background:transparent;'
+      : 'display:flex; align-items:center; gap:8px; padding:9px 14px; color:#94a3b8; border-radius:8px; width:100%; border:none; cursor:pointer; background:transparent;';
+    const sidebarToggleIcon = collapsed ? 'chevron_right' : 'chevron_left';
+    const sbBtnStyle = collapsed
+      ? 'display:flex; align-items:center; justify-content:center; padding:12px; color:#94a3b8; border-radius:8px; width:100%; border:none; cursor:pointer; background:transparent;'
+      : 'display:flex; align-items:center; gap:12px; padding:10px 14px; color:#94a3b8; border-radius:8px; font-size:14px; font-weight:600; width:100%; border:none; cursor:pointer; background:transparent; text-align:left;';
+    const aStyle = collapsed
+      ? 'display:flex; align-items:center; justify-content:center; padding:12px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; width:100%; border:none; cursor:pointer;'
+      : 'display:flex; align-items:center; gap:12px; padding:11px 14px; background:#FFF1F1; color:#ac2b2f; border-radius:8px; font-size:14px; font-weight:700; width:100%; border:none; cursor:pointer; text-align:left;';
+    const iStyle = collapsed
+      ? 'display:flex; align-items:center; justify-content:center; padding:12px; color:#565e74; border-radius:8px; width:100%; border:none; cursor:pointer; background:transparent;'
+      : 'display:flex; align-items:center; gap:12px; padding:11px 14px; color:#565e74; border-radius:8px; font-size:14px; font-weight:600; width:100%; border:none; cursor:pointer; background:transparent; text-align:left;';
+    const navDefs = [
+      { key:'inicio',      icon:'home',       label:'Início',      href:null },
+      { key:'estudo',      icon:'auto_stories', label:'Aulas Extras', href:null },
+      { key:'kana',        icon:'translate',  label:'Kana',        href:null },
+      { key:'vocabulario', icon:'menu_book',      label:'Vocabulário',  href:'Vocabulario.dc.html' },
+      { key:'treino',      icon:'sports_esports', label:'Treino Vocab', href:'Treino de Vocabulario.dc.html' },
+      { key:'simulados',   icon:'assignment',     label:'Simulados',    href:'Simulados.dc.html' },
+      { key:'progresso',   icon:'trending_up',label:'Progresso',   href:'Progresso.dc.html' },
+    ];
+    const navItems = navDefs.map(n => ({
+      ...n,
+      style: page === n.key ? aStyle : iStyle,
+      fill: page === n.key ? 'fill' : '',
+      onClick: n.href ? () => { window.location.href = n.href; } : () => this.setPage(n.key),
+    }));
+
+    // Scope & length pickers
+    const pOn  = 'padding:8px 16px; border-radius:10px; border:none; cursor:pointer; font-family:inherit; font-size:13px; font-weight:700; background:#ac2b2f; color:#fff; white-space:nowrap; text-align:left;';
+    const pOff = 'padding:8px 16px; border-radius:10px; border:1px solid #E2E8F0; cursor:pointer; font-family:inherit; font-size:13px; font-weight:500; background:#F8FAFC; color:#565e74; white-space:nowrap; text-align:left;';
+    const scopeOpts = [
+      { key:'hiragana',    label:'Hiragana あ' },
+      { key:'katakana',    label:'Katakana ア' },
+      { key:'dakuten',     label:'Dakuten が' },
+      { key:'handakuten',  label:'Handakuten ぱ' },
+      { key:'combinacoes', label:'Combinações きゃ' },
+    ].map(o => ({ ...o, style: scope.includes(o.key) ? pOn : pOff, onClick: () => this.toggleScope(o.key) }));
+
+    const lengthOpts = [
+      { key:'rapido',   label:'Rápido · 5 kana'  },
+      { key:'medio',    label:'Médio · 15 kana' },
+      { key:'longo',    label:'Longo · 30 kana'  },
+      { key:'infinito', label:'Infinito ∞' },
+    ].map(o => ({ ...o, style: sessionLength === o.key ? pOn : pOff, onClick: () => this.setSessionLength(o.key) }));
+
+    // Drawer
+    const drawerStyle = `position:fixed; top:0; right:0; width:380px; height:100vh; background:#fff; border-left:1px solid #E2E8F0; box-shadow:-8px 0 40px rgba(11,28,48,.12); z-index:100; padding:32px; display:flex; flex-direction:column; transform:${showTrainingConfig ? 'translateX(0)' : 'translateX(100%)'};  transition:transform .3s ease;`;
+    const drawerBackdropStyle = `position:fixed; inset:0; background:rgba(11,28,48,.25); z-index:99; backdrop-filter:blur(2px); opacity:${showTrainingConfig ? '1' : '0'}; pointer-events:${showTrainingConfig ? 'auto' : 'none'}; transition:opacity .3s;`;
+    const mnemonicTrackStyle = `width:44px; height:24px; border-radius:999px; background:${showMnemonics ? '#ac2b2f' : '#E2E8F0'}; position:relative; cursor:pointer; transition:background .2s; flex:none;`;
+    const mnemonicThumbStyle = `position:absolute; top:2px; left:${showMnemonics ? '22px' : '2px'}; width:20px; height:20px; border-radius:999px; background:#fff; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.15);`;
+
+    // Mode cards
+    const card = (key, icon, title, desc, tag) => ({ key, icon, title, desc, tag, onClick: () => this.go(key) });
+    const cards = [
+      card('flashcards','style',    'Flashcards',     'Vire a carta para revelar leitura e mnemônico.',   '46 cartas'),
+      card('quiz',      'quiz',     'Qual é o kana?', 'Escolha o kana certo entre quatro opções.',        'Múltipla escolha'),
+      card('match',     'link',     'Ligar pares',    'Conecte cada kana ao seu romaji correspondente.',  '5 pares'),
+      card('write',     'keyboard', 'Escrever',       'Veja o kana e digite a leitura em romaji.',        'Digitação'),
+      card('listen',    'hearing',  'Escuta',         'Ouça o som e identifique o kana correto.',         'Áudio'),
+      card('draw',      'gesture',  'Desenhar',       'Pratique a escrita à mão sobre o guia.',           'Caligrafia'),
+    ];
+
+    // Quick modes (home)
+    const quickModes = [
+      { key:'flashcards', icon:'style',    label:'Flashcards', onClick: () => { this.setPage('kana'); setTimeout(() => this.go('flashcards'), 0); } },
+      { key:'quiz',       icon:'quiz',     label:'Quiz',       onClick: () => { this.setPage('kana'); setTimeout(() => this.go('quiz'), 0); } },
+      { key:'listen',     icon:'hearing',  label:'Escuta',     onClick: () => { this.setPage('kana'); setTimeout(() => this.go('listen'), 0); } },
+      { key:'draw',       icon:'gesture',  label:'Desenhar',   onClick: () => { this.setPage('kana'); setTimeout(() => this.go('draw'), 0); } },
+    ];
+
+    // Progress grid
+    const statusOf = (i) => (i % 7 === 3 || i % 11 === 5) ? 'locked' : (i % 3 === 0 ? 'learning' : 'mastered');
+    const grid = goj.map((row, i) => {
+      const st = statusOf(i); const kana = row[setIdx], romaji = row[2];
+      if (st === 'mastered') return { kana, romaji, bg:'#fff',    border:'#E2E8F0', text:'#0b1c30', bar:'#00846d',    opacity:1    };
+      if (st === 'learning') return { kana, romaji, bg:'#FFF1F1', border:'#ce4445', text:'#ac2b2f', bar:'#ac2b2f',    opacity:1    };
+      return                        { kana, romaji, bg:'#F8FAFC', border:'#E2E8F0', text:'#94a3b8', bar:'transparent', opacity:0.4  };
+    });
+
+    const setOn  = 'padding:6px 14px; border-radius:999px; border:none; cursor:pointer; font-family:inherit; font-size:12px; font-weight:700; background:#ac2b2f; color:#fff;';
+    const setOff = 'padding:6px 14px; border-radius:999px; border:none; cursor:pointer; font-family:inherit; font-size:12px; font-weight:500; background:transparent; color:#565e74;';
+
+    // Quiz
+    const quizRaw = [
+      { kana: goj[5][scopeIdx], correct: true  },
+      { kana: goj[6][scopeIdx], correct: false },
+      { kana: goj[10][scopeIdx], correct: false },
+      { kana: goj[16][scopeIdx], correct: false },
+    ];
+    const optB = 'position:relative; background:#fff; border:2px solid #E2E8F0; border-radius:16px; padding:22px 12px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:inherit; min-height:96px;';
+    const optD = 'position:relative; background:#e6f7f1; border:2px solid #00846d; border-radius:16px; padding:22px 12px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:inherit; min-height:96px;';
+    const quizOptions = quizRaw.map(o => ({ ...o, style: o.correct ? optD : optB }));
+    const quizEx = { romaji: goj[5][2] };
+
+    // Match
+    const pairIdx = [0,5,11,20,38];
+    const matchState = ['done','done','active','idle','idle'];
+    const matchBase = 'display:flex; align-items:center; gap:12px; padding:14px 16px; min-height:64px; border-radius:12px; cursor:pointer; font-family:inherit; width:100%; border:2px solid;';
+    const matchStyleOf = (st) => matchBase + (st === 'done' ? 'background:#e6f7f1; border-color:#00846d;' : st === 'active' ? 'background:#FFF1F1; border-color:#ac2b2f;' : 'background:#fff; border-color:#E2E8F0;');
+    const matchTextOf  = (st) => st === 'done' ? '#00846d' : st === 'active' ? '#ac2b2f' : '#0b1c30';
+    const matchLeft  = pairIdx.map((p, i) => ({ kana: goj[p][scopeIdx], style: matchStyleOf(matchState[i]), textColor: matchTextOf(matchState[i]), isDone: matchState[i] === 'done' }));
+    const matchRight = [0,1,3,2,4].map(ri => ({ romaji: goj[pairIdx[ri]][2], style: matchStyleOf(matchState[ri]), textColor: matchTextOf(matchState[ri]), isDone: matchState[ri] === 'done' }));
+
+    const writeEx      = { kana: goj[5][scopeIdx], romaji: goj[5][2] };
+    const listenOptions = [goj[5], goj[1], goj[20], goj[38]].map(r => ({ kana: r[scopeIdx] }));
+
+    const guideOpacity = showGuide ? 0.08 : 0;
+    const guideLabel   = showGuide ? 'Ocultar guia' : 'Ver guia';
+    const guideIcon    = showGuide ? 'visibility_off' : 'visibility';
+
+    const currentNote  = notes[exKana] || '';
+    const onNoteChange = (e) => this.setState(s => ({ notes: { ...s.notes, [exKana]: e.target.value } }));
+
+    // Onboarding
+    const pendingLv  = pendingLevel;
+    const pendingGl  = pendingGoal;
+    const step = onboardingStep;
+    const onboardingStyle = this.props.forceOnboarding ? 'position:fixed; inset:0; z-index:200; background:#fff; display:flex; overflow:hidden;' : 'display:none;';
+    const levels = this.LEVEL_DATA().map(l => ({
+      ...l,
+      isActive: pendingLv === l.key,
+      style: pendingLv === l.key
+        ? 'background:#FFF1F1; border:2px solid #ac2b2f; border-radius:14px; padding:14px 16px; cursor:pointer; text-align:left; font-family:inherit; width:100%; transition:all .15s;'
+        : 'background:#fff; border:2px solid #E2E8F0; border-radius:14px; padding:14px 16px; cursor:pointer; text-align:left; font-family:inherit; width:100%; transition:all .15s;',
+      onClick: () => this.setState({ pendingLevel: l.key }),
+    }));
+    const step2BtnStyle = pendingLv
+      ? 'display:inline-flex; align-items:center; gap:8px; padding:16px 36px; border-radius:999px; background:#ac2b2f; color:#fff; border:none; font-weight:700; font-size:16px; cursor:pointer; font-family:inherit;'
+      : 'display:inline-flex; align-items:center; gap:8px; padding:16px 36px; border-radius:999px; background:#E2E8F0; color:#94a3b8; border:none; font-weight:700; font-size:16px; cursor:not-allowed; font-family:inherit;';
+    const recommendedGoal = { total:'kana', iniciante:'kana', medio:'vocabulario', avancado:'vocabulario' }[pendingLv] || 'kana';
+    const goals = [
+      { key:'kana',        char:'あ', title:'Kana',                  desc:'Hiragana + Katakana · 92 caracteres no total.' },
+      { key:'dakuten',     char:'が', title:'Dakuten & Combinações', desc:'Sons sonoros, semisonoros e combinações.' },
+      { key:'vocabulario', char:'語', title:'Vocabulário',           desc:'Palavras essenciais do cotidiano japonês.' },
+    ].map(g => ({
+      ...g,
+      isActive: pendingGl === g.key,
+      recommended: recommendedGoal === g.key && !pendingGl,
+      charColor: pendingGl === g.key ? '#ac2b2f' : '#0b1c30',
+      style: pendingGl === g.key
+        ? 'background:#FFF1F1; border:2px solid #ac2b2f; border-radius:16px; padding:28px 18px; cursor:pointer; text-align:center; font-family:inherit; flex:1; display:flex; flex-direction:column; align-items:center; gap:10px; transition:all .15s;'
+        : 'background:#fff; border:2px solid #E2E8F0; border-radius:16px; padding:28px 18px; cursor:pointer; text-align:center; font-family:inherit; flex:1; display:flex; flex-direction:column; align-items:center; gap:10px; transition:all .15s;',
+      onClick: () => this.setState({ pendingGoal: g.key }),
+    }));
+    const step3BtnStyle = pendingGl
+      ? 'display:inline-flex; align-items:center; gap:8px; padding:16px 36px; border-radius:999px; background:#ac2b2f; color:#fff; border:none; font-weight:700; font-size:16px; cursor:pointer; font-family:inherit;'
+      : 'display:inline-flex; align-items:center; gap:8px; padding:16px 36px; border-radius:999px; background:#E2E8F0; color:#94a3b8; border:none; font-weight:700; font-size:16px; cursor:not-allowed; font-family:inherit;';
+
+    // Estudo / chapters
+    const lessons6 = this.LESSON_DATA().map(l => ({
+      ...l,
+      itemStyle: l.current ? 'background:#FFF1F1; border:2px solid #ac2b2f; border-radius:12px; padding:16px; display:flex; align-items:center; gap:14px;'
+        : l.done  ? 'background:#f0fdf8; border:2px solid transparent; border-radius:12px; padding:16px; display:flex; align-items:center; gap:14px;'
+        : 'background:#F8FAFC; border:2px solid #E2E8F0; border-radius:12px; padding:16px; display:flex; align-items:center; gap:14px; opacity:.55;',
+      statusIcon:  l.done ? 'check_circle' : l.current ? 'play_circle' : 'lock',
+      statusColor: l.done ? '#00846d'      : l.current ? '#ac2b2f'     : '#94a3b8',
+    }));
+    const chapters = [
+      {
+        num:'Capítulo 1', title:'Hiragana', icon:'translate', iconBg:'#FFF1F1', iconColor:'#ac2b2f', titleColor:'#0b1c30',
+        progress: 33, locked: false, showProgress: true, showLessons: true,
+        cardStyle: 'background:#fff; border:1px solid #E2E8F0; border-radius:20px; padding:28px; display:flex; flex-direction:column; gap:0;',
+        lessons: lessons6,
+      },
+      {
+        num:'Capítulo 2', title:'Katakana', icon:'translate', iconBg:'#F8FAFC', iconColor:'#94a3b8', titleColor:'#94a3b8',
+        progress: 0, locked: true, showProgress: false, showLessons: false,
+        cardStyle: 'background:#F8FAFC; border:1px solid #E2E8F0; border-radius:20px; padding:28px; opacity:.7; display:flex; flex-direction:column; gap:0;',
+        lessons: [],
+      },
+      {
+        num:'Capítulo 3', title:'Dakuten & Combinações', icon:'auto_fix_high', iconBg:'#F8FAFC', iconColor:'#94a3b8', titleColor:'#94a3b8',
+        progress: 0, locked: true, showProgress: false, showLessons: false,
+        cardStyle: 'background:#F8FAFC; border:1px solid #E2E8F0; border-radius:20px; padding:28px; opacity:.7; display:flex; flex-direction:column; gap:0;',
+        lessons: [],
+      },
+    ];
+
+    // Level label for home
+    const levelLabels = { total:'Total Iniciante', iniciante:'Iniciante', medio:'Médio', avancado:'Avançado' };
+
+    // Props
+    const showStats    = true;
+    const showProgress = true;
+
+    return {
+      navItems, sidebarStyle, sidebarExpanded, logoAreaStyle, sidebarToggleStyle, sidebarToggleIcon, sbBtnStyle,
+      toggleSidebar: () => this.setState(s => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+      pageTitle: page !== 'kana' ? (pageTitles[page] || page) : (view === 'hub' ? 'Treinamento de Kana' : modeTitles[view]),
+      isInicioPage:     page === 'inicio',
+      isEstudoPage:     page === 'estudo',
+      isKanaPage:       page === 'kana',
+      isPlaceholderPage: page !== 'inicio' && page !== 'estudo' && page !== 'kana',
+      placeholderTitle: pageTitles[page] || '',
+      placeholderIcon:  placeholderIcons[page] || 'construction',
+      // onboarding
+      onboardingStyle,
+      isStep1:  step === 1,
+      isStep23: step > 1,
+      isStep2:  step === 2,
+      isStep3:  step === 3,
+      levels, goals, step2BtnStyle, step3BtnStyle,
+      nextStep: () => { if (step === 2 && !pendingLv) return; this.setState(s => ({ onboardingStep: Math.min(s.onboardingStep + 1, 3) })); },
+      prevStep: () => this.setState(s => ({ onboardingStep: Math.max(s.onboardingStep - 1, 1) })),
+      completeOnboarding: () => { if (!pendingGl) return; this.setState({ userLevel: pendingLv }); },
+      // drawer
+      drawerStyle, drawerBackdropStyle, mnemonicTrackStyle, mnemonicThumbStyle,
+      openDrawer:       () => this.setState({ showTrainingConfig: true }),
+      closeDrawer:      () => this.setState({ showTrainingConfig: false }),
+      toggleMnemonics:  () => this.setState(s => ({ showMnemonics: !s.showMnemonics })),
+      scopeOpts, lengthOpts,
+      // hub
+      isHub:  view === 'hub',
+      inMode: view !== 'hub',
+      cards, quickModes, grid, setLabel,
+      hiraBtnStyle: set === 'hiragana' ? setOn : setOff,
+      kataBtnStyle: set === 'katakana' ? setOn : setOff,
+      setHira: () => this.setSet('hiragana'),
+      setKata: () => this.setSet('katakana'),
+      showStats, showProgress,
+      // home
+      levelLabel: levelLabels[userLevel] || 'Nível não definido',
+      goKana:   () => this.setPage('kana'),
+      goEstudo: () => this.setPage('estudo'),
+      // modes
+      isFlashcards: view === 'flashcards',
+      isQuiz:       view === 'quiz',
+      isMatch:      view === 'match',
+      isWrite:      view === 'write',
+      isListen:     view === 'listen',
+      isDraw:       view === 'draw',
+      modeTitle: modeTitles[view] || '',
+      goHub: () => this.setState({ view: 'hub', sidebarCollapsed: false }),
+      // flashcard
+      ex, toggleFlip: () => this.setState(s => ({ flipped: !s.flipped })),
+      flipTransform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+      currentNote, onNoteChange, showMnemonics,
+      // quiz / match / write / listen
+      quizOptions, quizEx, matchLeft, matchRight, writeEx, listenOptions,
+      // draw
+      clearCanvas: () => this.clear(),
+      toggleGuide: () => this.setState(s => ({ showGuide: !s.showGuide })),
+      guideOpacity, guideLabel, guideIcon, setCanvas: this.setCanvas,
+      // estudo
+      chapters,
+    };
+  }
+}
+</script>
+</body>
+</html>

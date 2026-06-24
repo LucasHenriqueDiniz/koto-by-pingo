@@ -1,192 +1,179 @@
 import { useEffect } from 'react';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { motion } from 'framer-motion';
-import { BookOpen, Target, FileText, Globe } from 'lucide-react';
-import { PingoMascot } from '../components/brand/PingoMascot';
-import { AdPlaceholder } from '../components/ui/AdPlaceholder';
+import { MaterialIcon, type MaterialIconName } from '@/components/ui/MaterialIcon';
 import { updatePageSEO } from '../utils/seo';
-import { getProgressSummary } from '../services/progress/progress.local';
+import { getKanaStats, getKanaAccuracy, getWeeklyActivity } from '../services/progress/progress.local';
+import { getWordOfDay } from '../utils/dailyWord';
+import { useLocalStorage } from '../hooks/useLocalStorage';
+import type { KanaTrainingMode } from '../types/kana';
 
-const features = [
-  {
-    icon: Target,
-    title: 'Treinos curtos',
-    desc: 'Sessões de 5 a 15 minutos. Sem pressão, sem tempo perdido.',
-    color: '#E5484D',
-  },
-  {
-    icon: BookOpen,
-    title: 'Progresso claro',
-    desc: 'Acompanhe seus acertos, erros e evolução ao longo do tempo.',
-    color: '#7C3AED',
-  },
-  {
-    icon: FileText,
-    title: 'Simulados organizados',
-    desc: 'Questões no formato JLPT. Do N5 ao N1, no seu ritmo.',
-    color: '#EA580C',
-  },
-  {
-    icon: Globe,
-    title: 'Feito para brasileiros',
-    desc: 'Todo o conteúdo em português. Sem adaptações questionáveis.',
-    color: '#0284C7',
-  },
+interface QuickMode {
+  mode: KanaTrainingMode;
+  label: string;
+  icon: MaterialIconName;
+}
+
+const QUICK_MODES: QuickMode[] = [
+  { mode: 'flashcards', label: 'Flashcards', icon: 'style' },
+  { mode: 'multiple_choice', label: 'Quiz', icon: 'quiz' },
+  { mode: 'listening', label: 'Escuta', icon: 'hearing' },
+  { mode: 'tracing', label: 'Desenhar', icon: 'stylus' },
 ];
 
 export function HomePage() {
+  const [, navigate] = useLocation();
+  const [, setKanaMode] = useLocalStorage<KanaTrainingMode>('kana_train_mode', 'typing');
+
   useEffect(() => {
     updatePageSEO(
-      'Koto by Pingo — Treine japonês com kana, vocabulário e simulados',
-      'Treine japonês em sessões rápidas com kana, vocabulário, escuta, progresso e simulados estilo JLPT. Feito para brasileiros.'
+      'Koto by Pingo — Seu painel de estudos de japonês',
+      'Continue de onde parou: treine kana, vocabulário e simulados com progresso real, no seu ritmo.',
     );
   }, []);
 
-  const summary = getProgressSummary();
-  const hasProgress = summary.totalAttempts > 0;
+  const stats = getKanaStats();
+  const accuracy = getKanaAccuracy();
+  const masteryPct = stats.total > 0 ? Math.round((stats.mastered / stats.total) * 100) : 0;
+  const weekly = getWeeklyActivity();
+  const todayCount = weekly[weekly.length - 1]?.count ?? 0;
+  const wordOfDay = getWordOfDay();
+
+  const startQuick = (mode: KanaTrainingMode) => {
+    setKanaMode(mode);
+    navigate('/kana/treinar');
+  };
 
   return (
-    <div className="min-h-screen">
-      {/* Hero */}
-      <section className="bg-background border-b border-border">
-        <div className="max-w-6xl mx-auto px-4 py-16 md:py-24">
-          <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="flex-1 text-center md:text-left"
-            >
-              <div className="inline-flex items-center gap-2 bg-accent text-primary text-xs font-semibold px-3 py-1 rounded-full mb-4">
-                <span>Koto by Pingo</span>
-              </div>
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground leading-tight mb-4">
-                Japonês em pequenos treinos diários.
-              </h1>
-              <p className="text-base text-muted-foreground mb-8 max-w-md mx-auto md:mx-0">
-                Treine kana, vocabulário, escuta e simulados com uma rotina simples, clara e progressiva.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-                <Link
-                  href="/kana"
-                  className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity"
-                  data-testid="hero-cta-kana"
-                >
-                  Começar pelo Kana
-                </Link>
-                <Link
-                  href="/simulados"
-                  className="px-6 py-3 border border-border text-foreground rounded-xl font-semibold text-sm hover:bg-muted transition-colors"
-                  data-testid="hero-cta-simulados"
-                >
-                  Ver Simulados
-                </Link>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-              className="flex-shrink-0"
-            >
-              <PingoMascot variant="kana" size="xl" />
-            </motion.div>
+    <div className="max-w-6xl mx-auto px-4 py-8 space-y-7">
+      {/* Saudação */}
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="flex items-center justify-between flex-wrap gap-4"
+      >
+        <div>
+          <h1 className="font-heading text-2xl md:text-3xl font-extrabold text-foreground mb-2">Olá! Bom trabalho 🌸</h1>
+          <div className="flex items-center gap-2.5 flex-wrap">
+            {/* Placeholder de nível/ofensiva — ver docs/TODO_GAMIFICATION.md */}
+            <span className="bg-accent text-primary text-xs font-bold px-3 py-1 rounded-full border border-primary/30">Nível não definido</span>
+            <span className="flex items-center gap-1.5 text-[--color-text-secondary] text-sm">
+              <MaterialIcon name="local_fire_department" filled size={18} className="text-primary" />
+              0 dias de ofensiva
+            </span>
           </div>
         </div>
-      </section>
+        <Link
+          href="/aulas"
+          className="flex items-center gap-2 px-5 py-3 rounded-full bg-card border border-border text-foreground font-semibold text-sm hover:border-primary hover:text-primary transition-colors"
+        >
+          Ver percurso <MaterialIcon name="arrow_forward" size={18} />
+        </Link>
+      </motion.div>
 
-      {/* Continue studying - only shown when there's progress */}
-      {hasProgress && (
-        <section className="bg-accent/30 border-b border-border">
-          <div className="max-w-6xl mx-auto px-4 py-6">
-            <h2 className="text-sm font-semibold text-foreground mb-4">Continue estudando</h2>
-            <div className="flex flex-wrap gap-3">
-              {summary.kanaTotal > 0 && (
-                <Link href="/kana" className="flex items-center gap-2 bg-card border border-border rounded-xl px-4 py-3 text-sm hover:bg-muted transition-colors" data-testid="continue-kana">
-                  <span className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
-                  <span className="text-foreground font-medium">Kana</span>
-                  <span className="text-muted-foreground">{summary.kanaAccuracy}% precisão</span>
-                </Link>
-              )}
-              {summary.vocabTotal > 0 && (
-                <Link href="/vocabulario" className="flex items-center gap-2 bg-card border border-border rounded-xl px-4 py-3 text-sm hover:bg-muted transition-colors" data-testid="continue-vocab">
-                  <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#7C3AED' }} />
-                  <span className="text-foreground font-medium">Vocabulário</span>
-                  <span className="text-muted-foreground">{summary.vocabAccuracy}% precisão</span>
-                </Link>
-              )}
-              {summary.examsCompleted > 0 && (
-                <Link href="/progresso" className="flex items-center gap-2 bg-card border border-border rounded-xl px-4 py-3 text-sm hover:bg-muted transition-colors" data-testid="continue-progress">
-                  <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#16A34A' }} />
-                  <span className="text-foreground font-medium">{summary.examsCompleted} simulado{summary.examsCompleted !== 1 ? 's' : ''} feito{summary.examsCompleted !== 1 ? 's' : ''}</span>
-                </Link>
-              )}
+      {/* Grid principal */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5 items-start">
+        {/* Coluna esquerda */}
+        <div className="flex flex-col gap-5">
+          {/* Continue de onde parou (progresso real de kana) */}
+          <div className="relative overflow-hidden bg-primary rounded-2xl p-7 text-primary-foreground flex items-center gap-6">
+            <div className="absolute -right-5 -bottom-8 font-japanese font-bold text-[160px] leading-none opacity-10 pointer-events-none select-none">さ</div>
+            <div className="flex-1 relative z-10 min-w-0">
+              <div className="text-[11px] font-bold uppercase tracking-widest opacity-70 mb-2">Continue de onde parou</div>
+              <div className="font-heading text-xl font-extrabold mb-1">Treino de Kana</div>
+              <div className="font-japanese text-lg tracking-widest opacity-85 mb-4">あ か さ た な</div>
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-1 bg-white/25 rounded-full overflow-hidden">
+                  <div className="h-full bg-white rounded-full" style={{ width: `${masteryPct}%` }} />
+                </div>
+                <span className="text-xs opacity-80">{masteryPct}%</span>
+              </div>
+            </div>
+            <Link
+              href="/kana/treinar"
+              className="relative z-10 flex items-center gap-1.5 bg-white/20 border border-white/30 px-5 py-3 rounded-full font-bold text-sm whitespace-nowrap hover:bg-white/30 transition-colors flex-shrink-0"
+            >
+              Continuar <MaterialIcon name="arrow_forward" size={18} />
+            </Link>
+          </div>
+
+          {/* Acesso rápido */}
+          <div>
+            <div className="text-xs font-bold text-[--color-text-secondary] uppercase tracking-wider mb-3.5">Acesso rápido</div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {QUICK_MODES.map(q => (
+                <button
+                  key={q.mode}
+                  onClick={() => startQuick(q.mode)}
+                  className="bg-card border border-border rounded-2xl p-5 flex flex-col items-center gap-2.5 hover:border-primary hover:bg-accent hover:-translate-y-0.5 transition-all"
+                  data-testid={`quick-${q.mode}`}
+                >
+                  <div className="w-11 h-11 bg-accent rounded-xl flex items-center justify-center text-primary">
+                    <MaterialIcon name={q.icon} filled size={24} />
+                  </div>
+                  <span className="text-sm font-bold text-foreground">{q.label}</span>
+                </button>
+              ))}
             </div>
           </div>
-        </section>
-      )}
 
-      {/* Features */}
-      <section className="bg-background">
-        <div className="max-w-6xl mx-auto px-4 py-14">
-          <h2 className="text-xl font-bold text-foreground mb-2">Por que Koto?</h2>
-          <p className="text-sm text-muted-foreground mb-8">Uma ferramenta construída com clareza, sem distrações.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {features.map((f, i) => {
-              const Icon = f.icon;
-              return (
-                <motion.div
-                  key={f.title}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: i * 0.07 }}
-                  className="bg-card border border-card-border rounded-xl p-5 flex items-start gap-4"
-                  data-testid={`feature-card-${i}`}
-                >
-                  <div
-                    className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
-                    style={{ backgroundColor: f.color + '18' }}
-                  >
-                    <Icon size={20} style={{ color: f.color }} />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-foreground mb-1">{f.title}</h3>
-                    <p className="text-sm text-muted-foreground">{f.desc}</p>
-                  </div>
-                </motion.div>
-              );
-            })}
+          {/* Stats mini */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-card border border-border rounded-xl p-4">
+              <div className="text-[11px] text-[--color-text-secondary] font-semibold uppercase tracking-wider mb-1.5">Kana dominados</div>
+              <div className="font-heading text-xl font-extrabold text-foreground">
+                {stats.mastered}<span className="text-sm text-muted-foreground/50">/{stats.total}</span>
+              </div>
+            </div>
+            <div className="bg-card border border-border rounded-xl p-4">
+              <div className="text-[11px] text-[--color-text-secondary] font-semibold uppercase tracking-wider mb-1.5">Precisão</div>
+              <div className="font-heading text-xl font-extrabold text-[hsl(var(--tertiary))]">{accuracy}%</div>
+            </div>
+            <div className="bg-card border border-border rounded-xl p-4">
+              <div className="text-[11px] text-[--color-text-secondary] font-semibold uppercase tracking-wider mb-1.5">Hoje</div>
+              <div className="font-heading text-xl font-extrabold text-foreground">{todayCount}</div>
+            </div>
           </div>
         </div>
-      </section>
 
-      {/* Ad placeholder */}
-      <section className="bg-background border-t border-border">
-        <div className="max-w-6xl mx-auto px-4 py-6">
-          <AdPlaceholder slot="banner" />
-        </div>
-      </section>
+        {/* Coluna direita */}
+        <div className="flex flex-col gap-4">
+          {/* Palavra do dia */}
+          <div className="bg-foreground rounded-2xl overflow-hidden relative">
+            <div className="p-5 pb-0 relative">
+              <div className="text-[10px] font-bold tracking-widest uppercase text-background/50 mb-3">Palavra do dia</div>
+              <div className="font-japanese text-[110px] font-extrabold text-background leading-none mb-2">{wordOfDay.japanese}</div>
+              <div className="absolute right-3 top-7 font-japanese text-[180px] font-extrabold text-background opacity-[0.04] leading-none pointer-events-none">{wordOfDay.japanese}</div>
+            </div>
+            <div className="bg-primary px-5 py-4 flex items-center gap-3">
+              <span className="text-2xl">✨</span>
+              <div>
+                <div className="font-heading text-sm font-extrabold text-primary-foreground uppercase tracking-wide">{wordOfDay.meaningPt} · {wordOfDay.kana}</div>
+                <div className="text-[11px] text-primary-foreground/70 mt-0.5">{wordOfDay.romaji}</div>
+              </div>
+            </div>
+          </div>
 
-      {/* SEO content */}
-      <section className="bg-muted/30 border-t border-border">
-        <div className="max-w-6xl mx-auto px-4 py-12">
-          <div className="max-w-2xl">
-            <h2 className="text-lg font-bold text-foreground mb-3">
-              Aprenda japonês com método e consistência
-            </h2>
-            <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-              O Koto by Pingo é uma plataforma gratuita de treino de japonês desenvolvida para estudantes brasileiros.
-              Nosso foco é a progressão estruturada: você começa pelo kana, avança para o vocabulário e,
-              quando estiver pronto, enfrenta simulados no formato do exame JLPT.
-            </p>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Cada sessão é curta e objetiva. Sem longos vídeos, sem cursos infinitos. Apenas prática
-              direta com feedback imediato, progresso registrado e o Pingo-sensei guiando cada etapa.
-            </p>
+          {/* XP / ofensiva — placeholder (ver docs/TODO_GAMIFICATION.md) */}
+          <div className="bg-card border border-border rounded-2xl p-5">
+            <div className="flex items-center gap-3 mb-3.5">
+              <MaterialIcon name="local_fire_department" filled size={24} className="text-primary" />
+              <div>
+                <div className="text-sm font-bold text-foreground">Ofensiva diária</div>
+                <div className="text-xs text-[--color-text-secondary]">Em breve: ganhe XP treinando.</div>
+              </div>
+              <span className="ml-auto text-primary font-bold text-sm">0 XP</span>
+            </div>
+            <div className="w-full h-1.5 bg-accent rounded-full overflow-hidden">
+              <div className="h-full bg-primary rounded-full" style={{ width: '0%' }} />
+            </div>
+            <div className="flex justify-between mt-2 text-[11px] text-[--color-text-secondary]">
+              <span>0 / 1000 XP</span><span>Próximo nível</span>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 }

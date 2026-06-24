@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Koto - Kana Training</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#cbdbf5",
+                        "surface-container": "#e5eeff",
+                        "surface-tint": "#af2d32",
+                        "on-background": "#0b1c30",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#002019",
+                        "surface-container-low": "#eff4ff",
+                        "background-surface": "#F8FAFC",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#ffb3af",
+                        "primary-container": "#ce4445",
+                        "surface-container-high": "#dce9ff",
+                        "background": "#f8f9ff",
+                        "on-surface": "#0b1c30",
+                        "outline": "#8c706f",
+                        "border-subtle": "#E2E8F0",
+                        "on-surface-variant": "#59413f",
+                        "on-secondary-fixed": "#131b2e",
+                        "surface-variant": "#d3e4fe",
+                        "surface": "#f8f9ff",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#d3e4fe",
+                        "cherry-blossom-light": "#FFF1F1",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#410005",
+                        "on-primary-container": "#fffbff",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#69dabd",
+                        "on-primary-fixed-variant": "#8d131d",
+                        "tertiary": "#006856",
+                        "inverse-on-surface": "#eaf1ff",
+                        "secondary-fixed-dim": "#bec6e0",
+                        "primary-fixed": "#ffdad7",
+                        "primary": "#ac2b2f",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#86f7d9",
+                        "primary-fixed-dim": "#ffb3af",
+                        "secondary-fixed": "#dae2fd",
+                        "on-tertiary-container": "#f4fffa",
+                        "outline-variant": "#e0bfbc",
+                        "on-secondary-fixed-variant": "#3f465c",
+                        "on-secondary-container": "#5c647a",
+                        "tertiary-container": "#00846d",
+                        "on-tertiary-fixed-variant": "#005142",
+                        "secondary-container": "#dae2fd",
+                        "secondary": "#565e74",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f8f9ff",
+                        "inverse-surface": "#213145",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "margin-desktop": "32px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "container-max": "1200px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "display": ["Plus Jakarta Sans"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .kana-card {
+            perspective: 1000px;
+        }
+        .kana-card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .kana-card.is-flipped .kana-card-inner {
+            transform: rotateY(180deg);
+        }
+        .kana-card-front, .kana-card-back {
+            backface-visibility: hidden;
+        }
+        .kana-card-back {
+            transform: rotateY(180deg);
+        }
+        .zen-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .zen-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .zen-scroll::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- SideNavBar {{DATA:COMPONENTS:COMPONENTS_3}} -->
+<aside class="docked h-full w-64 left-0 top-0 fixed bg-white dark:bg-surface-container-lowest border-r border-border-subtle dark:border-outline-variant flex flex-col py-8 px-4 gap-8 z-50">
+<div class="flex items-center gap-3 px-2">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">translate</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface dark:text-inverse-on-surface leading-tight">Koto</h1>
+<p class="font-label-sm text-label-sm text-secondary opacity-70">by Pingo</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-high rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">home</span>
+<span class="font-label-md text-label-md">Início</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-cherry-blossom-light dark:bg-primary-container text-primary dark:text-on-primary-container rounded-lg font-bold scale-[0.98] transition-all duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">translate</span>
+<span class="font-label-md text-label-md">Kana</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-high rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">menu_book</span>
+<span class="font-label-md text-label-md">Vocabulário</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-high rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">hearing</span>
+<span class="font-label-md text-label-md">Escuta</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-high rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">assignment</span>
+<span class="font-label-md text-label-md">Simulados</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-high rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">trending_up</span>
+<span class="font-label-md text-label-md">Progresso</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-high rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:rotate-45 transition-transform">settings</span>
+<span class="font-label-md text-label-md">Configurações</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-high rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined">login</span>
+<span class="font-label-md text-label-md">Entrar</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="ml-64 min-h-screen flex flex-col bg-background-surface">
+<!-- TopAppBar {{DATA:COMPONENTS:COMPONENTS_3}} -->
+<header class="sticky top-0 z-40 bg-surface dark:bg-background h-16 flex justify-between items-center px-margin-desktop max-w-container-max mx-auto w-full">
+<div class="flex items-center gap-4">
+<h2 class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">Treinamento de Kana</h2>
+<div class="flex items-center bg-surface-container px-3 py-1.5 rounded-full gap-2 border border-border-subtle">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-on-surface">Sessão Ativa: 12m</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary-container bg-surface-variant cursor-pointer">
+<img alt="account_circle" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKjjXLQFoXLuWGmU7jbC8Jnf6EUbps9smCQRp_Zzy-P9O-TtkaLp0BLLXmImOddtwWGMT7HE96tt3SVWkh-JpWv838fsiuNGkGtMFllCyn-1a-gSGSMuj-FUrKwva8Z5zlVqvu5Q8OMomUj41I5ilQsmw4u3ElLc6nn1n_EX9hOQ7kCukbXgz9Z_rIPwvOSjIgZpr9xVU-ak3bQWNtBNfhruenC4bYxkTvY70lJNTuh9vya6vxj7o3G3EOE_jBwpPHmjq1T0QV0W0"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="px-margin-desktop py-8 max-w-container-max mx-auto w-full flex-grow grid grid-cols-12 gap-gutter">
+<!-- Left Column: Focused Training Area -->
+<div class="col-span-12 lg:col-span-7 flex flex-col gap-8">
+<!-- Session Stats Cards -->
+<div class="grid grid-cols-3 gap-4">
+<div class="bg-surface-container-lowest border border-border-subtle p-4 rounded-lg flex flex-col gap-1 shadow-sm">
+<span class="text-secondary font-label-sm">Concluído</span>
+<div class="flex items-end justify-between">
+<span class="font-headline-md text-on-surface">42/46</span>
+<span class="text-primary font-bold">91%</span>
+</div>
+<div class="w-full h-1.5 bg-cherry-blossom-light rounded-full mt-2 overflow-hidden">
+<div class="h-full bg-primary w-[91%] rounded-full"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-border-subtle p-4 rounded-lg flex flex-col gap-1 shadow-sm">
+<span class="text-secondary font-label-sm">Precisão</span>
+<div class="flex items-end justify-between">
+<span class="font-headline-md text-on-surface">88%</span>
+<span class="material-symbols-outlined text-tertiary-container">check_circle</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full mt-2 overflow-hidden">
+<div class="h-full bg-tertiary-container w-[88%] rounded-full"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-border-subtle p-4 rounded-lg flex flex-col gap-1 shadow-sm">
+<span class="text-secondary font-label-sm">Meta Diária</span>
+<div class="flex items-end justify-between">
+<span class="font-headline-md text-on-surface">15m</span>
+<span class="text-on-secondary-container font-label-md">Faltam 3m</span>
+</div>
+<div class="w-full h-1.5 bg-secondary-container rounded-full mt-2 overflow-hidden">
+<div class="h-full bg-secondary w-2/3 rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Flashcard Area -->
+<div class="flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-on-surface">Foco do Momento</h3>
+<div class="flex gap-2">
+<button class="px-4 py-2 rounded-lg border border-border-subtle bg-white text-secondary font-label-md hover:bg-surface-container-low transition-colors">Hiragana</button>
+<button class="px-4 py-2 rounded-lg border border-primary bg-cherry-blossom-light text-primary font-label-md">Katakana</button>
+</div>
+</div>
+<!-- Flashcard Component -->
+<div class="flex justify-center items-center py-4">
+<div class="kana-card w-full max-w-md aspect-[4/5] cursor-pointer group" id="flashcard">
+<div class="kana-card-inner relative w-full h-full shadow-lg rounded-xl">
+<!-- Front -->
+<div class="kana-card-front absolute inset-0 bg-white border-2 border-border-subtle rounded-xl flex flex-col items-center justify-center p-8">
+<div class="absolute top-6 left-6 text-primary opacity-20 select-none">
+<span class="material-symbols-outlined text-4xl">stylus</span>
+</div>
+<div class="text-[120px] font-bold text-on-surface font-headline-lg mb-8 leading-none">
+                                        あ
+                                    </div>
+<div class="text-secondary font-body-md opacity-60">Toque para revelar</div>
+</div>
+<!-- Back -->
+<div class="kana-card-back absolute inset-0 bg-primary rounded-xl flex flex-col items-center justify-center p-8 text-white">
+<div class="text-[120px] font-bold font-headline-lg mb-4 leading-none text-white">
+                                        A
+                                    </div>
+<div class="text-xl font-bold mb-8 uppercase tracking-widest">Hiragana</div>
+<div class="flex flex-col items-center gap-2">
+<div class="text-sm opacity-80">Mnemonics</div>
+<p class="text-center italic text-lg px-4 font-body-md">Looks like an Apple with a stem!</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center justify-center gap-4">
+<button class="w-14 h-14 rounded-full flex items-center justify-center bg-white border border-border-subtle text-error hover:bg-error-container transition-all hover:scale-105">
+<span class="material-symbols-outlined text-2xl">close</span>
+</button>
+<button class="px-12 py-4 rounded-full bg-primary text-white font-bold text-lg hover:brightness-110 shadow-lg shadow-primary-container/20 transition-all hover:scale-105 active:scale-95">
+                            Próximo
+                        </button>
+<button class="w-14 h-14 rounded-full flex items-center justify-center bg-white border border-border-subtle text-tertiary hover:bg-tertiary-container/10 transition-all hover:scale-105">
+<span class="material-symbols-outlined text-2xl">check</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Right Column: Character Grid & Progress -->
+<div class="col-span-12 lg:col-span-5 flex flex-col gap-6">
+<div class="bg-surface-container-lowest border border-border-subtle rounded-lg p-6 flex flex-col h-full max-h-[800px] shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-headline-md text-on-surface">Seu Progresso</h3>
+<div class="flex items-center gap-2 text-secondary cursor-pointer hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">filter_list</span>
+<span class="font-label-sm">Filtros</span>
+</div>
+</div>
+<!-- Bento-style Grid -->
+<div class="grid grid-cols-5 gap-3 zen-scroll overflow-y-auto pr-2 pb-4">
+<!-- Kana Item -->
+<div class="group cursor-pointer">
+<div class="aspect-square bg-surface-container-low rounded-lg border border-border-subtle flex flex-col items-center justify-center relative transition-all group-hover:border-primary group-hover:shadow-md">
+<span class="text-2xl font-bold text-on-surface">あ</span>
+<div class="absolute bottom-1 w-2/3 h-1 bg-tertiary-container rounded-full"></div>
+<div class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary text-[10px]" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+</div>
+<span class="block text-center text-[10px] text-secondary mt-1 uppercase font-bold tracking-tighter">A</span>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-square bg-white rounded-lg border border-border-subtle flex flex-col items-center justify-center relative transition-all group-hover:border-primary group-hover:shadow-md">
+<span class="text-2xl font-bold text-on-surface">い</span>
+<div class="absolute bottom-1 w-1/2 h-1 bg-tertiary-container rounded-full"></div>
+</div>
+<span class="block text-center text-[10px] text-secondary mt-1 uppercase font-bold tracking-tighter">I</span>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-square bg-cherry-blossom-light rounded-lg border border-primary flex flex-col items-center justify-center relative shadow-sm">
+<span class="text-2xl font-bold text-primary">う</span>
+<div class="absolute bottom-1 w-4/5 h-1 bg-primary rounded-full"></div>
+</div>
+<span class="block text-center text-[10px] text-primary mt-1 uppercase font-bold tracking-tighter">U</span>
+</div>
+<div class="group cursor-pointer opacity-50">
+<div class="aspect-square bg-white rounded-lg border border-border-subtle flex flex-col items-center justify-center relative">
+<span class="text-2xl font-bold text-on-surface">え</span>
+</div>
+<span class="block text-center text-[10px] text-secondary mt-1 uppercase font-bold tracking-tighter">E</span>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-square bg-white rounded-lg border border-border-subtle flex flex-col items-center justify-center relative">
+<span class="text-2xl font-bold text-on-surface">お</span>
+</div>
+<span class="block text-center text-[10px] text-secondary mt-1 uppercase font-bold tracking-tighter">O</span>
+</div>
+<!-- Row 2 -->
+<div class="group cursor-pointer">
+<div class="aspect-square bg-tertiary-container/10 rounded-lg border border-tertiary-container/30 flex flex-col items-center justify-center relative">
+<span class="text-2xl font-bold text-on-tertiary-fixed-variant">か</span>
+<div class="absolute bottom-1 w-full px-1.5"><div class="h-1 bg-tertiary-container rounded-full"></div></div>
+</div>
+<span class="block text-center text-[10px] text-secondary mt-1 uppercase font-bold tracking-tighter">KA</span>
+</div>
+<div class="group cursor-pointer"><div class="aspect-square bg-white border border-border-subtle rounded-lg flex items-center justify-center"><span class="text-2xl">き</span></div><span class="block text-center text-[10px] text-secondary mt-1 uppercase font-bold tracking-tighter">KI</span></div>
+<div class="group cursor-pointer"><div class="aspect-square bg-white border border-border-subtle rounded-lg flex items-center justify-center"><span class="text-2xl">く</span></div><span class="block text-center text-[10px] text-secondary mt-1 uppercase font-bold tracking-tighter">KU</span></div>
+<div class="group cursor-pointer"><div class="aspect-square bg-white border border-border-subtle rounded-lg flex items-center justify-center"><span class="text-2xl">け</span></div><span class="block text-center text-[10px] text-secondary mt-1 uppercase font-bold tracking-tighter">KE</span></div>
+<div class="group cursor-pointer"><div class="aspect-square bg-white border border-border-subtle rounded-lg flex items-center justify-center"><span class="text-2xl">こ</span></div><span class="block text-center text-[10px] text-secondary mt-1 uppercase font-bold tracking-tighter">KO</span></div>
+<!-- Filler items -->
+<div class="group cursor-pointer opacity-30"><div class="aspect-square bg-white border border-border-subtle rounded-lg flex items-center justify-center"><span class="text-2xl">さ</span></div></div>
+<div class="group cursor-pointer opacity-30"><div class="aspect-square bg-white border border-border-subtle rounded-lg flex items-center justify-center"><span class="text-2xl">し</span></div></div>
+<div class="group cursor-pointer opacity-30"><div class="aspect-square bg-white border border-border-subtle rounded-lg flex items-center justify-center"><span class="text-2xl">す</span></div></div>
+<div class="group cursor-pointer opacity-30"><div class="aspect-square bg-white border border-border-subtle rounded-lg flex items-center justify-center"><span class="text-2xl">せ</span></div></div>
+<div class="group cursor-pointer opacity-30"><div class="aspect-square bg-white border border-border-subtle rounded-lg flex items-center justify-center"><span class="text-2xl">そ</span></div></div>
+<div class="group cursor-pointer opacity-30"><div class="aspect-square bg-white border border-border-subtle rounded-lg flex items-center justify-center"><span class="text-2xl">た</span></div></div>
+<div class="group cursor-pointer opacity-30"><div class="aspect-square bg-white border border-border-subtle rounded-lg flex items-center justify-center"><span class="text-2xl">ち</span></div></div>
+<div class="group cursor-pointer opacity-30"><div class="aspect-square bg-white border border-border-subtle rounded-lg flex items-center justify-center"><span class="text-2xl">つ</span></div></div>
+<div class="group cursor-pointer opacity-30"><div class="aspect-square bg-white border border-border-subtle rounded-lg flex items-center justify-center"><span class="text-2xl">て</span></div></div>
+<div class="group cursor-pointer opacity-30"><div class="aspect-square bg-white border border-border-subtle rounded-lg flex items-center justify-center"><span class="text-2xl">と</span></div></div>
+</div>
+<div class="mt-auto pt-6 border-t border-border-subtle">
+<div class="flex items-center gap-4 bg-surface-container-low p-4 rounded-lg border border-border-subtle">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-on-surface">Próxima Recompensa</span>
+<span class="text-secondary text-xs">Domine 5 Katakanas para liberar o selo "Iniciante de Tóquio"</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer {{DATA:COMPONENTS:COMPONENTS_3}} -->
+<footer class="mt-auto border-t border-border-subtle dark:border-outline-variant bg-white dark:bg-surface-container-lowest">
+<div class="flex flex-col md:flex-row justify-between items-center py-12 px-margin-desktop max-w-container-max mx-auto ml-64 w-full">
+<div class="flex flex-col gap-2">
+<p class="font-headline-md text-on-surface dark:text-inverse-on-surface font-bold">Koto por Pingo Concursos</p>
+<p class="font-body-sm text-body-sm text-secondary">© 2026 Pingo Concursos. Todos os direitos reservados.</p>
+</div>
+<div class="flex gap-8 mt-6 md:mt-0">
+<a class="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors hover:underline" href="#">Sobre</a>
+<a class="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors hover:underline" href="#">Privacidade</a>
+<a class="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors hover:underline" href="#">Termos</a>
+<a class="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors hover:underline" href="#">Contato</a>
+</div>
+</div>
+</footer>
+</main>
+<script>
+        document.getElementById('flashcard').addEventListener('click', function() {
+            this.classList.toggle('is-flipped');
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const progressBars = document.querySelectorAll('.h-full.bg-primary, .h-full.bg-tertiary-container, .h-full.bg-secondary');
+            progressBars.forEach(bar => {
+                const targetWidth = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.transition = 'width 1.2s cubic-bezier(0.4, 0, 0.2, 1)';
+                    bar.style.width = targetWidth;
+                }, 300);
+            });
+        });
+    </script>
+</body></html>

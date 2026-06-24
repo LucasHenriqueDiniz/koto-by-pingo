@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=Plus+Jakarta+Sans:wght@600;700;800&family=Noto+Sans+JP:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
@@ -40,6 +40,11 @@
   --color-destructive-foreground: hsl(var(--destructive-foreground));
   --color-destructive-border: var(--destructive-border);
 
+  --color-tertiary: hsl(var(--tertiary));
+  --color-tertiary-foreground: hsl(var(--tertiary-foreground));
+  --color-cherry-blossom-light: hsl(var(--cherry-blossom-light));
+  --color-text-secondary: hsl(var(--text-secondary));
+
   --color-chart-1: hsl(var(--chart-1));
   --color-chart-2: hsl(var(--chart-2));
   --color-chart-3: hsl(var(--chart-3));
@@ -58,14 +63,16 @@
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
   --font-sans: var(--app-font-sans);
+  --font-heading: var(--app-font-heading);
   --font-serif: var(--app-font-serif);
   --font-mono: var(--app-font-mono);
   --font-japanese: var(--app-font-japanese);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
 }
 
 /* LIGHT MODE */
@@ -76,67 +83,76 @@
   --elevate-1: rgba(0,0,0, .03);
   --elevate-2: rgba(0,0,0, .08);
 
-  /* bg: #FFFDF9 → warm off-white */
-  --background: 45 60% 99%;
-  /* text: #1F1F1F */
-  --foreground: 0 0% 12%;
-  /* border: #E8E2D8 */
-  --border: 36 22% 88%;
+  /* bg: #F8FAFC */
+  --background: 210 40% 98%;
+  /* text: #0b1c30 */
+  --foreground: 212 63% 12%;
+  /* border: #E2E8F0 */
+  --border: 214 32% 91%;
   /* input */
-  --input: 36 22% 84%;
+  --input: 214 32% 86%;
   /* ring: primary */
-  --ring: 358 77% 59%;
+  --ring: 358 60% 42%;
 
   /* surface: #FFFFFF */
   --card: 0 0% 100%;
-  --card-foreground: 0 0% 12%;
-  --card-border: 36 22% 90%;
+  --card-foreground: 212 63% 12%;
+  --card-border: 214 32% 91%;
 
-  --sidebar: 45 60% 98%;
-  --sidebar-foreground: 0 0% 12%;
-  --sidebar-border: 36 22% 88%;
-  --sidebar-primary: 358 77% 59%;
+  --sidebar: 0 0% 100%;
+  --sidebar-foreground: 212 63% 12%;
+  --sidebar-border: 214 32% 91%;
+  --sidebar-primary: 358 60% 42%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 36 22% 95%;
-  --sidebar-accent-foreground: 0 0% 12%;
-  --sidebar-ring: 358 77% 59%;
+  --sidebar-accent: 0 100% 97%;
+  --sidebar-accent-foreground: 358 60% 42%;
+  --sidebar-ring: 358 60% 42%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 12%;
-  --popover-border: 36 22% 88%;
+  --popover-foreground: 212 63% 12%;
+  --popover-border: 214 32% 91%;
 
-  /* primary: #E5484D */
-  --primary: 358 77% 59%;
+  /* primary: #ac2b2f */
+  --primary: 358 60% 42%;
   --primary-foreground: 0 0% 100%;
 
-  /* secondary: soft warm gray */
-  --secondary: 36 22% 95%;
-  --secondary-foreground: 0 0% 12%;
+  /* secondary: soft cool gray (shadcn bg/button semantics, kept distinct from text-secondary below) */
+  --secondary: 214 32% 95%;
+  --secondary-foreground: 212 63% 12%;
 
-  /* muted: #6B6761 */
-  --muted: 36 10% 94%;
-  --muted-foreground: 30 5% 41%;
+  /* muted-foreground: #94a3b8 */
+  --muted: 214 32% 95%;
+  --muted-foreground: 215 20% 65%;
 
-  /* accent: primarySoft #FFE5E7 */
-  --accent: 356 100% 95%;
-  --accent-foreground: 358 77% 40%;
+  /* accent / cherry-blossom-light wash: #FFF1F1 */
+  --accent: 0 100% 97%;
+  --accent-foreground: 358 60% 35%;
 
-  /* destructive: #D92D20 */
-  --destructive: 4 72% 49%;
+  /* destructive: #ba1a1a */
+  --destructive: 0 75% 42%;
   --destructive-foreground: 0 0% 100%;
 
+  /* tertiary: #006856 (precisão/sucesso) */
+  --tertiary: 170 100% 20%;
+  --tertiary-foreground: 0 0% 100%;
+  /* cherry-blossom-light: #FFF1F1 (mesma hue do accent, exposta com nome próprio do design) */
+  --cherry-blossom-light: 0 100% 97%;
+  /* text-secondary: #565e74 (texto secundário do mockup, distinto de --secondary do shadcn) */
+  --text-secondary: 224 15% 40%;
+
   /* charts */
-  --chart-1: 358 77% 59%;
+  --chart-1: 358 60% 42%;
   --chart-2: 271 75% 57%;
   --chart-3: 199 97% 41%;
   --chart-4: 24 87% 50%;
-  --chart-5: 134 62% 40%;
+  --chart-5: 170 100% 20%;
 
   --app-font-sans: 'Inter', system-ui, sans-serif;
+  --app-font-heading: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
   --app-font-serif: Georgia, serif;
   --app-font-mono: Menlo, monospace;
   --app-font-japanese: 'Noto Sans JP', system-ui, sans-serif;
-  --radius: 0.5rem;
+  --radius: 0.625rem;
 
   --shadow-2xs: 0px 1px 2px 0px rgba(0,0,0,0.05);
   --shadow-xs: 0px 1px 3px 0px rgba(0,0,0,0.07);
@@ -165,49 +181,54 @@
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
 
-  --background: 220 13% 9%;
-  --foreground: 36 10% 93%;
+  --background: 222 24% 9%;
+  --foreground: 220 30% 92%;
   --border: 220 10% 20%;
   --input: 220 10% 25%;
-  --ring: 358 77% 59%;
+  --ring: 358 50% 47%;
 
   --card: 220 13% 12%;
-  --card-foreground: 36 10% 93%;
+  --card-foreground: 220 30% 92%;
   --card-border: 220 10% 18%;
 
   --sidebar: 220 13% 11%;
-  --sidebar-foreground: 36 10% 93%;
+  --sidebar-foreground: 220 30% 92%;
   --sidebar-border: 220 10% 18%;
-  --sidebar-primary: 358 77% 59%;
+  --sidebar-primary: 358 50% 47%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 220 10% 16%;
-  --sidebar-accent-foreground: 36 10% 93%;
-  --sidebar-ring: 358 77% 59%;
+  --sidebar-accent: 358 35% 18%;
+  --sidebar-accent-foreground: 358 60% 80%;
+  --sidebar-ring: 358 50% 47%;
 
   --popover: 220 13% 12%;
-  --popover-foreground: 36 10% 93%;
+  --popover-foreground: 220 30% 92%;
   --popover-border: 220 10% 20%;
 
-  --primary: 358 77% 62%;
+  --primary: 358 50% 47%;
   --primary-foreground: 0 0% 100%;
 
   --secondary: 220 10% 18%;
-  --secondary-foreground: 36 10% 93%;
+  --secondary-foreground: 220 30% 92%;
 
   --muted: 220 10% 16%;
   --muted-foreground: 220 5% 55%;
 
-  --accent: 358 50% 20%;
-  --accent-foreground: 358 77% 75%;
+  --accent: 358 35% 18%;
+  --accent-foreground: 358 60% 80%;
 
-  --destructive: 4 72% 55%;
+  --destructive: 0 70% 55%;
   --destructive-foreground: 0 0% 100%;
 
-  --chart-1: 358 77% 65%;
+  --tertiary: 170 70% 40%;
+  --tertiary-foreground: 0 0% 100%;
+  --cherry-blossom-light: 358 35% 18%;
+  --text-secondary: 220 12% 65%;
+
+  --chart-1: 358 50% 55%;
   --chart-2: 271 75% 65%;
   --chart-3: 199 97% 55%;
   --chart-4: 24 87% 60%;
-  --chart-5: 134 62% 50%;
+  --chart-5: 170 70% 45%;
 
   --shadow-2xs: 0px 1px 2px 0px rgba(0,0,0,0.20);
   --shadow-xs: 0px 1px 3px 0px rgba(0,0,0,0.25);
@@ -227,10 +248,28 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
+
+  h1, h2, h3, h4 {
+    @apply font-heading font-bold;
+  }
 }
 
 .font-japanese {
   font-family: var(--app-font-japanese);
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
 }
 
 @layer utilities {

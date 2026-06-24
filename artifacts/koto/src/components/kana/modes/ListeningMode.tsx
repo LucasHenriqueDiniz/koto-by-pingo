@@ -1,8 +1,9 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
-import { Volume2, Play } from 'lucide-react';
+import { MaterialIcon } from '@/components/ui/MaterialIcon';
 import type { KanaItem } from '../../../types/kana';
 import { allKana } from '../../../data/kana';
 import { shuffle } from '../../../utils/scoring';
+import { speakJapanese } from '../../../utils/japaneseAudio';
 import { recordKanaAttempt } from '../../../services/progress/progress.local';
 import { useKanaQueue } from '../../../hooks/useKanaQueue';
 import { KanaStats } from '../KanaStats';
@@ -11,30 +12,12 @@ interface ListeningModeProps {
   items: KanaItem[];
 }
 
-function checkJapaneseSpeechSupport(): boolean {
-  if (!window.speechSynthesis) return false;
-  const voices = window.speechSynthesis.getVoices();
-  return voices.some(v => v.lang.startsWith('ja'));
-}
-
 export function ListeningMode({ items }: ListeningModeProps) {
   const { current, sessionCorrect, sessionTotal, sessionAccuracy, registerResult, next, endSession } = useKanaQueue(items);
-  const [supported, setSupported] = useState<boolean | null>(null);
   const [speaking, setSpeaking] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
 
   useEffect(() => () => endSession(), [endSession]);
-
-  useEffect(() => {
-    const check = () => setSupported(checkJapaneseSpeechSupport());
-    if (window.speechSynthesis.getVoices().length > 0) {
-      check();
-    } else {
-      window.speechSynthesis.addEventListener('voiceschanged', check, { once: true });
-      setTimeout(check, 1500);
-    }
-    return () => window.speechSynthesis.removeEventListener('voiceschanged', check);
-  }, []);
 
   const options = useMemo(() => {
     if (!current) return [];
@@ -45,16 +28,7 @@ export function ListeningMode({ items }: ListeningModeProps) {
 
   const speak = useCallback(() => {
     if (!current || speaking) return;
-    const utter = new SpeechSynthesisUtterance(current.character);
-    utter.lang = 'ja-JP';
-    utter.rate = 0.8;
-    const voices = window.speechSynthesis.getVoices();
-    const jaVoice = voices.find(v => v.lang.startsWith('ja'));
-    if (jaVoice) utter.voice = jaVoice;
-    setSpeaking(true);
-    utter.onend = () => setSpeaking(false);
-    utter.onerror = () => setSpeaking(false);
-    window.speechSynthesis.speak(utter);
+    speakJapanese(current.character, 0.8, () => setSpeaking(true), () => setSpeaking(false));
   }, [current, speaking]);
 
   const handleSelect = useCallback((romaji: string) => {
@@ -80,44 +54,23 @@ export function ListeningMode({ items }: ListeningModeProps) {
 
   return (
     <div className="flex flex-col items-center gap-5 w-full max-w-sm mx-auto">
-      {supported === false && (
-        <div className="bg-warning/10 border border-warning/30 rounded-xl px-4 py-3 text-sm text-foreground w-full">
-          <p className="font-medium mb-0.5">Voz japonesa indisponível</p>
-          <p className="text-muted-foreground text-xs">
-            Seu navegador não possui vozes japonesas instaladas. O caractere será exibido como alternativa.
-          </p>
-        </div>
-      )}
-
       <div className="bg-card border-2 border-border rounded-2xl p-8 flex flex-col items-center gap-4 w-full">
-        {supported === false ? (
-          <span
-            className="text-7xl font-medium select-none"
-            style={{ fontFamily: "'Noto Sans JP', sans-serif" }}
-            data-testid="kana-listening-fallback-character"
-          >
-            {current.character}
-          </span>
-        ) : (
-          <>
-            <p className="text-xs text-muted-foreground">Ouça e identifique o romaji</p>
-            <button
-              onClick={speak}
-              disabled={speaking}
-              className="w-20 h-20 rounded-full flex items-center justify-center shadow-md transition-all active:scale-95 disabled:opacity-60"
-              style={{ backgroundColor: '#0284C7' }}
-              data-testid="kana-listening-play-btn"
-            >
-              {speaking
-                ? <Volume2 size={28} className="text-white animate-pulse" />
-                : <Play size={28} className="text-white" />
-              }
-            </button>
-            <p className="text-xs text-muted-foreground">
-              {speaking ? 'Reproduzindo...' : 'Clique para ouvir'}
-            </p>
-          </>
-        )}
+        <p className="text-xs text-muted-foreground">Ouça e identifique o romaji</p>
+        <button
+          onClick={speak}
+          disabled={speaking}
+          className="w-20 h-20 rounded-full flex items-center justify-center shadow-md transition-all active:scale-95 disabled:opacity-60"
+          style={{ backgroundColor: '#0284C7' }}
+          data-testid="kana-listening-play-btn"
+        >
+          {speaking
+            ? <MaterialIcon name="volume_up" size={28} className="text-white animate-pulse" />
+            : <MaterialIcon name="play_arrow" size={28} className="text-white" />
+          }
+        </button>
+        <p className="text-xs text-muted-foreground">
+          {speaking ? 'Reproduzindo...' : 'Clique para ouvir'}
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-2 w-full" data-testid="kana-listening-options">

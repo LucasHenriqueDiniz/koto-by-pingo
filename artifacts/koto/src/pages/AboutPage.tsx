@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { updatePageSEO } from '../utils/seo';
-import { Logo } from '../components/brand/Logo';
+import { MaterialIcon } from '@/components/ui/MaterialIcon';
 
 export function AboutPage() {
   useEffect(() => {
@@ -10,8 +10,14 @@ export function AboutPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
       <div className="max-w-2xl">
-        <div className="mb-8">
-          <Logo variant="horizontal" size="lg" />
+        <div className="mb-8 flex items-center gap-3">
+          <div className="w-12 h-12 bg-primary flex items-center justify-center rounded-lg flex-shrink-0">
+            <MaterialIcon name="translate" filled size={26} className="text-primary-foreground" />
+          </div>
+          <div className="leading-none">
+            <h2 className="font-heading text-2xl font-bold text-foreground leading-none">Koto</h2>
+            <p className="text-sm text-[--color-text-secondary] opacity-70">by Pingo</p>
+          </div>
         </div>
 
         <h1 className="text-2xl font-bold text-foreground mb-2">Sobre o Koto by Pingo</h1>

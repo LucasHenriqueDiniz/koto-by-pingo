@@ -11,7 +11,8 @@ import { KanaReviewPage } from './pages/KanaReviewPage';
 import { KanaStatsPage } from './pages/KanaStatsPage';
 import { KanaSettingsPage } from './pages/KanaSettingsPage';
 import { VocabularyPage } from './pages/VocabularyPage';
-import { ListeningPage } from './pages/ListeningPage';
+import { VocabularyLibraryPage } from './pages/VocabularyLibraryPage';
+import { AulasExtrasPage } from './pages/AulasExtrasPage';
 import { ExamsPage } from './pages/ExamsPage';
 import { ExamDetailPage } from './pages/ExamDetailPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -19,11 +20,29 @@ import { AboutPage } from './pages/AboutPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
 import { ContactPage } from './pages/ContactPage';
+import { LoginPage } from './pages/LoginPage';
+import { SettingsPage } from './pages/SettingsPage';
 import NotFound from '@/pages/not-found';
+import { useEffect } from 'react';
+import { applyTheme } from './services/settings/settings.local';
 
 const queryClient = new QueryClient();
 
 function Router() {
+  return (
+    <Switch>
+      {/* Rotas full-screen, sem o shell do app */}
+      <Route path="/entrar" component={LoginPage} />
+
+      {/* Demais rotas dentro do layout padrão */}
+      <Route>
+        <AppShellRoutes />
+      </Route>
+    </Switch>
+  );
+}
+
+function AppShellRoutes() {
   return (
     <AppLayout>
       <Switch>
@@ -34,11 +53,13 @@ function Router() {
         <Route path="/kana/revisar" component={KanaReviewPage} />
         <Route path="/kana/estatisticas" component={KanaStatsPage} />
         <Route path="/kana/configurar" component={KanaSettingsPage} />
-        <Route path="/vocabulario" component={VocabularyPage} />
-        <Route path="/escuta" component={ListeningPage} />
+        <Route path="/aulas" component={AulasExtrasPage} />
+        <Route path="/vocabulario" component={VocabularyLibraryPage} />
+        <Route path="/vocabulario/treinar" component={VocabularyPage} />
         <Route path="/simulados" component={ExamsPage} />
         <Route path="/simulados/:slug" component={ExamDetailPage} />
         <Route path="/progresso" component={DashboardPage} />
+        <Route path="/configuracoes" component={SettingsPage} />
         <Route path="/sobre" component={AboutPage} />
         <Route path="/privacidade" component={PrivacyPage} />
         <Route path="/termos" component={TermsPage} />
@@ -50,6 +71,10 @@ function Router() {
 }
 
 function App() {
+  useEffect(() => {
+    applyTheme();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>

@@ -1,9 +1,9 @@
 import * as React from "react"
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu"
 import { cva } from "class-variance-authority"
-import { ChevronDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { MaterialIcon } from "@/components/ui/MaterialIcon"
 
 const NavigationMenu = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Root>,
@@ -54,9 +54,10 @@ const NavigationMenuTrigger = React.forwardRef<
     {...props}
   >
     {children}{" "}
-    <ChevronDown
-      className="relative top-[1px] ml-1 h-3 w-3 transition duration-300 group-data-[state=open]:rotate-180"
-      aria-hidden="true"
+    <MaterialIcon
+      name="expand_more"
+      size={12}
+      className="relative top-[1px] ml-1 transition duration-300 group-data-[state=open]:rotate-180"
     />
   </NavigationMenuPrimitive.Trigger>
 ))

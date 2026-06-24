@@ -1,27 +1,23 @@
 interface PageHeaderProps {
   title: string;
   description?: string;
+  /** @deprecated mantido por compatibilidade; o novo design usa sempre a cor primária no título. */
   color?: string;
   children?: React.ReactNode;
 }
 
-export function PageHeader({ title, description, color = '#E5484D', children }: PageHeaderProps) {
+export function PageHeader({ title, description, children }: PageHeaderProps) {
   return (
-    <div className="border-b border-border bg-background">
-      <div className="max-w-6xl mx-auto px-4 py-6">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-              <h1 className="text-xl font-bold text-foreground">{title}</h1>
-            </div>
-            {description && (
-              <p className="text-sm text-muted-foreground">{description}</p>
-            )}
-          </div>
-          {children && <div className="flex-shrink-0">{children}</div>}
+    <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border">
+      <div className="max-w-6xl mx-auto px-4 h-auto py-4 flex items-center justify-between gap-4">
+        <div className="min-w-0">
+          <h1 className="font-heading text-2xl font-bold text-primary truncate">{title}</h1>
+          {description && (
+            <p className="text-sm text-[--color-text-secondary] mt-0.5">{description}</p>
+          )}
         </div>
+        {children && <div className="flex-shrink-0 flex items-center gap-3">{children}</div>}
       </div>
-    </div>
+    </header>
   );
 }

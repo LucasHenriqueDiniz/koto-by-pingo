@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'wouter';
-import { ArrowLeft, Clock } from 'lucide-react';
+import { MaterialIcon } from '../components/ui/MaterialIcon';
 import { getExamBySlug, getAllQuestions } from '../data/mockExams';
 import { submitExam } from '../services/exams/exams.local';
 import { QuizCard } from '../components/quiz/QuizCard';
@@ -83,7 +83,7 @@ export function ExamDetailPage() {
         className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
         data-testid="exam-back-btn"
       >
-        <ArrowLeft size={14} />
+        <MaterialIcon name="arrow_back" size={16} />
         Todos os simulados
       </button>
 
@@ -98,7 +98,7 @@ export function ExamDetailPage() {
               <p className="text-sm text-muted-foreground">{exam.description}</p>
               <div className="flex items-center gap-6 text-sm text-muted-foreground pt-2 border-t border-border">
                 <span className="flex items-center gap-1.5">
-                  <Clock size={14} />
+                  <MaterialIcon name="schedule" size={16} />
                   {exam.estimatedMinutes} minutos
                 </span>
                 <span>{totalQuestions} questões</span>

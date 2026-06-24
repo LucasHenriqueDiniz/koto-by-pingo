@@ -2,7 +2,7 @@ import { Link } from 'wouter';
 import type { Exam, Question } from '../../types/exams';
 import { MultipleChoiceQuestion } from './MultipleChoiceQuestion';
 import { getAccuracyLabel } from '../../utils/scoring';
-import { PingoMascot } from '../brand/PingoMascot';
+import { CircularProgress } from '../ui/CircularProgress';
 
 interface ResultSummaryProps {
   exam: Exam;
@@ -27,11 +27,8 @@ export function ResultSummary({ exam, questions, answers, correct, onRetry }: Re
     <div className="space-y-8" data-testid="result-summary">
       {/* Score card */}
       <div className="bg-card border border-border rounded-2xl p-6 text-center space-y-3">
-        <PingoMascot variant="progress" size="md" className="mx-auto" />
-        <div>
-          <span className="text-5xl font-bold text-foreground">{accuracy}%</span>
-          <p className="text-muted-foreground text-sm mt-1">{label}</p>
-        </div>
+        <CircularProgress value={accuracy} size={112} strokeWidth={10} color="hsl(var(--primary))" className="mx-auto" />
+        <p className="text-muted-foreground text-sm">{label}</p>
         <p className="text-sm text-foreground">
           {correct} de {questions.length} questões corretas
         </p>

@@ -348,6 +348,101 @@ export function getProgressSummary() {
   };
 }
 
+// ---------- ATIVIDADE SEMANAL (dado real derivado dos attempts) ----------
+export interface DailyActivity {
+  /** Data ISO (YYYY-MM-DD) do dia. */
+  date: string;
+  /** Rótulo curto pt-BR do dia da semana (Seg, Ter...). */
+  label: string;
+  /** Total de tentativas (kana + vocabulário) registradas no dia. */
+  count: number;
+  /** Indica se é o dia de hoje. */
+  isToday: boolean;
+}
+
+const WEEKDAY_LABELS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+/**
+ * Atividade dos últimos 7 dias (incluindo hoje), agregando tentativas de kana e
+ * vocabulário por data local. Dado 100% real — não depende de gamificação.
+ */
+export function getWeeklyActivity(): DailyActivity[] {
+  const kana = getKanaProgress().attempts;
+  const vocab = getVocabProgress().attempts;
+
+  const counts: Record<string, number> = {};
+  const tally = (timestamp: string) => {
+    const d = new Date(timestamp);
+    if (Number.isNaN(d.getTime())) return;
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    counts[key] = (counts[key] ?? 0) + 1;
+  };
+  kana.forEach(a => tally(a.timestamp));
+  vocab.forEach(a => tally(a.timestamp));
+
+  const today = new Date();
+  const days: DailyActivity[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    days.push({
+      date: key,
+      label: WEEKDAY_LABELS[d.getDay()],
+      count: counts[key] ?? 0,
+      isToday: i === 0,
+    });
+  }
+  return days;
+}
+
+export interface HeatmapDay {
+  date: string;
+  count: number;
+  isToday: boolean;
+}
+
+/**
+ * Calendário de atividade das últimas N semanas (seg–dom), agregando tentativas
+ * de kana e vocabulário por data local. Dado 100% real — não depende de gamificação.
+ */
+export function getActivityHeatmap(weeks = 10): HeatmapDay[][] {
+  const kana = getKanaProgress().attempts;
+  const vocab = getVocabProgress().attempts;
+
+  const counts: Record<string, number> = {};
+  const tally = (timestamp: string) => {
+    const d = new Date(timestamp);
+    if (Number.isNaN(d.getTime())) return;
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    counts[key] = (counts[key] ?? 0) + 1;
+  };
+  kana.forEach(a => tally(a.timestamp));
+  vocab.forEach(a => tally(a.timestamp));
+
+  const today = new Date();
+  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  // Segunda-feira da semana atual.
+  const mondayOffset = (today.getDay() + 6) % 7;
+  const currentMonday = new Date(today);
+  currentMonday.setDate(today.getDate() - mondayOffset);
+
+  const result: HeatmapDay[][] = [];
+  for (let w = weeks - 1; w >= 0; w--) {
+    const weekStart = new Date(currentMonday);
+    weekStart.setDate(currentMonday.getDate() - w * 7);
+    const week: HeatmapDay[] = [];
+    for (let d = 0; d < 7; d++) {
+      const day = new Date(weekStart);
+      day.setDate(weekStart.getDate() + d);
+      const key = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, '0')}-${String(day.getDate()).padStart(2, '0')}`;
+      week.push({ date: key, count: counts[key] ?? 0, isToday: key === todayKey });
+    }
+    result.push(week);
+  }
+  return result;
+}
+
 // ---------- TRAÇADO (placeholder, ver docs/TODO_TRACING.md) ----------
 export function getTracingPracticeMap(): Record<string, number> {
   return storageGet<Record<string, number>>(KEYS.TRACING) ?? {};

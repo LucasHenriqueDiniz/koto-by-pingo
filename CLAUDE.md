@@ -30,7 +30,7 @@ Artifact principal: `artifacts/koto/` — app React + Vite + TypeScript.
 | Roteamento | **Wouter** (não React Router) |
 | Estilização | Tailwind CSS |
 | Animações | framer-motion |
-| Ícones | lucide-react |
+| Ícones | **Material Symbols Outlined** (via `<MaterialIcon name="..." />` em `components/ui/MaterialIcon.tsx`) — lucide-react foi removido |
 | UI base | Shadcn/UI (componentes em `src/components/ui/`) |
 | State server | @tanstack/react-query (client-side only, sem fetches reais) |
 | Áudio | Web Speech API nativa do browser |
@@ -91,11 +91,14 @@ artifacts/koto/src/
 │   ├── KanaReviewPage.tsx       ← /kana/revisar — difíceis, nunca vistos, dominados
 │   ├── KanaStatsPage.tsx        ← /kana/estatisticas — precisão geral e por grupo + reset
 │   ├── KanaSettingsPage.tsx     ← /kana/configurar — grupos, modo padrão, dica de romaji
-│   ├── VocabularyPage.tsx       ← 4 modos + filtros inteligentes + grupos de categoria
-│   ├── ListeningPage.tsx        ← treino auditivo via Web Speech API
-│   ├── ExamsPage.tsx            ← lista de simulados disponíveis
+│   ├── VocabularyLibraryPage.tsx ← /vocabulario — biblioteca naveg. (busca, filtro N5-N2, paginação)
+│   ├── VocabularyPage.tsx       ← /vocabulario/treinar — 4 modos + filtros inteligentes
+│   ├── AulasExtrasPage.tsx      ← /aulas — material complementar (placeholder, ver docs/TODO_AULAS_EXTRAS.md)
+│   ├── ExamsPage.tsx            ← hub de simulados (hero, níveis N1-N5, histórico)
 │   ├── ExamDetailPage.tsx       ← execução + revisão de simulado
-│   ├── DashboardPage.tsx        ← estatísticas de kana + vocabulário + simulados
+│   ├── DashboardPage.tsx        ← /progresso — stats reais + placeholders de gamificação
+│   ├── LoginPage.tsx            ← /entrar — split-screen + <SignIn/> Clerk (fora do AppLayout)
+│   ├── SettingsPage.tsx         ← /configuracoes — perfil + tema + preferências (settings.local.ts)
 │   ├── AboutPage.tsx / ContactPage.tsx / PrivacyPage.tsx / TermsPage.tsx
 │   └── not-found.tsx
 │
@@ -106,10 +109,13 @@ artifacts/koto/src/
 │   ├── exams/
 │   │   ├── exams.local.ts       ← salvar/buscar tentativas de simulado
 │   │   └── exams.types.ts
-│   └── progress/
-│       ├── progress.local.ts    ← ÚNICA fonte de leitura/escrita de progresso (localStorage)
-│       ├── progress.remote.ts   ← syncProgressToRemote() / fetchProgressFromRemote() (D1 via Workers)
-│       └── progress.types.ts    ← tipos internos do serviço
+│   ├── progress/
+│   │   ├── progress.local.ts    ← ÚNICA fonte de leitura/escrita de progresso (localStorage)
+│   │   │                          inclui getWeeklyActivity() (atividade semanal real, derivada dos attempts)
+│   │   ├── progress.remote.ts   ← syncProgressToRemote() / fetchProgressFromRemote() (D1 via Workers)
+│   │   └── progress.types.ts    ← tipos internos do serviço
+│   └── settings/
+│       └── settings.local.ts    ← preferências de app (tema, sons, romaji); applyTheme() aplica .dark
 │
 ├── types/
 │   ├── kana.ts                  ← KanaItem, KanaType
@@ -358,6 +364,7 @@ pnpm --filter @workspace/koto run preview
 |---------|---------|
 | `docs/TODO_TRACING.md` | Feature de traçado de kana (SVG stroke order) |
 | `docs/TODO_EXAMS.md` | Expansão dos simulados JLPT N3/N2/N1, timer, histórico |
+| `docs/TODO_AULAS_EXTRAS.md` | Página `/aulas` (material complementar estilo Cure Dolly) — placeholder visual |
 
 ---
 
@@ -376,7 +383,18 @@ pnpm --filter @workspace/koto run preview
 
 ## Marca
 
-- **Cor primária:** `#E5484D` (vermelho Koto)
-- **Fonte japonesa:** `'Noto Sans JP', sans-serif` — aplicar via `style={{ fontFamily: ... }}`
+- **Cor primária:** `#ac2b2f` (vermelho Koto — atualizado no refactor de design; tokens completos em `src/index.css`)
+- **Headline:** `'Plus Jakarta Sans', sans-serif` (`font-heading`) — corpo continua `Inter`
+- **Fonte japonesa:** `'Noto Sans JP', sans-serif` — aplicar via `style={{ fontFamily: ... }}` ou `font-japanese`
 - **Mascote:** Pingo-sensei, pinguim preto com detalhes vermelhos
 - **Público-alvo:** estudantes brasileiros iniciantes em japonês
+
+---
+
+## Documentação de funcionalidades
+
+| Arquivo | Assunto | Status |
+|---------|---------|--------|
+| `docs/TODO_CLERK_AUTH.md` | Autenticação com Clerk | ✅ implementado |
+| `docs/TODO_CLOUDFLARE_D1.md` | Backend Cloudflare D1 + Workers | ✅ implementado (falta apenas `wrangler d1 create` real + `CLERK_SECRET_KEY`) |
+| `docs/TODO_GAMIFICATION.md` | Streak, XP/nível, conquistas (placeholders visuais do refactor de design) | ❌ não implementado |

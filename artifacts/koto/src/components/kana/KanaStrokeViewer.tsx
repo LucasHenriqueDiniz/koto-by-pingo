@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, SkipBack, ChevronRight } from 'lucide-react';
+import { MaterialIcon } from '@/components/ui/MaterialIcon';
 import { fetchStrokes } from '../../data/strokeData';
 
 interface StrokePathProps {
@@ -160,13 +160,13 @@ export function KanaStrokeViewer({ character }: KanaStrokeViewerProps) {
           className="p-2 rounded-xl border border-border text-muted-foreground hover:bg-muted transition-colors"
           title="Reiniciar"
         >
-          <SkipBack size={16} />
+          <MaterialIcon name="skip_previous" size={16} />
         </button>
         <button
           onClick={handlePlay}
           className="px-5 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium flex items-center gap-1.5 hover:opacity-90 transition-opacity"
         >
-          {playing ? <Pause size={15} /> : <Play size={15} />}
+          {playing ? <MaterialIcon name="pause" size={15} /> : <MaterialIcon name="play_arrow" size={15} />}
           {playing ? 'Pausar' : allDone ? 'Repetir' : revealed === 0 ? 'Animar' : 'Continuar'}
         </button>
         <button
@@ -175,7 +175,7 @@ export function KanaStrokeViewer({ character }: KanaStrokeViewerProps) {
           className="p-2 rounded-xl border border-border text-muted-foreground hover:bg-muted transition-colors disabled:opacity-40"
           title="Próximo traço"
         >
-          <ChevronRight size={16} />
+          <MaterialIcon name="chevron_right" size={16} />
         </button>
       </div>
     </div>
