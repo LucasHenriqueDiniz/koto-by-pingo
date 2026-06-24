@@ -1,3 +1,4 @@
+import type { MaterialIconName } from '../ui/MaterialIcon';
 import type { KanaTrainingMode } from '../../types/kana';
 
 interface ModeConfig {
@@ -20,6 +21,26 @@ export const KANA_MODE_LABELS: Record<KanaTrainingMode, string> = KANA_MODES.red
   (acc, mode) => ({ ...acc, [mode.value]: mode.label }),
   {} as Record<KanaTrainingMode, string>,
 );
+
+export const KANA_MODE_ICONS: Record<KanaTrainingMode, MaterialIconName> = {
+  typing: 'keyboard',
+  flashcards: 'style',
+  multiple_choice: 'quiz',
+  matching_pairs: 'join_inner',
+  listening: 'volume_up',
+  word_builder: 'construction',
+  tracing: 'stylus',
+};
+
+export const KANA_MODE_TAGS: Record<KanaTrainingMode, string> = {
+  typing: 'Escrita',
+  flashcards: 'Clássico',
+  multiple_choice: 'Rápido',
+  matching_pairs: 'Memória',
+  listening: 'Áudio',
+  word_builder: 'Vocabulário',
+  tracing: 'Traçado',
+};
 
 interface KanaModeSelectorProps {
   value: KanaTrainingMode;

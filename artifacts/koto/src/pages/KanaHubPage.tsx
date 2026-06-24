@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'wouter';
-import { MaterialIcon, type MaterialIconName } from '../components/ui/MaterialIcon';
-import { KANA_MODES } from '../components/kana/KanaModeSelector';
+import { MaterialIcon } from '../components/ui/MaterialIcon';
+import { KANA_MODES, KANA_MODE_ICONS, KANA_MODE_TAGS } from '../components/kana/KanaModeSelector';
 import { BentoCharacterGrid } from '../components/kana/BentoCharacterGrid';
 import { KanaSubNav } from '../components/kana/KanaSubNav';
 import { PageHeader } from '../components/ui/PageHeader';
@@ -11,26 +11,6 @@ import { getKanaStats, getKanaAccuracy } from '../services/progress/progress.loc
 import { getKanaByScript, getKanaByGroup } from '../data/kana';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import type { KanaScript, KanaTrainingMode } from '../types/kana';
-
-const MODE_ICONS: Record<KanaTrainingMode, MaterialIconName> = {
-  typing: 'keyboard',
-  flashcards: 'style',
-  multiple_choice: 'quiz',
-  matching_pairs: 'join_inner',
-  listening: 'volume_up',
-  word_builder: 'construction',
-  tracing: 'stylus',
-};
-
-const MODE_TAGS: Record<KanaTrainingMode, string> = {
-  typing: 'Escrita',
-  flashcards: 'Clássico',
-  multiple_choice: 'Rápido',
-  matching_pairs: 'Memória',
-  listening: 'Áudio',
-  word_builder: 'Vocabulário',
-  tracing: 'Traçado',
-};
 
 export function KanaHubPage() {
   const [, navigate] = useLocation();
@@ -107,10 +87,10 @@ export function KanaHubPage() {
               >
                 <div className="flex items-center justify-between">
                   <div className="w-11 h-11 rounded-xl bg-accent flex items-center justify-center text-primary flex-shrink-0">
-                    <MaterialIcon name={MODE_ICONS[mode.value]} filled size={22} />
+                    <MaterialIcon name={KANA_MODE_ICONS[mode.value]} filled size={22} />
                   </div>
                   <span className="text-[11px] font-bold text-[--color-text-secondary] bg-background border border-border px-2 py-0.5 rounded-full">
-                    {MODE_TAGS[mode.value]}
+                    {KANA_MODE_TAGS[mode.value]}
                   </span>
                 </div>
                 <div>

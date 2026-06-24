@@ -6,9 +6,17 @@ interface KanaInputProps {
   onSubmit: () => void;
   disabled?: boolean;
   placeholder?: string;
+  className?: string;
 }
 
-export function KanaInput({ value, onChange, onSubmit, disabled = false, placeholder = 'Digite o romaji...' }: KanaInputProps) {
+export function KanaInput({
+  value,
+  onChange,
+  onSubmit,
+  disabled = false,
+  placeholder = 'Digite o romaji...',
+  className,
+}: KanaInputProps) {
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -33,7 +41,10 @@ export function KanaInput({ value, onChange, onSubmit, disabled = false, placeho
       autoCorrect="off"
       autoCapitalize="off"
       spellCheck={false}
-      className="w-full text-center text-lg px-4 py-3 border-2 border-border rounded-xl bg-card text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
+      className={
+        className ??
+        'w-full text-center text-lg px-4 py-3 border-2 border-border rounded-xl bg-card text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-colors disabled:opacity-50'
+      }
       data-testid="kana-input"
     />
   );
