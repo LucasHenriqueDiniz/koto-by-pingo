@@ -1,0 +1,74 @@
+{
+  "project": "koto-by-pingo",
+  "description": "Japanese learning app for Brazilian students — 100% offline-first with optional Clerk auth + Cloudflare D1 sync",
+  "stack": ["React 19", "Vite", "TypeScript", "Tailwind CSS", "Wouter", "framer-motion", "Material Symbols"],
+
+  "commands": {
+    "dev": "pnpm --filter @workspace/koto run dev",
+    "build": "pnpm --filter @workspace/koto run build",
+    "check": "pnpm --filter @workspace/koto run build",
+    "preview": "pnpm --filter @workspace/koto run preview"
+  },
+
+  "hardConstraints": [
+    "localStorage only via services/progress/progress.local.ts (never direct setItem in components)",
+    "Wouter only for routing (no react-router-dom)",
+    "TypeScript strict mode — no implicit any",
+    "Clerk for auth (optional login) + Cloudflare D1 for sync (optional)",
+    "AdSense: no placement inside exercise cards, only before/after session or sidebar",
+    "Material Symbols Outlined for icons (lucide-react removed)",
+    "Base path from import.meta.env.BASE_URL"
+  ],
+
+  "permissions": {
+    "bash": [
+      "npm",
+      "pnpm",
+      "git"
+    ]
+  },
+
+  "validationRules": {
+    "build": {
+      "mustPass": ["pnpm --filter @workspace/koto run build"],
+      "files": [
+        "artifacts/koto/src/App.tsx",
+        "artifacts/koto/src/types/kana.ts",
+        "artifacts/koto/src/types/vocabulary.ts",
+        "artifacts/koto/src/services/progress/progress.local.ts"
+      ]
+    },
+    "learning": {
+      "vocabulary": "artifacts/koto/src/data/vocabulary.ts must have valid N5-N2 words with id/japanese/kana/romaji/meaningPt/category/level",
+      "kana": "artifacts/koto/src/data/kana.ts must have 46 hiragana + 46 katakana + dakuten/handakuten/yoon",
+      "exams": "artifacts/koto/src/data/mockExams.ts must have questions with 4 options and correct answer"
+    },
+    "seo": {
+      "checkMetaTags": true,
+      "checkCanonicalURL": false,
+      "checkSchema": false,
+      "minLighthouseScore": 80
+    },
+    "adsense": {
+      "requireApprovedPlacement": true,
+      "forbiddenContexts": ["flashcard", "exercise_card", "quiz_question", "matching_pair"]
+    }
+  },
+
+  "requiredFiles": [
+    ".claude/INSTRUCTIONS.md",
+    ".claude/AGENT_REFERENCE.md",
+    ".claude/EXTERNAL_SKILLS.md",
+    ".claude/settings.json",
+    ".claude/README.md",
+    "CLAUDE.md",
+    "artifacts/koto/package.json"
+  ],
+
+  "features": {
+    "offlineFirst": true,
+    "authentication": "Clerk (optional)",
+    "sync": "Cloudflare D1 (optional)",
+    "gamification": "streak/xp (placeholder — not implemented)"
+  }
+}
