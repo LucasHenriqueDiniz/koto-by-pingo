@@ -40,7 +40,7 @@ export function AchievementBadge({
         />
       </div>
       <span className="mt-3 text-sm font-medium text-foreground">{label}</span>
-      {description && <span className="text-xs text-[--color-text-secondary]">{locked ? 'Bloqueado' : description}</span>}
+      {description && <span className="text-xs text-[--color-text-secondary]">{description}</span>}
     </div>
   );
 }

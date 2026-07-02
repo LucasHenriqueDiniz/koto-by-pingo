@@ -7,10 +7,22 @@ import { MaterialIcon } from '../components/ui/MaterialIcon';
 import { WeeklyActivityChart } from '../components/progress/WeeklyActivityChart';
 import { AdPlaceholder } from '../components/ui/AdPlaceholder';
 import { SyncProgressBanner } from '../components/ui/SyncProgressBanner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '../components/ui/alert-dialog';
 import { updatePageSEO } from '../utils/seo';
 import { getKanaByScript, getKanaByGroup } from '../data/kana';
 import {
   getKanaStatsMap,
+  getKanjiStats,
   getVocabStats,
   getWeeklyActivity,
   getActivityHeatmap,
@@ -30,19 +42,12 @@ const HEATMAP_COLORS = ['bg-border', 'bg-[#d5e5f5]', 'bg-[#94b8d9]', 'bg-[#4080a
 
 export function DashboardPage() {
   const { summary, refresh, reset } = useStudyProgress();
-  const [confirmReset, setConfirmReset] = useState(false);
   const [kanaSet, setKanaSet] = useState<KanaScript>('hiragana');
 
   useEffect(() => {
     updatePageSEO('Progresso', 'Acompanhe seu progresso nos estudos de japonês: kana, vocabulário e simulados.');
     refresh();
   }, [refresh]);
-
-  const handleReset = () => {
-    if (!confirmReset) { setConfirmReset(true); return; }
-    reset();
-    setConfirmReset(false);
-  };
 
   const isEmpty = summary.totalAttempts === 0 && summary.examsCompleted === 0;
 
@@ -56,6 +61,7 @@ export function DashboardPage() {
   const weeklyTotal = weekly.reduce((sum, d) => sum + d.count, 0);
   const heatmap = getActivityHeatmap(10);
   const vocabStats = getVocabStats();
+  const kanjiStats = getKanjiStats();
   const weakKanaIds = getWeakKana(basicKana.map(k => k.id), 4);
   const nextReviews = weakKanaIds.map(id => basicKana.find(k => k.id === id)).filter((k): k is NonNullable<typeof k> => !!k);
 
@@ -84,10 +90,9 @@ export function DashboardPage() {
   return (
     <div>
       <PageHeader title="Progresso" description="Acompanhe sua evolução nos estudos.">
-        <div className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 bg-card border border-border rounded-full">
-          <MaterialIcon name="local_fire_department" filled size={16} className="text-primary" />
-          <span className="text-sm font-bold text-foreground">0</span>
-          <span className="text-xs text-[--color-text-secondary]">dias</span>
+        <div className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 bg-muted border border-border rounded-full opacity-70" title="Sequência de dias — em desenvolvimento">
+          <MaterialIcon name="local_fire_department" size={16} className="text-[--color-text-secondary]" />
+          <span className="text-xs font-medium text-[--color-text-secondary]">Sequência: em breve</span>
         </div>
       </PageHeader>
 
@@ -96,20 +101,9 @@ export function DashboardPage() {
 
         {/* Stats row */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {/* Streak — PLACEHOLDER (ver docs/TODO_GAMIFICATION.md) */}
-          <div className="bg-accent border border-primary/20 rounded-2xl p-5 flex flex-col gap-1">
-            <span className="text-2xl leading-none">🔥</span>
-            <div className="flex items-baseline gap-1 mt-1">
-              <span className="font-heading text-2xl font-extrabold text-foreground">0</span>
-              <span className="text-xs font-semibold text-[--color-text-secondary]">dias</span>
-            </div>
-            <span className="text-xs font-semibold text-[--color-text-secondary]">Sequência ativa</span>
-            <span className="text-[11px] text-[--color-text-secondary] mt-1">Em breve</span>
-          </div>
-
           {/* Kana dominados — REAL */}
           <div className="bg-card border border-border rounded-2xl p-5 flex flex-col gap-1">
-            <span className="text-2xl leading-none">✅</span>
+            <MaterialIcon name="check_circle" filled size={24} className="text-primary" />
             <div className="flex items-baseline gap-1 mt-1">
               <span className="font-heading text-2xl font-extrabold text-foreground">{masteredCount}</span>
               <span className="text-xs font-semibold text-[--color-text-secondary]">/{basicKana.length} kana</span>
@@ -118,9 +112,20 @@ export function DashboardPage() {
             <span className="text-[11px] font-semibold text-[hsl(var(--tertiary))] mt-1">{masteryPct}% do total completo</span>
           </div>
 
+          {/* Kanji dominados — REAL */}
+          <div className="bg-card border border-border rounded-2xl p-5 flex flex-col gap-1">
+            <MaterialIcon name="language" filled size={24} className="text-primary" />
+            <div className="flex items-baseline gap-1 mt-1">
+              <span className="font-heading text-2xl font-extrabold text-foreground">{kanjiStats.mastered}</span>
+              <span className="text-xs font-semibold text-[--color-text-secondary]">/{kanjiStats.total} kanji</span>
+            </div>
+            <span className="text-xs font-semibold text-[--color-text-secondary]">Kanji dominados</span>
+            <span className="text-[11px] font-semibold text-[hsl(var(--tertiary))] mt-1">{kanjiStats.seen} já vistos</span>
+          </div>
+
           {/* Vocabulário — REAL */}
           <div className="bg-card border border-border rounded-2xl p-5 flex flex-col gap-1">
-            <span className="text-2xl leading-none">📚</span>
+            <MaterialIcon name="menu_book" filled size={24} className="text-primary" />
             <div className="flex items-baseline gap-1 mt-1">
               <span className="font-heading text-2xl font-extrabold text-foreground">{vocabStats.mastered}</span>
               <span className="text-xs font-semibold text-[--color-text-secondary]">/{vocabStats.total} palavras</span>
@@ -131,13 +136,13 @@ export function DashboardPage() {
 
           {/* Atividade da semana — REAL */}
           <div className="bg-card border border-border rounded-2xl p-5 flex flex-col gap-1">
-            <span className="text-2xl leading-none">⏱</span>
+            <MaterialIcon name="schedule" filled size={24} className="text-primary" />
             <div className="flex items-baseline gap-1 mt-1">
               <span className="font-heading text-2xl font-extrabold text-foreground">{weeklyTotal}</span>
               <span className="text-xs font-semibold text-[--color-text-secondary]">tentativas</span>
             </div>
             <span className="text-xs font-semibold text-[--color-text-secondary]">Esta semana</span>
-            <span className="text-[11px] text-[--color-text-secondary] mt-1">Kana + vocabulário</span>
+            <span className="text-[11px] text-[--color-text-secondary] mt-1">Kana + kanji + vocabulário</span>
           </div>
         </section>
 
@@ -149,7 +154,7 @@ export function DashboardPage() {
               <div>
                 <h2 className="font-heading text-base font-bold text-foreground mb-0.5">Domínio de Kana</h2>
                 <p className="text-xs text-[--color-text-secondary]">
-                  {masteredCount} de {basicKana.length} dominados · {masteryPct}% completo
+                  {masteredCount} de {basicKana.length} dominados · {masteryPct}% completo · grupo básico
                 </p>
               </div>
               <div className="flex gap-1.5">
@@ -265,8 +270,8 @@ export function DashboardPage() {
           </div>
           <div className="flex gap-1 overflow-x-auto">
             <div className="flex flex-col gap-1 mr-0.5 flex-shrink-0">
-              {['S', 'T', 'Q', 'Q', 'S', 'S', 'D'].map((d, i) => (
-                <div key={i} className="w-4 h-4 flex items-center justify-center text-[9px] font-semibold text-[--color-text-secondary]">{d}</div>
+              {['Sg', 'Te', 'Qa', 'Qi', 'Sx', 'Sb', 'Do'].map((d, i) => (
+                <div key={i} className="w-5 h-4 flex items-center justify-center text-[8px] font-semibold text-[--color-text-secondary]">{d}</div>
               ))}
             </div>
             {heatmap.map((week, wi) => (
@@ -286,6 +291,8 @@ export function DashboardPage() {
           </div>
         </section>
 
+        <AdPlaceholder slot="banner" />
+
         {/* Achievements — PLACEHOLDER (ver docs/TODO_GAMIFICATION.md) */}
         <section className="bg-card border border-border rounded-2xl p-7">
           <div className="flex items-center justify-between mb-5">
@@ -304,8 +311,6 @@ export function DashboardPage() {
           </div>
         </section>
 
-        <AdPlaceholder slot="banner" />
-
         {/* Reset */}
         <div className="border-t border-border pt-6">
           <div className="flex items-center justify-between flex-wrap gap-3">
@@ -313,28 +318,35 @@ export function DashboardPage() {
               <p className="text-sm font-medium text-foreground">Resetar progresso</p>
               <p className="text-xs text-[--color-text-secondary]">Remove todos os dados de treino do dispositivo.</p>
             </div>
-            <div className="flex items-center gap-2">
-              {confirmReset && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
                 <button
-                  onClick={() => setConfirmReset(false)}
-                  className="text-xs text-[--color-text-secondary] hover:text-foreground px-3 py-1.5 rounded-lg border border-border transition-colors"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium border border-border text-[--color-text-secondary] hover:text-foreground hover:bg-muted transition-colors"
+                  data-testid="reset-progress-btn"
                 >
-                  Cancelar
+                  <MaterialIcon name="restart_alt" size={16} />
+                  Resetar
                 </button>
-              )}
-              <button
-                onClick={handleReset}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  confirmReset
-                    ? 'bg-destructive text-destructive-foreground'
-                    : 'border border-border text-[--color-text-secondary] hover:text-foreground hover:bg-muted'
-                }`}
-                data-testid="reset-progress-btn"
-              >
-                <MaterialIcon name="restart_alt" size={16} />
-                {confirmReset ? 'Confirmar reset' : 'Resetar'}
-              </button>
-            </div>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Resetar todo o progresso?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Isso apaga permanentemente suas tentativas de kana, kanji, vocabulário e simulados salvas neste dispositivo. Essa ação não pode ser desfeita.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={reset}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    data-testid="reset-progress-confirm"
+                  >
+                    Confirmar reset
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </div>
