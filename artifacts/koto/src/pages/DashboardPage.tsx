@@ -18,17 +18,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '../components/ui/alert-dialog';
+import { useKanjiFilters } from '../hooks/useKanjiFilters';
 import { updatePageSEO } from '../utils/seo';
 import { getKanaByScript, getKanaByGroup } from '../data/kana';
+import { getKanjiByLevel, KANJI_LEVELS_AVAILABLE } from '../data/kanji';
 import {
   getKanaStatsMap,
   getKanjiStats,
+  getKanjiStatsMap,
   getVocabStats,
   getWeeklyActivity,
   getActivityHeatmap,
   getWeakKana,
 } from '../services/progress/progress.local';
 import type { KanaScript } from '../types/kana';
+import type { KanjiJlptLevel } from '../types/kanji';
 
 type Mastery = 'mastered' | 'learning' | 'new';
 
@@ -43,6 +47,8 @@ const HEATMAP_COLORS = ['bg-border', 'bg-[#d5e5f5]', 'bg-[#94b8d9]', 'bg-[#4080a
 export function DashboardPage() {
   const { summary, refresh, reset } = useStudyProgress();
   const [kanaSet, setKanaSet] = useState<KanaScript>('hiragana');
+  const [kanjiLevelView, setKanjiLevelView] = useState<KanjiJlptLevel>('N4');
+  const { level: kanjiUserLevel } = useKanjiFilters();
 
   useEffect(() => {
     updatePageSEO('Progresso', 'Acompanhe seu progresso nos estudos de japonês: kana, vocabulário e simulados.');
@@ -64,6 +70,14 @@ export function DashboardPage() {
   const kanjiStats = getKanjiStats();
   const weakKanaIds = getWeakKana(basicKana.map(k => k.id), 4);
   const nextReviews = weakKanaIds.map(id => basicKana.find(k => k.id === id)).filter((k): k is NonNullable<typeof k> => !!k);
+
+  // Domínio de Kanji — só faz sentido mostrar depois que o usuário passou do N5 em Configurar Kanji.
+  const showKanjiMastery = kanjiUserLevel !== 'N5';
+  const kanjiStatsMap = getKanjiStatsMap();
+  const kanjiViewItems = useMemo(() => getKanjiByLevel(kanjiLevelView), [kanjiLevelView]);
+  const kanjiMasteredCount = kanjiViewItems.filter(k => classify(kanjiStatsMap[k.id]?.attempts ?? 0, kanjiStatsMap[k.id]?.correct ?? 0) === 'mastered').length;
+  const kanjiLearningCount = kanjiViewItems.filter(k => classify(kanjiStatsMap[k.id]?.attempts ?? 0, kanjiStatsMap[k.id]?.correct ?? 0) === 'learning').length;
+  const kanjiMasteryPct = kanjiViewItems.length > 0 ? Math.round((kanjiMasteredCount / kanjiViewItems.length) * 100) : 0;
 
   if (isEmpty) {
     return (
@@ -254,6 +268,74 @@ export function DashboardPage() {
             </div>
           </div>
         </section>
+
+        {/* Kanji mastery — só aparece depois que o usuário avança além do N5 */}
+        {showKanjiMastery && (
+          <section className="bg-card border border-border rounded-2xl p-7">
+            <div className="flex items-start justify-between gap-3 mb-4 flex-wrap">
+              <div>
+                <h2 className="font-heading text-base font-bold text-foreground mb-0.5">Domínio de Kanji</h2>
+                <p className="text-xs text-[--color-text-secondary]">
+                  {kanjiMasteredCount} de {kanjiViewItems.length} dominados · {kanjiMasteryPct}% completo
+                </p>
+              </div>
+              <div className="flex gap-1.5">
+                {KANJI_LEVELS_AVAILABLE.map(lvl => (
+                  <button
+                    key={lvl}
+                    onClick={() => setKanjiLevelView(lvl)}
+                    className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${
+                      kanjiLevelView === lvl ? 'bg-foreground text-background' : 'bg-card border border-border text-[--color-text-secondary] font-medium'
+                    }`}
+                  >
+                    {lvl}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="h-1.5 bg-muted rounded-full overflow-hidden mb-5">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{ width: `${kanjiMasteryPct}%`, background: 'linear-gradient(90deg, hsl(var(--primary)) 0%, hsl(var(--foreground)) 100%)' }}
+              />
+            </div>
+
+            <div className="grid grid-cols-5 sm:grid-cols-9 gap-1.5">
+              {kanjiViewItems.map(k => {
+                const s = kanjiStatsMap[k.id];
+                const state = classify(s?.attempts ?? 0, s?.correct ?? 0);
+                const cellClass =
+                  state === 'mastered'
+                    ? 'bg-foreground border-foreground text-background'
+                    : state === 'learning'
+                    ? 'bg-accent border-[#fecaca] text-primary'
+                    : 'bg-background border-border text-muted-foreground/40';
+                return (
+                  <div key={k.id} className={`rounded-lg border py-2 flex flex-col items-center gap-0.5 ${cellClass}`} title={k.meaningPt}>
+                    <span className="font-japanese text-lg font-bold leading-none">{k.character}</span>
+                    <span className="text-[9px] font-semibold opacity-60 tracking-wide uppercase">{k.onyomi[0] ?? k.kunyomi[0] ?? ''}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center gap-5 mt-4 pt-3.5 border-t border-border flex-wrap">
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-[3px] bg-foreground" />
+                <span className="text-xs text-[--color-text-secondary]">Dominado ({kanjiMasteredCount})</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-[3px] bg-accent border border-[#fecaca]" />
+                <span className="text-xs text-[--color-text-secondary]">Aprendendo ({kanjiLearningCount})</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-[3px] bg-background border border-border" />
+                <span className="text-xs text-[--color-text-secondary]">Novo</span>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Activity calendar */}
         <section className="bg-card border border-border rounded-2xl p-7">

@@ -4,11 +4,9 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import { KanjiModeSelector } from '../components/kanji/KanjiModeSelector';
 import { KanjiSubNav } from '../components/kanji/KanjiSubNav';
 import { PageHeader } from '../components/ui/PageHeader';
-import { KANJI_LEVELS } from '../data/kanji';
+import { KANJI_LEVELS, KANJI_LEVELS_AVAILABLE as LEVELS_AVAILABLE } from '../data/kanji';
 import { updatePageSEO } from '../utils/seo';
-import type { KanjiJlptLevel, KanjiTrainingMode } from '../types/kanji';
-
-const LEVELS_AVAILABLE: KanjiJlptLevel[] = ['N5', 'N4'];
+import type { KanjiTrainingMode } from '../types/kanji';
 
 export function KanjiSettingsPage() {
   const { level, setLevel, onlyWeak, setOnlyWeak } = useKanjiFilters();

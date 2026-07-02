@@ -189,3 +189,6 @@ export function getKanjiByLevel(level: KanjiItem['jlptLevel']): KanjiItem[] {
 }
 
 export const KANJI_LEVELS: KanjiItem['jlptLevel'][] = ['N5', 'N4', 'N3', 'N2', 'N1'];
+
+/** Níveis com dados carregados no app (os demais aparecem como "em breve" na UI). */
+export const KANJI_LEVELS_AVAILABLE: KanjiItem['jlptLevel'][] = ['N5', 'N4'];
