@@ -22,6 +22,8 @@ export interface VocabularyWord {
   level: string;
   tags?: string[];
   examples?: VocabularyExample[];
+  /** ids em data/kanji.ts dos kanji usados nesta palavra, quando já cadastrados. */
+  kanjiIds?: string[];
 }
 
 export interface WordAttemptInput {

@@ -2,6 +2,7 @@ import { storageGet, storageSet, storageClear } from '../../utils/storage';
 import { generateId } from '../../utils/scoring';
 import { vocabulary } from '../../data/vocabulary';
 import { allKana, KANA_GROUPS } from '../../data/kana';
+import { kanji, KANJI_LEVELS } from '../../data/kanji';
 import type {
   KanaProgress,
   VocabProgress,
@@ -10,12 +11,17 @@ import type {
   StudySessionRecord,
   KanaGroupStats,
   KanaCharacterStats,
+  KanjiProgress,
+  KanjiLevelStats,
+  KanjiCharacterStats,
 } from './progress.types';
 import type { WordAttemptInput, WeakReason } from '../../types/vocabulary';
 import type { KanaGroup, KanaTrainingMode } from '../../types/kana';
+import type { KanjiJlptLevel, KanjiTrainingMode } from '../../types/kanji';
 
 const KEYS = {
   KANA: 'kana_progress',
+  KANJI: 'kanji_progress',
   VOCAB: 'vocab_progress',
   WORD_PROGRESS: 'word_progress',
   EXAMS: 'exam_attempts',
@@ -182,6 +188,156 @@ export function getKanaStats() {
   };
 }
 
+// ---------- KANJI ----------
+export function getKanjiProgress(): KanjiProgress {
+  return storageGet<KanjiProgress>(KEYS.KANJI) ?? { attempts: [], lastUpdated: '' };
+}
+
+export function recordKanjiAttempt(
+  kanjiId: string,
+  correct: boolean,
+  opts?: { mode?: KanjiTrainingMode; skipped?: boolean; jlptLevel?: KanjiJlptLevel },
+): void {
+  const progress = getKanjiProgress();
+  progress.attempts.push({
+    kanjiId,
+    correct,
+    timestamp: new Date().toISOString(),
+    ...(opts?.skipped ? { skipped: true } : {}),
+    ...(opts?.mode ? { mode: opts.mode } : {}),
+    ...(opts?.jlptLevel ? { jlptLevel: opts.jlptLevel } : {}),
+  });
+  progress.lastUpdated = new Date().toISOString();
+  storageSet(KEYS.KANJI, progress);
+}
+
+/** Per-kanji stats map: kanjiId → { attempts, correct } (tentativas puladas não contam). */
+export function getKanjiStatsMap(): Record<string, { attempts: number; correct: number }> {
+  const { attempts } = getKanjiProgress();
+  const map: Record<string, { attempts: number; correct: number }> = {};
+  for (const a of attempts) {
+    if (a.skipped) continue;
+    if (!map[a.kanjiId]) map[a.kanjiId] = { attempts: 0, correct: 0 };
+    map[a.kanjiId].attempts += 1;
+    if (a.correct) map[a.kanjiId].correct += 1;
+  }
+  return map;
+}
+
+/** Per-kanji skip count: kanjiId → número de vezes pulado. */
+export function getKanjiSkipMap(): Record<string, number> {
+  const { attempts } = getKanjiProgress();
+  const map: Record<string, number> = {};
+  for (const a of attempts) {
+    if (a.skipped) map[a.kanjiId] = (map[a.kanjiId] ?? 0) + 1;
+  }
+  return map;
+}
+
+/** Estatísticas detalhadas de um kanji (tentativas, acertos, erros, pulos, precisão). */
+export function getKanjiCharacterStats(kanjiId: string): KanjiCharacterStats {
+  const stats = getKanjiStatsMap()[kanjiId];
+  const attempts = stats?.attempts ?? 0;
+  const correct = stats?.correct ?? 0;
+  return {
+    kanjiId,
+    attempts,
+    correct,
+    errors: attempts - correct,
+    skipped: getKanjiSkipMap()[kanjiId] ?? 0,
+    accuracy: attempts > 0 ? Math.round((correct / attempts) * 100) : 0,
+  };
+}
+
+/** Taxa de acerto agregada por nível JLPT. */
+export function getKanjiLevelStats(): KanjiLevelStats[] {
+  const statsMap = getKanjiStatsMap();
+  const levelOf = new Map(kanji.map(k => [k.id, k.jlptLevel]));
+
+  const totals: Record<KanjiJlptLevel, { attempts: number; correct: number }> = {
+    N5: { attempts: 0, correct: 0 },
+    N4: { attempts: 0, correct: 0 },
+    N3: { attempts: 0, correct: 0 },
+    N2: { attempts: 0, correct: 0 },
+    N1: { attempts: 0, correct: 0 },
+  };
+
+  for (const [kanjiId, s] of Object.entries(statsMap)) {
+    const level = levelOf.get(kanjiId);
+    if (!level) continue;
+    totals[level].attempts += s.attempts;
+    totals[level].correct += s.correct;
+  }
+
+  return KANJI_LEVELS.map(level => ({
+    level,
+    attempts: totals[level].attempts,
+    correct: totals[level].correct,
+    accuracy: totals[level].attempts > 0 ? Math.round((totals[level].correct / totals[level].attempts) * 100) : 0,
+  }));
+}
+
+/** Reseta apenas o progresso de kanji (mantém kana, vocabulário, simulados e sessões). */
+export function resetKanjiProgress(): void {
+  storageSet(KEYS.KANJI, { attempts: [], lastUpdated: new Date().toISOString() });
+}
+
+export function getWeakKanji(ids: string[], limit = 50): string[] {
+  const map = getKanjiStatsMap();
+  return ids
+    .filter(id => {
+      const s = map[id];
+      return s && s.attempts >= 3 && (s.correct / s.attempts) < 0.6;
+    })
+    .sort((a, b) => {
+      const sa = map[a], sb = map[b];
+      return (sa.correct / sa.attempts) - (sb.correct / sb.attempts);
+    })
+    .slice(0, limit);
+}
+
+export function getMasteredKanji(ids: string[]): string[] {
+  const map = getKanjiStatsMap();
+  return ids.filter(id => {
+    const s = map[id];
+    return s && s.attempts >= 5 && (s.correct / s.attempts) >= 0.85;
+  });
+}
+
+export function getNeverSeenKanji(ids: string[]): string[] {
+  const map = getKanjiStatsMap();
+  return ids.filter(id => !map[id]);
+}
+
+export function getKanjiFilterStats(ids: string[]) {
+  return {
+    total: ids.length,
+    neverSeen: getNeverSeenKanji(ids).length,
+    weak: getWeakKanji(ids).length,
+    mastered: getMasteredKanji(ids).length,
+  };
+}
+
+/** Classification stats across all seeded kanji. */
+export function getKanjiStats() {
+  const ids = kanji.map(k => k.id);
+  const stats = getKanjiFilterStats(ids);
+  return {
+    total: stats.total,
+    seen: stats.total - stats.neverSeen,
+    neverSeen: stats.neverSeen,
+    mastered: stats.mastered,
+    weak: stats.weak,
+  };
+}
+
+export function getKanjiAccuracy(): number {
+  const { attempts } = getKanjiProgress();
+  const counted = attempts.filter(a => !a.skipped);
+  if (counted.length === 0) return 0;
+  return Math.round((counted.filter(a => a.correct).length / counted.length) * 100);
+}
+
 // ---------- LEGACY VOCAB (aggregate) ----------
 export function getVocabProgress(): VocabProgress {
   return storageGet<VocabProgress>(KEYS.VOCAB) ?? { attempts: [], lastUpdated: '' };
@@ -311,18 +467,22 @@ export function saveSession(session: Omit<StudySessionRecord, 'id'>): void {
 // ---------- SUMMARY ----------
 export function getProgressSummary() {
   const kanaProg = getKanaProgress();
+  const kanjiProg = getKanjiProgress();
   const vocabProg = getVocabProgress();
   const exams = getExamAttempts();
   const sessions = getSessions();
   const vocabStats = getVocabStats();
   const kanaStats = getKanaStats();
+  const kanjiStats = getKanjiStats();
 
   const kanaTotal = kanaProg.attempts.length;
   const kanaCorrect = kanaProg.attempts.filter(a => a.correct).length;
+  const kanjiTotal = kanjiProg.attempts.length;
+  const kanjiCorrect = kanjiProg.attempts.filter(a => a.correct).length;
   const vocabTotal = vocabProg.attempts.length;
   const vocabCorrect = vocabProg.attempts.filter(a => a.correct).length;
-  const totalAttempts = kanaTotal + vocabTotal;
-  const totalCorrect = kanaCorrect + vocabCorrect;
+  const totalAttempts = kanaTotal + kanjiTotal + vocabTotal;
+  const totalCorrect = kanaCorrect + kanjiCorrect + vocabCorrect;
 
   const mistakes = getKanaMistakes();
   const topMistakes = Object.entries(mistakes)
@@ -334,6 +494,9 @@ export function getProgressSummary() {
     kanaTotal,
     kanaCorrect,
     kanaAccuracy: getKanaAccuracy(),
+    kanjiTotal,
+    kanjiCorrect,
+    kanjiAccuracy: getKanjiAccuracy(),
     vocabTotal,
     vocabCorrect,
     vocabAccuracy: getVocabAccuracy(),
@@ -345,6 +508,7 @@ export function getProgressSummary() {
     topMistakes,
     vocabStats,
     kanaStats,
+    kanjiStats,
   };
 }
 
@@ -368,6 +532,7 @@ const WEEKDAY_LABELS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
  */
 export function getWeeklyActivity(): DailyActivity[] {
   const kana = getKanaProgress().attempts;
+  const kanjiAttempts = getKanjiProgress().attempts;
   const vocab = getVocabProgress().attempts;
 
   const counts: Record<string, number> = {};
@@ -378,6 +543,7 @@ export function getWeeklyActivity(): DailyActivity[] {
     counts[key] = (counts[key] ?? 0) + 1;
   };
   kana.forEach(a => tally(a.timestamp));
+  kanjiAttempts.forEach(a => tally(a.timestamp));
   vocab.forEach(a => tally(a.timestamp));
 
   const today = new Date();
@@ -408,6 +574,7 @@ export interface HeatmapDay {
  */
 export function getActivityHeatmap(weeks = 10): HeatmapDay[][] {
   const kana = getKanaProgress().attempts;
+  const kanjiAttempts = getKanjiProgress().attempts;
   const vocab = getVocabProgress().attempts;
 
   const counts: Record<string, number> = {};
@@ -418,6 +585,7 @@ export function getActivityHeatmap(weeks = 10): HeatmapDay[][] {
     counts[key] = (counts[key] ?? 0) + 1;
   };
   kana.forEach(a => tally(a.timestamp));
+  kanjiAttempts.forEach(a => tally(a.timestamp));
   vocab.forEach(a => tally(a.timestamp));
 
   const today = new Date();

@@ -1,43 +1,39 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { MaterialIcon } from '../components/ui/MaterialIcon';
-import { KANA_MODES, KANA_MODE_ICONS, KANA_MODE_TAGS } from '../components/kana/KanaModeSelector';
-import { BentoCharacterGrid } from '../components/kana/BentoCharacterGrid';
-import { KanaSubNav } from '../components/kana/KanaSubNav';
+import { KANJI_MODES, KANJI_MODE_ICONS, KANJI_MODE_TAGS } from '../components/kanji/KanjiModeSelector';
+import { KanjiSubNav } from '../components/kanji/KanjiSubNav';
 import { PageHeader } from '../components/ui/PageHeader';
 import { AdPlaceholder } from '../components/ui/AdPlaceholder';
 import { updatePageSEO } from '../utils/seo';
-import { getKanaStats, getKanaAccuracy } from '../services/progress/progress.local';
-import { getKanaByScript, getKanaByGroup } from '../data/kana';
+import { getKanjiStats, getKanjiAccuracy } from '../services/progress/progress.local';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import type { KanaScript, KanaTrainingMode } from '../types/kana';
+import type { KanjiTrainingMode } from '../types/kanji';
 
-export function KanaHubPage() {
+export function KanjiHubPage() {
   const [, navigate] = useLocation();
-  const [, setKanaMode] = useLocalStorage<KanaTrainingMode>('kana_train_mode', 'typing');
-  const [gridScript, setGridScript] = useState<KanaScript>('hiragana');
+  const [, setKanjiMode] = useLocalStorage<KanjiTrainingMode>('kanji_train_mode', 'flashcards');
 
   useEffect(() => {
-    updatePageSEO('Kana', 'Aprenda, treine e acompanhe seu progresso em hiragana e katakana.');
+    updatePageSEO('Kanji', 'Aprenda, treine e acompanhe seu progresso em kanji do N5.');
   }, []);
 
-  const stats = getKanaStats();
-  const accuracy = getKanaAccuracy();
+  const stats = getKanjiStats();
+  const accuracy = getKanjiAccuracy();
   const masteryPct = stats.total > 0 ? Math.round((stats.mastered / stats.total) * 100) : 0;
-  const basicKana = useMemo(() => getKanaByGroup(getKanaByScript(gridScript), 'basic'), [gridScript]);
 
-  const startMode = (mode: KanaTrainingMode) => {
-    setKanaMode(mode);
-    navigate('/kana/treinar');
+  const startMode = (mode: KanjiTrainingMode) => {
+    setKanjiMode(mode);
+    navigate('/kanji/treinar');
   };
 
   return (
     <div>
-      <PageHeader title="Kana" description="Hiragana e katakana: aprenda, treine e acompanhe seu progresso.">
+      <PageHeader title="Kanji" description="Aprenda, treine e acompanhe seu progresso em kanji do N5.">
         <Link
-          href="/kana/configurar"
+          href="/kanji/configurar"
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card text-foreground text-sm font-medium hover:bg-muted transition-colors"
-          data-testid="kana-configure-header"
+          data-testid="kanji-configure-header"
         >
           <MaterialIcon name="tune" size={18} />
           Configurar
@@ -45,12 +41,12 @@ export function KanaHubPage() {
       </PageHeader>
 
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-7">
-        <KanaSubNav />
+        <KanjiSubNav />
 
         {/* Stats */}
         <section className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
           <div className="bg-card border border-border rounded-xl p-[18px]">
-            <p className="text-[11px] font-bold text-[--color-text-secondary] uppercase tracking-wider mb-2">Kana dominados</p>
+            <p className="text-[11px] font-bold text-[--color-text-secondary] uppercase tracking-wider mb-2">Kanji dominados</p>
             <p className="font-heading text-2xl font-extrabold text-foreground">
               {stats.mastered}<span className="text-base text-muted-foreground/50">/{stats.total}</span>
             </p>
@@ -78,19 +74,19 @@ export function KanaHubPage() {
         <section>
           <h2 className="font-heading text-xl font-bold text-foreground mb-4">Modos de treino</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {KANA_MODES.map(mode => (
+            {KANJI_MODES.map(mode => (
               <button
                 key={mode.value}
                 onClick={() => startMode(mode.value)}
                 className="text-left bg-card border border-border rounded-2xl p-5 flex flex-col gap-3.5 hover:border-primary hover:shadow-sm hover:-translate-y-0.5 transition-all"
-                data-testid={`kana-hub-mode-${mode.value}`}
+                data-testid={`kanji-hub-mode-${mode.value}`}
               >
                 <div className="flex items-center justify-between">
                   <div className="w-11 h-11 rounded-xl bg-accent flex items-center justify-center text-primary flex-shrink-0">
-                    <MaterialIcon name={KANA_MODE_ICONS[mode.value]} filled size={22} />
+                    <MaterialIcon name={KANJI_MODE_ICONS[mode.value]} filled size={22} />
                   </div>
                   <span className="text-[11px] font-bold text-[--color-text-secondary] bg-background border border-border px-2 py-0.5 rounded-full">
-                    {KANA_MODE_TAGS[mode.value]}
+                    {KANJI_MODE_TAGS[mode.value]}
                   </span>
                 </div>
                 <div>
@@ -105,40 +101,19 @@ export function KanaHubPage() {
           </div>
         </section>
 
-        {/* Seu progresso */}
-        <section className="bg-card border border-border rounded-2xl p-6">
-          <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
-            <h3 className="font-heading text-lg font-bold text-foreground">Seu progresso</h3>
-            <div className="flex bg-background border border-border rounded-full p-0.5 gap-0.5">
-              <button
-                onClick={() => setGridScript('hiragana')}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors ${gridScript === 'hiragana' ? 'bg-primary text-primary-foreground' : 'text-[--color-text-secondary] hover:text-foreground'}`}
-              >
-                あ Hiragana
-              </button>
-              <button
-                onClick={() => setGridScript('katakana')}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors ${gridScript === 'katakana' ? 'bg-primary text-primary-foreground' : 'text-[--color-text-secondary] hover:text-foreground'}`}
-              >
-                ア Katakana
-              </button>
-            </div>
-          </div>
-          <BentoCharacterGrid items={basicKana} />
-        </section>
-
-        {/* Cross-link para Kanji (acesso direto no mobile estreito, sem aba própria) */}
-        <Link
-          href="/kanji"
-          className="flex items-center justify-between gap-3 bg-card border border-border rounded-2xl p-5 hover:border-primary transition-colors"
-          data-testid="kana-hub-kanji-crosslink"
-        >
+        {/* Cross-link com vocabulário */}
+        <section className="bg-card border border-border rounded-2xl p-6 flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h3 className="font-heading text-base font-bold text-foreground">Já sabe os kana? Comece o kanji</h3>
-            <p className="text-xs text-[--color-text-secondary] mt-0.5">Treine os primeiros kanji do N5 com flashcards, pares e traçado.</p>
+            <h3 className="font-heading text-lg font-bold text-foreground">Kanji aparecem no vocabulário</h3>
+            <p className="text-sm text-[--color-text-secondary] mt-1">Várias palavras do treino de vocabulário usam os kanji listados em Aprender.</p>
           </div>
-          <MaterialIcon name="arrow_forward" size={20} className="text-primary flex-shrink-0" />
-        </Link>
+          <Link
+            href="/vocabulario"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium flex-shrink-0"
+          >
+            Ver vocabulário <MaterialIcon name="arrow_forward" size={16} />
+          </Link>
+        </section>
       </div>
     </div>
   );

@@ -15,6 +15,7 @@ const navLinks: NavLink[] = [
   { href: '/', label: 'Início', icon: 'home', exact: true },
   { href: '/aulas', label: 'Aulas Extras', icon: 'auto_stories' },
   { href: '/kana', label: 'Kana', icon: 'translate' },
+  { href: '/kanji', label: 'Kanji', icon: 'language' },
   { href: '/vocabulario', label: 'Vocabulário', icon: 'menu_book', exact: true },
   { href: '/vocabulario/treinar', label: 'Treino Vocab', icon: 'sports_esports' },
   { href: '/simulados', label: 'Simulados', icon: 'assignment' },

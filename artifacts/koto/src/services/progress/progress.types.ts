@@ -1,4 +1,5 @@
 import type { KanaGroup, KanaTrainingMode } from '../../types/kana';
+import type { KanjiJlptLevel, KanjiTrainingMode } from '../../types/kanji';
 
 export interface KanaProgress {
   attempts: KanaAttemptRecord[];
@@ -24,6 +25,37 @@ export interface KanaGroupStats {
 
 export interface KanaCharacterStats {
   kanaId: string;
+  attempts: number;
+  correct: number;
+  errors: number;
+  skipped: number;
+  accuracy: number;
+}
+
+export interface KanjiProgress {
+  attempts: KanjiAttemptRecord[];
+  lastUpdated: string;
+}
+
+export interface KanjiAttemptRecord {
+  kanjiId: string;
+  correct: boolean;
+  timestamp: string;
+  /** Tentativa pulada — não conta para acerto/erro nem para domínio/dificuldade. */
+  skipped?: boolean;
+  mode?: KanjiTrainingMode;
+  jlptLevel?: KanjiJlptLevel;
+}
+
+export interface KanjiLevelStats {
+  level: KanjiJlptLevel;
+  attempts: number;
+  correct: number;
+  accuracy: number;
+}
+
+export interface KanjiCharacterStats {
+  kanjiId: string;
   attempts: number;
   correct: number;
   errors: number;
@@ -68,7 +100,7 @@ export interface ExamAttemptRecord {
 
 export interface StudySessionRecord {
   id: string;
-  module: 'kana' | 'vocabulary' | 'listening' | 'exam';
+  module: 'kana' | 'kanji' | 'vocabulary' | 'listening' | 'exam';
   startedAt: string;
   endedAt: string;
   itemsCount: number;

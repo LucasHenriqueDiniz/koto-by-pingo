@@ -4,12 +4,19 @@ import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { AppLayout } from './components/layout/AppLayout';
 import { HomePage } from './pages/HomePage';
+import LandingPage from './pages/LandingPage';
 import { KanaHubPage } from './pages/KanaHubPage';
 import { KanaLearnPage } from './pages/KanaLearnPage';
 import { KanaTrainPage } from './pages/KanaTrainPage';
 import { KanaReviewPage } from './pages/KanaReviewPage';
 import { KanaStatsPage } from './pages/KanaStatsPage';
 import { KanaSettingsPage } from './pages/KanaSettingsPage';
+import { KanjiHubPage } from './pages/KanjiHubPage';
+import { KanjiLearnPage } from './pages/KanjiLearnPage';
+import { KanjiTrainPage } from './pages/KanjiTrainPage';
+import { KanjiReviewPage } from './pages/KanjiReviewPage';
+import { KanjiStatsPage } from './pages/KanjiStatsPage';
+import { KanjiSettingsPage } from './pages/KanjiSettingsPage';
 import { VocabularyPage } from './pages/VocabularyPage';
 import { VocabularyLibraryPage } from './pages/VocabularyLibraryPage';
 import { AulasExtrasPage } from './pages/AulasExtrasPage';
@@ -33,6 +40,7 @@ function Router() {
   return (
     <Switch>
       {/* Rotas full-screen, sem o shell do app */}
+      <Route path="/" component={LandingPage} />
       <Route path="/entrar" component={LoginPage} />
 
       {/* Demais rotas dentro do layout padrão */}
@@ -47,13 +55,19 @@ function AppShellRoutes() {
   return (
     <AppLayout>
       <Switch>
-        <Route path="/" component={HomePage} />
+        <Route path="/home" component={HomePage} />
         <Route path="/kana" component={KanaHubPage} />
         <Route path="/kana/aprender" component={KanaLearnPage} />
         <Route path="/kana/treinar" component={KanaTrainPage} />
         <Route path="/kana/revisar" component={KanaReviewPage} />
         <Route path="/kana/estatisticas" component={KanaStatsPage} />
         <Route path="/kana/configurar" component={KanaSettingsPage} />
+        <Route path="/kanji" component={KanjiHubPage} />
+        <Route path="/kanji/aprender" component={KanjiLearnPage} />
+        <Route path="/kanji/treinar" component={KanjiTrainPage} />
+        <Route path="/kanji/revisar" component={KanjiReviewPage} />
+        <Route path="/kanji/estatisticas" component={KanjiStatsPage} />
+        <Route path="/kanji/configurar" component={KanjiSettingsPage} />
         <Route path="/aulas" component={AulasExtrasPage} />
         <Route path="/vocabulario" component={VocabularyLibraryPage} />
         <Route path="/vocabulario/treinar" component={VocabularyPage} />
