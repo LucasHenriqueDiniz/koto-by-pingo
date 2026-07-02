@@ -15,7 +15,7 @@ export function KanjiHubPage() {
   const [, setKanjiMode] = useLocalStorage<KanjiTrainingMode>('kanji_train_mode', 'flashcards');
 
   useEffect(() => {
-    updatePageSEO('Kanji', 'Aprenda, treine e acompanhe seu progresso em kanji do N5.');
+    updatePageSEO('Kanji', 'Aprenda, treine e acompanhe seu progresso em kanji do N5 e N4.');
   }, []);
 
   const stats = getKanjiStats();
@@ -29,7 +29,7 @@ export function KanjiHubPage() {
 
   return (
     <div>
-      <PageHeader title="Kanji" description="Aprenda, treine e acompanhe seu progresso em kanji do N5.">
+      <PageHeader title="Kanji" description="Aprenda, treine e acompanhe seu progresso em kanji do N5 e N4.">
         <Link
           href="/kanji/configurar"
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card text-foreground text-sm font-medium hover:bg-muted transition-colors"

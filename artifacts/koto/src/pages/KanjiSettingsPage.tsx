@@ -8,7 +8,7 @@ import { KANJI_LEVELS } from '../data/kanji';
 import { updatePageSEO } from '../utils/seo';
 import type { KanjiJlptLevel, KanjiTrainingMode } from '../types/kanji';
 
-const LEVELS_AVAILABLE: KanjiJlptLevel[] = ['N5'];
+const LEVELS_AVAILABLE: KanjiJlptLevel[] = ['N5', 'N4'];
 
 export function KanjiSettingsPage() {
   const { level, setLevel, onlyWeak, setOnlyWeak } = useKanjiFilters();

@@ -18,7 +18,7 @@ import { useRegisterActiveSession } from '../contexts/ActiveSessionContext';
 import { KANJI_LEVELS } from '../data/kanji';
 import type { KanjiJlptLevel, KanjiTrainingMode } from '../types/kanji';
 
-const LEVELS_AVAILABLE: KanjiJlptLevel[] = ['N5'];
+const LEVELS_AVAILABLE: KanjiJlptLevel[] = ['N5', 'N4'];
 
 export function KanjiTrainPage() {
   useRegisterActiveSession(true);

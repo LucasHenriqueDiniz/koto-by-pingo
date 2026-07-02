@@ -124,6 +124,64 @@ export const kanji: KanjiItem[] = [
   { id: 'kj-098', character: '体', onyomi: ['タイ'], kunyomi: ['からだ'], meaningPt: 'corpo', jlptLevel: 'N5', strokeCount: 7, examples: [{ japanese: '体', reading: 'からだ', meaningPt: 'corpo' }] },
   { id: 'kj-099', character: '語', onyomi: ['ゴ'], kunyomi: [], meaningPt: 'língua / palavra', jlptLevel: 'N5', strokeCount: 14, examples: [{ japanese: '日本語', reading: 'にほんご', meaningPt: 'língua japonesa' }] },
   { id: 'kj-100', character: '名', onyomi: ['メイ'], kunyomi: ['な'], meaningPt: 'nome', jlptLevel: 'N5', strokeCount: 6, examples: [{ japanese: '名前', reading: 'なまえ', meaningPt: 'nome' }] },
+
+  // ---------- N4 (primeiro lote, ~45 kanji) ----------
+  // Ações do dia a dia
+  { id: 'kj-101', character: '有', onyomi: ['ユウ'], kunyomi: ['あ'], meaningPt: 'ter / existir', jlptLevel: 'N4', strokeCount: 6, examples: [{ japanese: '有名', reading: 'ゆうめい', meaningPt: 'famoso' }] },
+  { id: 'kj-102', character: '使', onyomi: ['シ'], kunyomi: ['つか'], meaningPt: 'usar', jlptLevel: 'N4', strokeCount: 8, examples: [{ japanese: '使う', reading: 'つかう', meaningPt: 'usar' }] },
+  { id: 'kj-103', character: '働', onyomi: ['ドウ'], kunyomi: ['はたら'], meaningPt: 'trabalhar', jlptLevel: 'N4', strokeCount: 13, examples: [{ japanese: '働く', reading: 'はたらく', meaningPt: 'trabalhar' }] },
+  { id: 'kj-104', character: '作', onyomi: ['サク', 'サ'], kunyomi: ['つく'], meaningPt: 'fazer / criar', jlptLevel: 'N4', strokeCount: 7, examples: [{ japanese: '作る', reading: 'つくる', meaningPt: 'fazer / criar' }] },
+  { id: 'kj-105', character: '始', onyomi: ['シ'], kunyomi: ['はじ'], meaningPt: 'começar', jlptLevel: 'N4', strokeCount: 8, examples: [{ japanese: '始める', reading: 'はじめる', meaningPt: 'começar' }] },
+  { id: 'kj-106', character: '終', onyomi: ['シュウ'], kunyomi: ['お'], meaningPt: 'terminar', jlptLevel: 'N4', strokeCount: 11, examples: [{ japanese: '終わる', reading: 'おわる', meaningPt: 'terminar' }] },
+  { id: 'kj-107', character: '開', onyomi: ['カイ'], kunyomi: ['ひら', 'あ'], meaningPt: 'abrir', jlptLevel: 'N4', strokeCount: 12, examples: [{ japanese: '開く', reading: 'ひらく', meaningPt: 'abrir' }] },
+  { id: 'kj-108', character: '閉', onyomi: ['ヘイ'], kunyomi: ['し'], meaningPt: 'fechar', jlptLevel: 'N4', strokeCount: 11, examples: [{ japanese: '閉める', reading: 'しめる', meaningPt: 'fechar' }] },
+  { id: 'kj-109', character: '着', onyomi: ['チャク'], kunyomi: ['き', 'つ'], meaningPt: 'vestir / chegar', jlptLevel: 'N4', strokeCount: 12, examples: [{ japanese: '着く', reading: 'つく', meaningPt: 'chegar' }] },
+  { id: 'kj-110', character: '急', onyomi: ['キュウ'], kunyomi: ['いそ'], meaningPt: 'urgente / apressar', jlptLevel: 'N4', strokeCount: 9, examples: [{ japanese: '急ぐ', reading: 'いそぐ', meaningPt: 'apressar-se' }] },
+
+  // Transporte e movimento
+  { id: 'kj-111', character: '乗', onyomi: ['ジョウ'], kunyomi: ['の'], meaningPt: 'embarcar', jlptLevel: 'N4', strokeCount: 9, examples: [{ japanese: '乗る', reading: 'のる', meaningPt: 'embarcar' }] },
+  { id: 'kj-112', character: '降', onyomi: ['コウ'], kunyomi: ['お'], meaningPt: 'descer', jlptLevel: 'N4', strokeCount: 10, examples: [{ japanese: '降りる', reading: 'おりる', meaningPt: 'descer' }] },
+  { id: 'kj-113', character: '歩', onyomi: ['ホ'], kunyomi: ['ある'], meaningPt: 'caminhar', jlptLevel: 'N4', strokeCount: 8, examples: [{ japanese: '歩く', reading: 'あるく', meaningPt: 'caminhar' }] },
+  { id: 'kj-114', character: '走', onyomi: ['ソウ'], kunyomi: ['はし'], meaningPt: 'correr', jlptLevel: 'N4', strokeCount: 7, examples: [{ japanese: '走る', reading: 'はしる', meaningPt: 'correr' }] },
+  { id: 'kj-115', character: '止', onyomi: ['シ'], kunyomi: ['と'], meaningPt: 'parar', jlptLevel: 'N4', strokeCount: 4, examples: [{ japanese: '止まる', reading: 'とまる', meaningPt: 'parar' }] },
+  { id: 'kj-116', character: '道', onyomi: ['ドウ'], kunyomi: ['みち'], meaningPt: 'caminho / rua', jlptLevel: 'N4', strokeCount: 12, examples: [{ japanese: '道', reading: 'みち', meaningPt: 'caminho' }] },
+  { id: 'kj-117', character: '運', onyomi: ['ウン'], kunyomi: ['はこ'], meaningPt: 'transportar / sorte', jlptLevel: 'N4', strokeCount: 12, examples: [{ japanese: '運ぶ', reading: 'はこぶ', meaningPt: 'transportar' }] },
+  { id: 'kj-118', character: '転', onyomi: ['テン'], kunyomi: [], meaningPt: 'girar / mudar', jlptLevel: 'N4', strokeCount: 11, examples: [{ japanese: '運転', reading: 'うんてん', meaningPt: 'dirigir' }] },
+
+  // Conceitos abstratos
+  { id: 'kj-119', character: '自', onyomi: ['ジ', 'シ'], kunyomi: [], meaningPt: 'próprio', jlptLevel: 'N4', strokeCount: 6, examples: [{ japanese: '自分', reading: 'じぶん', meaningPt: 'eu mesmo' }] },
+  { id: 'kj-120', character: '由', onyomi: ['ユ', 'ユウ'], kunyomi: [], meaningPt: 'motivo / razão', jlptLevel: 'N4', strokeCount: 5, examples: [{ japanese: '自由', reading: 'じゆう', meaningPt: 'liberdade' }] },
+  { id: 'kj-121', character: '事', onyomi: ['ジ'], kunyomi: ['こと'], meaningPt: 'coisa / assunto', jlptLevel: 'N4', strokeCount: 8, examples: [{ japanese: '仕事', reading: 'しごと', meaningPt: 'trabalho' }] },
+  { id: 'kj-122', character: '仕', onyomi: ['シ'], kunyomi: [], meaningPt: 'servir', jlptLevel: 'N4', strokeCount: 5, examples: [{ japanese: '仕事', reading: 'しごと', meaningPt: 'trabalho' }] },
+  { id: 'kj-123', character: '集', onyomi: ['シュウ'], kunyomi: ['あつ'], meaningPt: 'reunir / juntar', jlptLevel: 'N4', strokeCount: 12, examples: [{ japanese: '集まる', reading: 'あつまる', meaningPt: 'reunir-se' }] },
+  { id: 'kj-124', character: '習', onyomi: ['シュウ'], kunyomi: ['なら'], meaningPt: 'aprender / praticar', jlptLevel: 'N4', strokeCount: 11, examples: [{ japanese: '習う', reading: 'ならう', meaningPt: 'aprender' }] },
+  { id: 'kj-125', character: '練', onyomi: ['レン'], kunyomi: [], meaningPt: 'treinar', jlptLevel: 'N4', strokeCount: 14, examples: [{ japanese: '練習', reading: 'れんしゅう', meaningPt: 'prática' }] },
+  { id: 'kj-126', character: '質', onyomi: ['シツ'], kunyomi: [], meaningPt: 'qualidade', jlptLevel: 'N4', strokeCount: 15, examples: [{ japanese: '質問', reading: 'しつもん', meaningPt: 'pergunta' }] },
+  { id: 'kj-127', character: '問', onyomi: ['モン'], kunyomi: ['と'], meaningPt: 'perguntar', jlptLevel: 'N4', strokeCount: 11, examples: [{ japanese: '質問', reading: 'しつもん', meaningPt: 'pergunta' }] },
+  { id: 'kj-128', character: '答', onyomi: ['トウ'], kunyomi: ['こた'], meaningPt: 'responder', jlptLevel: 'N4', strokeCount: 12, examples: [{ japanese: '答える', reading: 'こたえる', meaningPt: 'responder' }] },
+  { id: 'kj-129', character: '意', onyomi: ['イ'], kunyomi: [], meaningPt: 'intenção / significado', jlptLevel: 'N4', strokeCount: 13, examples: [{ japanese: '意味', reading: 'いみ', meaningPt: 'significado' }] },
+  { id: 'kj-130', character: '味', onyomi: ['ミ'], kunyomi: ['あじ'], meaningPt: 'sabor / significado', jlptLevel: 'N4', strokeCount: 8, examples: [{ japanese: '意味', reading: 'いみ', meaningPt: 'significado' }] },
+
+  // Qualidades e comparações
+  { id: 'kj-131', character: '特', onyomi: ['トク'], kunyomi: [], meaningPt: 'especial', jlptLevel: 'N4', strokeCount: 10, examples: [{ japanese: '特に', reading: 'とくに', meaningPt: 'especialmente' }] },
+  { id: 'kj-132', character: '別', onyomi: ['ベツ'], kunyomi: ['わか'], meaningPt: 'separado / diferente', jlptLevel: 'N4', strokeCount: 7, examples: [{ japanese: '別に', reading: 'べつに', meaningPt: 'separadamente' }] },
+  { id: 'kj-133', character: '同', onyomi: ['ドウ'], kunyomi: ['おな'], meaningPt: 'mesmo', jlptLevel: 'N4', strokeCount: 6, examples: [{ japanese: '同じ', reading: 'おなじ', meaningPt: 'mesmo' }] },
+  { id: 'kj-134', character: '悪', onyomi: ['アク'], kunyomi: ['わる'], meaningPt: 'mau / ruim', jlptLevel: 'N4', strokeCount: 11, examples: [{ japanese: '悪い', reading: 'わるい', meaningPt: 'ruim' }] },
+
+  // Sociedade e lugares
+  { id: 'kj-135', character: '主', onyomi: ['シュ'], kunyomi: ['おも'], meaningPt: 'principal', jlptLevel: 'N4', strokeCount: 5, examples: [{ japanese: '主人', reading: 'しゅじん', meaningPt: 'marido / dono' }] },
+  { id: 'kj-136', character: '世', onyomi: ['セ', 'セイ'], kunyomi: [], meaningPt: 'mundo / geração', jlptLevel: 'N4', strokeCount: 5, examples: [{ japanese: '世界', reading: 'せかい', meaningPt: 'mundo' }] },
+  { id: 'kj-137', character: '界', onyomi: ['カイ'], kunyomi: [], meaningPt: 'mundo / limite', jlptLevel: 'N4', strokeCount: 9, examples: [{ japanese: '世界', reading: 'せかい', meaningPt: 'mundo' }] },
+  { id: 'kj-138', character: '台', onyomi: ['ダイ'], kunyomi: [], meaningPt: 'plataforma / contador', jlptLevel: 'N4', strokeCount: 5, examples: [{ japanese: '台所', reading: 'だいどころ', meaningPt: 'cozinha' }] },
+  { id: 'kj-139', character: '所', onyomi: ['ショ'], kunyomi: ['ところ'], meaningPt: 'lugar', jlptLevel: 'N4', strokeCount: 8, examples: [{ japanese: '台所', reading: 'だいどころ', meaningPt: 'cozinha' }] },
+
+  // Som e cultura
+  { id: 'kj-140', character: '声', onyomi: ['セイ'], kunyomi: ['こえ'], meaningPt: 'voz', jlptLevel: 'N4', strokeCount: 7, examples: [{ japanese: '声', reading: 'こえ', meaningPt: 'voz' }] },
+  { id: 'kj-141', character: '音', onyomi: ['オン'], kunyomi: ['おと'], meaningPt: 'som', jlptLevel: 'N4', strokeCount: 9, examples: [{ japanese: '音楽', reading: 'おんがく', meaningPt: 'música' }] },
+  { id: 'kj-142', character: '楽', onyomi: ['ガク', 'ラク'], kunyomi: ['たの'], meaningPt: 'divertido / música', jlptLevel: 'N4', strokeCount: 13, examples: [{ japanese: '楽しい', reading: 'たのしい', meaningPt: 'divertido' }] },
+  { id: 'kj-143', character: '業', onyomi: ['ギョウ'], kunyomi: [], meaningPt: 'negócio / trabalho', jlptLevel: 'N4', strokeCount: 13, examples: [{ japanese: '授業', reading: 'じゅぎょう', meaningPt: 'aula' }] },
+  { id: 'kj-144', character: '授', onyomi: ['ジュ'], kunyomi: [], meaningPt: 'ensinar / conceder', jlptLevel: 'N4', strokeCount: 11, examples: [{ japanese: '授業', reading: 'じゅぎょう', meaningPt: 'aula' }] },
+  { id: 'kj-145', character: '族', onyomi: ['ゾク'], kunyomi: [], meaningPt: 'família / clã', jlptLevel: 'N4', strokeCount: 11, examples: [{ japanese: '家族', reading: 'かぞく', meaningPt: 'família' }] },
 ];
 
 export function getKanjiByLevel(level: KanjiItem['jlptLevel']): KanjiItem[] {

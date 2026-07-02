@@ -22,49 +22,54 @@ export function KanjiLearnPage() {
   const [strokeItem, setStrokeItem] = useState<KanjiItem | null>(null);
 
   useEffect(() => {
-    updatePageSEO('Aprender Kanji', 'Tabela de referência de kanji do N5 com leituras, significado e exemplos de palavras.');
+    updatePageSEO('Aprender Kanji', 'Tabela de referência de kanji do N5 e N4 com leituras, significado e exemplos de palavras.');
   }, []);
+
+  const levels = Array.from(new Set(kanji.map(k => k.jlptLevel)));
 
   return (
     <div>
-      <PageHeader title="Aprender Kanji" description="Consulte a tabela de kanji do N5 com leituras, significado e exemplos." color="#0284C7" />
+      <PageHeader title="Aprender Kanji" description="Consulte a tabela de kanji por nível JLPT, com leituras, significado e exemplos." color="#0284C7" />
 
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
         <KanjiSubNav />
 
         <AdPlaceholder slot="banner" />
 
-        <section className="bg-card border border-border rounded-2xl p-5 sm:p-6">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {kanji.map(item => {
-              const example = resolveExample(item);
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => setStrokeItem(item)}
-                  className="flex flex-col items-center gap-1.5 rounded-2xl border-2 border-border bg-background p-3 hover:border-primary/40 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40"
-                  data-testid={`kanji-learn-card-${item.id}`}
-                  title="Ver ordem dos traços"
-                >
-                  <span className="text-4xl font-medium" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>
-                    {item.character}
-                  </span>
-                  <span className="text-xs font-semibold text-foreground text-center">{item.meaningPt}</span>
-                  <span className="text-[11px] text-muted-foreground font-mono text-center">
-                    {item.onyomi[0] ?? item.kunyomi[0] ?? ''}
-                  </span>
-                  {example && (
-                    <p className="text-[11px] text-muted-foreground text-center leading-tight">
-                      <span style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>{example.japanese}</span>
-                      {' · '}{example.meaningPt}
-                    </p>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </section>
+        {levels.map(level => (
+          <section key={level} className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4">
+            <h2 className="font-heading text-base font-bold text-foreground">{level}</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {kanji.filter(item => item.jlptLevel === level).map(item => {
+                const example = resolveExample(item);
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setStrokeItem(item)}
+                    className="flex flex-col items-center gap-1.5 rounded-2xl border-2 border-border bg-background p-3 hover:border-primary/40 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40"
+                    data-testid={`kanji-learn-card-${item.id}`}
+                    title="Ver ordem dos traços"
+                  >
+                    <span className="text-4xl font-medium" style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>
+                      {item.character}
+                    </span>
+                    <span className="text-xs font-semibold text-foreground text-center">{item.meaningPt}</span>
+                    <span className="text-[11px] text-muted-foreground font-mono text-center">
+                      {item.onyomi[0] ?? item.kunyomi[0] ?? ''}
+                    </span>
+                    {example && (
+                      <p className="text-[11px] text-muted-foreground text-center leading-tight">
+                        <span style={{ fontFamily: "'Noto Sans JP', sans-serif" }}>{example.japanese}</span>
+                        {' · '}{example.meaningPt}
+                      </p>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        ))}
       </div>
 
       <Dialog open={!!strokeItem} onOpenChange={open => { if (!open) setStrokeItem(null); }}>
