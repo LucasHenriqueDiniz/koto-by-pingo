@@ -22,6 +22,38 @@ Artifact principal: `artifacts/koto/` — app React + Vite + TypeScript.
 
 ---
 
+## Ecossistema — 3 repositórios relacionados
+
+Este projeto faz parte de um ecossistema de 3 repositórios irmãos em `E:\Repositories\`, todos
+sob a marca **Pingo**:
+
+| Repo | Papel | Stack |
+|------|-------|-------|
+| **concursos-app** | App mobile/web para estudar questões de concursos | Expo (React Native) + Expo Router + Zustand + React Query + NativeWind + Supabase |
+| **concursos-scrapper** | Scraper local que baixa provas/gabaritos e alimenta o banco (PCI, QConcursos, QSim, QuestoesAqui) | Python (scraping) + Vite/React/TS (interface OPS) |
+| **koto-by-pingo** (este) | App web de aprendizado de japonês para brasileiros ("Koto by Pingo") | React 19 + Vite + TS + Cloudflare D1/Workers + Clerk |
+
+O padrão de Clerk + Cloudflare D1/Workers deste repo (`cloudflare/api/auth.ts`, wrangler config,
+escopo de dados por `WHERE user_id = ?` no lugar de RLS) é a referência que o concursos-app está
+usando para migrar de Supabase para Cloudflare — mudanças aqui podem valer a pena refletir lá
+também, e vice-versa.
+
+## Gestão de tarefas — Todoist
+
+O planejamento e backlog deste ecossistema (app, scrapper e koto) é mantido no Todoist, no
+projeto **"Pingo — Koto & Concursos"**, organizado em seções por repo/área (ex.: A Fazer,
+Feito, Ideias) e por label (`app`, `scrapper`, `koto`). Ao planejar trabalho ou perguntar
+"o que falta fazer", considere consultar esse projeto para contexto atualizado em vez de
+assumir apenas pelo estado do código.
+
+**Ao terminar uma tarefa que corresponde a algo do Todoist, atualize o Todoist antes de
+encerrar a sessão**: marque como concluída (`complete-tasks`), ou atualize a descrição se o
+trabalho revelou que a tarefa estava incompleta/desatualizada, ou crie uma nova tarefa se
+surgiu um achado/pendência que não existia antes. O backlog só serve como fonte de verdade
+se ficar sincronizado com o que de fato foi feito.
+
+---
+
 ## Stack
 
 | Camada | Tecnologia |
@@ -72,7 +104,9 @@ artifacts/koto/src/
 │   ├── kana.ts                  ← 46 hiragana + 46 katakana + dakuten/handakuten/yōon,
 │   │                              com group ('basic'|'dakuten'|'handakuten'|'yoon') e row
 │   ├── kanaWords.ts             ← palavras curtas (KanaWord[]) usadas pelo WordBuilderMode
-│   ├── vocabulary.ts            ← 45 palavras N5 em 9 categorias + helpers
+│   ├── vocabulary.ts            ← 105 palavras (45 N5 + 60 N4) em 15 categorias + helpers
+│   ├── kanji.ts                 ← KanjiItem[] por jlptLevel (N5, N4...), cross-link com vocabulary.ts via exampleWordIds
+│   ├── strokeData.ts            ← dados de ordem de traços (ver docs/TODO_TRACING.md)
 │   └── mockExams.ts             ← N5 Mini + N4 Mini (questões + seções)
 │
 ├── hooks/
@@ -91,6 +125,12 @@ artifacts/koto/src/
 │   ├── KanaReviewPage.tsx       ← /kana/revisar — difíceis, nunca vistos, dominados
 │   ├── KanaStatsPage.tsx        ← /kana/estatisticas — precisão geral e por grupo + reset
 │   ├── KanaSettingsPage.tsx     ← /kana/configurar — grupos, modo padrão, dica de romaji
+│   ├── KanjiHubPage.tsx         ← /kanji — visão geral + atalhos para as 5 sub-páginas (desbloqueado a partir de N5)
+│   ├── KanjiLearnPage.tsx       ← /kanji/aprender — tabela de referência por nível (N5/N4...)
+│   ├── KanjiTrainPage.tsx       ← /kanji/treinar — treino de kanji (leitura/significado)
+│   ├── KanjiReviewPage.tsx      ← /kanji/revisar — difíceis, nunca vistos, dominados
+│   ├── KanjiStatsPage.tsx       ← /kanji/estatisticas — precisão geral e por nível JLPT
+│   ├── KanjiSettingsPage.tsx    ← /kanji/configurar — preferências de treino de kanji
 │   ├── VocabularyLibraryPage.tsx ← /vocabulario — biblioteca naveg. (busca, filtro N5-N2, paginação)
 │   ├── VocabularyPage.tsx       ← /vocabulario/treinar — 4 modos + filtros inteligentes
 │   ├── AulasExtrasPage.tsx      ← /aulas — material complementar (placeholder, ver docs/TODO_AULAS_EXTRAS.md)
@@ -220,7 +260,16 @@ Cada tentativa registra `WeakReason`: `'reading' | 'meaning' | 'listening' | 'ty
 
 Funções: `recordWordAttempt(input)`, `getWeakWords(limit)`, `getMasteredWords()`, `getNeverSeenWords()`, `getVocabStats()`.
 
-### Páginas e rotas de Kana
+### Progresso de kanji
+
+Mesmo critério de dominado/difícil/nunca visto que kana (ver acima), aplicado por `jlptLevel`.
+
+Funções (`services/progress/progress.local.ts`): `recordKanjiAttempt(kanjiId, correct, opts?)`,
+`getWeakKanji(ids, limit?)`, `getMasteredKanji(ids)`, `getNeverSeenKanji(ids)`, `getKanjiFilterStats(ids)`,
+`getKanjiStats()`, `getKanjiCharacterStats(kanjiId)`, `getKanjiLevelStats()` (precisão por nível JLPT),
+`getKanjiAccuracy()`.
+
+### Páginas e rotas de Kana / Kanji
 ```
 /kana                ← KanaHubPage      (visão geral + atalhos)
 /kana/aprender       ← KanaLearnPage    (tabela de referência por grupo/linha)
@@ -228,8 +277,15 @@ Funções: `recordWordAttempt(input)`, `getWeakWords(limit)`, `getMasteredWords(
 /kana/revisar        ← KanaReviewPage   (difíceis, nunca vistos, dominados)
 /kana/estatisticas   ← KanaStatsPage    (precisão geral/por grupo + reset)
 /kana/configurar     ← KanaSettingsPage (grupos, modo padrão, dica de romaji)
+
+/kanji               ← KanjiHubPage      (visão geral + atalhos, desbloqueado após progresso em N5)
+/kanji/aprender      ← KanjiLearnPage    (tabela de referência por nível JLPT)
+/kanji/treinar       ← KanjiTrainPage    (treino de leitura/significado)
+/kanji/revisar       ← KanjiReviewPage   (difíceis, nunca vistos, dominados)
+/kanji/estatisticas  ← KanjiStatsPage    (precisão geral/por nível)
+/kanji/configurar    ← KanjiSettingsPage (preferências de treino)
 ```
-A `KanaSubNav` é renderizada no topo de todas as 6 páginas (abaixo do `PageHeader`).
+A `KanaSubNav`/sub-nav equivalente é renderizada no topo das páginas de cada módulo (abaixo do `PageHeader`).
 
 ### Grupos de kana e modos de treino
 ```ts
@@ -356,7 +412,7 @@ pnpm --filter @workspace/koto run preview
 | Arquivo | Assunto | Status |
 |---------|---------|--------|
 | `docs/TODO_CLERK_AUTH.md` | Autenticação com Clerk | ✅ implementado |
-| `docs/TODO_CLOUDFLARE_D1.md` | Backend Cloudflare D1 + Workers | ✅ implementado (falta apenas `wrangler d1 create` real + `CLERK_SECRET_KEY`) |
+| `docs/TODO_CLOUDFLARE_D1.md` | Backend Cloudflare D1 + Workers | ✅ implementado — banco real (`koto_by_pingo`) e Worker deployado em produção |
 
 ## TODOs documentados (não implementar sem instrução)
 
@@ -396,5 +452,5 @@ pnpm --filter @workspace/koto run preview
 | Arquivo | Assunto | Status |
 |---------|---------|--------|
 | `docs/TODO_CLERK_AUTH.md` | Autenticação com Clerk | ✅ implementado |
-| `docs/TODO_CLOUDFLARE_D1.md` | Backend Cloudflare D1 + Workers | ✅ implementado (falta apenas `wrangler d1 create` real + `CLERK_SECRET_KEY`) |
-| `docs/TODO_GAMIFICATION.md` | Streak, XP/nível, conquistas (placeholders visuais do refactor de design) | ❌ não implementado |
+| `docs/TODO_CLOUDFLARE_D1.md` | Backend Cloudflare D1 + Workers | ✅ implementado — banco real (`koto_by_pingo`) e Worker deployado em produção |
+| `docs/TODO_GAMIFICATION.md` | Streak, XP/nível, conquistas | ✅ implementado — falta apenas metas semanais |
