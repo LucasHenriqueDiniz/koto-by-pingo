@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# A action de pnpm não recebe 'version' — ela lê o campo packageManager do
+# package.json, que é o que mantém o CI e as máquinas locais na mesma versão.
+
+jobs:
+  check:
+    name: Typecheck & Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+
+      # As libs compartilhadas são checadas à parte porque os artefatos as
+      # consomem já compiladas — um erro aqui aparece nos dois artifacts.
+      - name: Typecheck libs
+        run: pnpm run typecheck:libs
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Build
+        run: pnpm run build
