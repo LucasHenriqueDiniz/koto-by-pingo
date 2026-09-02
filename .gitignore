@@ -54,5 +54,10 @@ Thumbs.db
 .env.*.local
 
 # Cloudflare
+# The blanket ignore sits right under "Environment secrets", which is the mistake: a wrangler
+# config holds bindings and ids, never secrets — those go through `wrangler secret put` and never
+# touch a file. Ignoring it kept cloudflare/wrangler.toml off the repo, so the Worker could only
+# ever be deployed by hand, which is how it went two months without a redeploy.
 wrangler.toml
+!cloudflare/wrangler.toml
 .wrangler/

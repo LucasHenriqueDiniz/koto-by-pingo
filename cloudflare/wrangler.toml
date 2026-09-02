@@ -1,0 +1,20 @@
+# This file lives in cloudflare/ rather than at the repo root on purpose. The root is what the
+# Pages project builds, and a root wrangler.toml carrying `main` makes the Pages build read it as
+# its own config — the failure that took a sibling project's deploy down earlier.
+name = "koto-by-pingo"
+main = "api/index.ts"
+compatibility_date = "2026-09-02"
+
+# Already provisioned and migrated: 0001_initial and 0002_word_progress_and_preferences are both
+# recorded in d1_migrations. Nine tables, no rows yet.
+[[d1_databases]]
+binding = "DB"
+database_name = "koto_by_pingo"
+database_id = "5a9c4ef0-dc81-4720-96aa-ec883cb34461"
+migrations_dir = "migrations"
+
+[vars]
+ENVIRONMENT = "production"
+
+# CLERK_SECRET_KEY is a secret, not a var: `wrangler secret put CLERK_SECRET_KEY`, or the
+# dashboard. It must never appear in this file.
