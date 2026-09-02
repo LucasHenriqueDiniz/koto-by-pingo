@@ -11,7 +11,7 @@ interface KanjiModeComponentProps {
   items: KanjiItem[];
 }
 
-/** Mapa de modo de treino → componente. Usado pela KanjiTrainPage para renderizar o modo ativo. */
+/** Training mode → component map. Used by KanjiTrainPage to render the active mode. */
 export const KANJI_MODE_COMPONENTS: Record<KanjiTrainingMode, ComponentType<KanjiModeComponentProps>> = {
   flashcards: FlashcardsMode,
   multiple_choice: MultipleChoiceMode,

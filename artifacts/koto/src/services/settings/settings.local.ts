@@ -1,8 +1,8 @@
 import { storageGet, storageSet } from '../../utils/storage';
 
 /**
- * Preferências gerais do app (não confundir com progresso de aprendizado).
- * Domínio próprio, separado de progress.local.ts — não é um serviço de auth/sync paralelo.
+ * General app preferences (not to be confused with learning progress).
+ * Its own domain, separate from progress.local.ts — not a parallel auth/sync service.
  */
 export interface AppSettings {
   theme: 'light' | 'dark' | 'system';
@@ -35,7 +35,7 @@ export function updateSettings(patch: Partial<AppSettings>): AppSettings {
   return next;
 }
 
-/** Aplica o tema no documento (classe .dark). Chamado no boot do app e ao alterar a preferência. */
+/** Applies the theme to the document (`.dark` class). Called on app boot and when the preference changes. */
 export function applyTheme(theme: AppSettings['theme'] = getSettings().theme): void {
   if (typeof document === 'undefined') return;
   const prefersDark = typeof window !== 'undefined'

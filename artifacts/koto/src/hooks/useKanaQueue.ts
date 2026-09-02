@@ -4,8 +4,8 @@ import { saveSession } from '../services/progress/progress.local';
 import type { StudySessionRecord } from '../services/progress/progress.types';
 
 /**
- * Fila + estatísticas de sessão genéricas, compartilhadas pelos modos de treino de kana.
- * Não lida com verificação de resposta — cada modo registra seu próprio resultado.
+ * Generic queue and session stats, shared by the kana training modes.
+ * Does not check answers — each mode records its own result.
  */
 export function useKanaQueue<T>(items: T[]) {
   const [queue, setQueue] = useState<T[]>(() => shuffle([...items]));

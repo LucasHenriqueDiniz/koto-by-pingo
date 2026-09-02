@@ -413,6 +413,7 @@ pnpm --filter @workspace/koto run preview
 |---------|---------|--------|
 | `docs/TODO_CLERK_AUTH.md` | Autenticação com Clerk | ✅ implementado |
 | `docs/TODO_CLOUDFLARE_D1.md` | Backend Cloudflare D1 + Workers | ✅ implementado — banco real (`koto_by_pingo`) e Worker deployado em produção |
+| `docs/TODO_GAMIFICATION.md` | Streak, XP/nível, conquistas | ✅ implementado — falta apenas metas semanais |
 
 ## TODOs documentados (não implementar sem instrução)
 
@@ -444,13 +445,3 @@ pnpm --filter @workspace/koto run preview
 - **Fonte japonesa:** `'Noto Sans JP', sans-serif` — aplicar via `style={{ fontFamily: ... }}` ou `font-japanese`
 - **Mascote:** Pingo-sensei, pinguim preto com detalhes vermelhos
 - **Público-alvo:** estudantes brasileiros iniciantes em japonês
-
----
-
-## Documentação de funcionalidades
-
-| Arquivo | Assunto | Status |
-|---------|---------|--------|
-| `docs/TODO_CLERK_AUTH.md` | Autenticação com Clerk | ✅ implementado |
-| `docs/TODO_CLOUDFLARE_D1.md` | Backend Cloudflare D1 + Workers | ✅ implementado — banco real (`koto_by_pingo`) e Worker deployado em produção |
-| `docs/TODO_GAMIFICATION.md` | Streak, XP/nível, conquistas | ✅ implementado — falta apenas metas semanais |

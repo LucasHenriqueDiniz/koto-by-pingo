@@ -5,8 +5,8 @@ import { getWeakKanji } from '../services/progress/progress.local';
 import { useLocalStorage } from './useLocalStorage';
 
 /**
- * Preferências compartilhadas de filtro de kanji (nível JLPT, apenas problemáticos),
- * persistidas em localStorage e usadas por Aprender/Treinar/Revisar/Configurar.
+ * Shared kanji filter preferences (JLPT level, troublesome-only), persisted in
+ * localStorage and used by the learn/train/review/settings pages.
  */
 export function useKanjiFilters() {
   const [level, setLevel] = useLocalStorage<KanjiJlptLevel>('kanji_level', 'N5');
@@ -14,7 +14,7 @@ export function useKanjiFilters() {
 
   const baseItems = useMemo(() => getKanjiByLevel(level), [level]);
 
-  /** Itens prontos para treino: nível atual + filtro "apenas problemáticos" (com fallback). */
+  /** Items ready for training: current level + troublesome-only filter (with fallback). */
   const filteredItems = useMemo<KanjiItem[]>(() => {
     if (!onlyWeak) return baseItems;
     const weakIds = new Set(getWeakKanji(baseItems.map(k => k.id), 200));

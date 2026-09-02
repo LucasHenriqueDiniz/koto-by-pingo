@@ -20,7 +20,7 @@ export interface RemoteProgress {
 async function authedFetch(path: string, getToken: GetToken, init: RequestInit = {}): Promise<Response> {
   const token = await getToken();
   if (!token) {
-    throw new Error('Usuário não autenticado.');
+    throw new Error('User is not authenticated.');
   }
 
   const headers = new Headers(init.headers);
@@ -30,7 +30,7 @@ async function authedFetch(path: string, getToken: GetToken, init: RequestInit =
   return fetch(`${API_BASE_URL}${path}`, { ...init, headers });
 }
 
-/** Envia todo o progresso local (kana, vocabulário, simulados, sessões) para a conta Clerk do usuário. */
+/** Pushes all local progress (kana, vocabulary, mock exams, sessions) to the user's Clerk account. */
 export async function syncProgressToRemote(getToken: GetToken, profile?: { displayName?: string; email?: string }): Promise<SyncResult> {
   const payload = {
     displayName: profile?.displayName,
@@ -47,18 +47,18 @@ export async function syncProgressToRemote(getToken: GetToken, profile?: { displ
   });
 
   if (!res.ok) {
-    throw new Error(`Falha ao sincronizar progresso (HTTP ${res.status})`);
+    throw new Error(`Failed to sync progress (HTTP ${res.status})`);
   }
 
   return res.json();
 }
 
-/** Busca o progresso salvo na conta Clerk do usuário no D1. */
+/** Fetches the progress stored in the user's Clerk account on D1. */
 export async function fetchProgressFromRemote(getToken: GetToken): Promise<RemoteProgress | null> {
   const res = await authedFetch('/api/progress', getToken, { method: 'GET' });
 
   if (!res.ok) {
-    throw new Error(`Falha ao buscar progresso remoto (HTTP ${res.status})`);
+    throw new Error(`Failed to fetch remote progress (HTTP ${res.status})`);
   }
 
   return res.json();

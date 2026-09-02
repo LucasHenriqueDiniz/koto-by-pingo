@@ -10,7 +10,7 @@ export interface KanaAttemptRecord {
   kanaId: string;
   correct: boolean;
   timestamp: string;
-  /** Tentativa pulada — não conta para acerto/erro nem para domínio/dificuldade. */
+  /** Skipped attempt — counts neither as correct/wrong nor towards mastery/difficulty. */
   skipped?: boolean;
   mode?: KanaTrainingMode;
   group?: KanaGroup;
@@ -41,7 +41,7 @@ export interface KanjiAttemptRecord {
   kanjiId: string;
   correct: boolean;
   timestamp: string;
-  /** Tentativa pulada — não conta para acerto/erro nem para domínio/dificuldade. */
+  /** Skipped attempt — counts neither as correct/wrong nor towards mastery/difficulty. */
   skipped?: boolean;
   mode?: KanjiTrainingMode;
   jlptLevel?: KanjiJlptLevel;

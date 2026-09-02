@@ -4,7 +4,7 @@ import { speakJapanese } from '../../utils/japaneseAudio';
 
 interface WordListCardProps {
   word: VocabularyWord;
-  /** Nível de domínio 0–5 (derivado do progresso real). */
+  /** Mastery level 0–5 (derived from real progress). */
   mastery: number;
   categoryLabel: string;
 }

@@ -4,7 +4,7 @@ interface WeeklyActivityChartProps {
   data: DailyActivity[];
 }
 
-/** Gráfico de barras de atividade semanal (dado real). Replicado do mockup sem recharts. */
+/** Weekly activity bar chart (real data). Reproduced from the mockup without recharts. */
 export function WeeklyActivityChart({ data }: WeeklyActivityChartProps) {
   const max = Math.max(1, ...data.map(d => d.count));
 

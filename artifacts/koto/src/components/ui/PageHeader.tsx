@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface PageHeaderProps {
   title: string;
   description?: string;
-  /** @deprecated mantido por compatibilidade; o novo design usa sempre a cor primária no título. */
+  /** @deprecated kept for compatibility; the new design always uses the primary color for the title. */
   color?: string;
   children?: React.ReactNode;
 }

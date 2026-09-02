@@ -1,11 +1,11 @@
 import type { KanjiItem } from '../types/kanji';
 
 /**
- * Seed N5 (~100 kanji). `exampleWordIds` aponta para data/vocabulary.ts quando a
- * palavra já existe lá (cross-link kanji ↔ vocabulário); senão usa `examples` inline.
+ * N5 seed (~100 kanji). `exampleWordIds` points at data/vocabulary.ts when the word
+ * already exists there (kanji ↔ vocabulary cross-link); otherwise `examples` is used inline.
  */
 export const kanji: KanjiItem[] = [
-  // ---------- Números ----------
+  // ---------- Numbers ----------
   { id: 'kj-001', character: '一', onyomi: ['イチ'], kunyomi: ['ひと'], meaningPt: 'um', jlptLevel: 'N5', strokeCount: 1, exampleWordIds: ['v-006'] },
   { id: 'kj-002', character: '二', onyomi: ['ニ'], kunyomi: ['ふた'], meaningPt: 'dois', jlptLevel: 'N5', strokeCount: 2, exampleWordIds: ['v-007'] },
   { id: 'kj-003', character: '三', onyomi: ['サン'], kunyomi: ['みっ'], meaningPt: 'três', jlptLevel: 'N5', strokeCount: 3, exampleWordIds: ['v-008'] },
@@ -21,7 +21,7 @@ export const kanji: KanjiItem[] = [
   { id: 'kj-013', character: '万', onyomi: ['マン'], kunyomi: [], meaningPt: 'dez mil', jlptLevel: 'N5', strokeCount: 3, examples: [{ japanese: '一万', reading: 'いちまん', meaningPt: 'dez mil' }] },
   { id: 'kj-014', character: '円', onyomi: ['エン'], kunyomi: [], meaningPt: 'iene / círculo', jlptLevel: 'N5', strokeCount: 4, examples: [{ japanese: '百円', reading: 'ひゃくえん', meaningPt: 'cem ienes' }] },
 
-  // ---------- Família e pessoas ----------
+  // ---------- Family and people ----------
   { id: 'kj-015', character: '人', onyomi: ['ジン', 'ニン'], kunyomi: ['ひと'], meaningPt: 'pessoa', jlptLevel: 'N5', strokeCount: 2, examples: [{ japanese: '日本人', reading: 'にほんじん', meaningPt: 'japonês (pessoa)' }] },
   { id: 'kj-016', character: '母', onyomi: ['ボ'], kunyomi: ['かあ'], meaningPt: 'mãe', jlptLevel: 'N5', strokeCount: 5, exampleWordIds: ['v-011'] },
   { id: 'kj-017', character: '父', onyomi: ['フ'], kunyomi: ['とう'], meaningPt: 'pai', jlptLevel: 'N5', strokeCount: 4, exampleWordIds: ['v-012'] },
@@ -34,7 +34,7 @@ export const kanji: KanjiItem[] = [
   { id: 'kj-024', character: '先', onyomi: ['セン'], kunyomi: [], meaningPt: 'antes / à frente', jlptLevel: 'N5', strokeCount: 6, examples: [{ japanese: '先生', reading: 'せんせい', meaningPt: 'professor(a)' }] },
   { id: 'kj-025', character: '生', onyomi: ['セイ'], kunyomi: ['い'], meaningPt: 'nascer / vida', jlptLevel: 'N5', strokeCount: 5, examples: [{ japanese: '学生', reading: 'がくせい', meaningPt: 'estudante' }] },
 
-  // ---------- Tempo ----------
+  // ---------- Time ----------
   { id: 'kj-026', character: '今', onyomi: ['コン'], kunyomi: ['いま'], meaningPt: 'agora', jlptLevel: 'N5', strokeCount: 4, exampleWordIds: ['v-025'] },
   { id: 'kj-027', character: '日', onyomi: ['ニチ'], kunyomi: ['ひ', 'か'], meaningPt: 'dia / sol', jlptLevel: 'N5', strokeCount: 4, exampleWordIds: ['v-025'] },
   { id: 'kj-028', character: '明', onyomi: ['メイ'], kunyomi: ['あ'], meaningPt: 'claro / amanhã', jlptLevel: 'N5', strokeCount: 8, exampleWordIds: ['v-026'] },
@@ -49,7 +49,7 @@ export const kanji: KanjiItem[] = [
   { id: 'kj-037', character: '週', onyomi: ['シュウ'], kunyomi: [], meaningPt: 'semana', jlptLevel: 'N5', strokeCount: 11, examples: [{ japanese: '毎週', reading: 'まいしゅう', meaningPt: 'toda semana' }] },
   { id: 'kj-038', character: '毎', onyomi: ['マイ'], kunyomi: [], meaningPt: 'cada / todo', jlptLevel: 'N5', strokeCount: 6, examples: [{ japanese: '毎日', reading: 'まいにち', meaningPt: 'todos os dias' }] },
 
-  // ---------- Natureza e dias da semana ----------
+  // ---------- Nature and weekdays ----------
   { id: 'kj-039', character: '水', onyomi: ['スイ'], kunyomi: ['みず'], meaningPt: 'água', jlptLevel: 'N5', strokeCount: 4, exampleWordIds: ['v-015'] },
   { id: 'kj-040', character: '火', onyomi: ['カ'], kunyomi: ['ひ'], meaningPt: 'fogo', jlptLevel: 'N5', strokeCount: 4, examples: [{ japanese: '火曜日', reading: 'かようび', meaningPt: 'terça-feira' }] },
   { id: 'kj-041', character: '木', onyomi: ['モク'], kunyomi: ['き'], meaningPt: 'árvore / madeira', jlptLevel: 'N5', strokeCount: 4, examples: [{ japanese: '木曜日', reading: 'もくようび', meaningPt: 'quinta-feira' }] },
@@ -63,7 +63,7 @@ export const kanji: KanjiItem[] = [
   { id: 'kj-049', character: '雨', onyomi: ['ウ'], kunyomi: ['あめ'], meaningPt: 'chuva', jlptLevel: 'N5', strokeCount: 8, examples: [{ japanese: '雨', reading: 'あめ', meaningPt: 'chuva' }] },
   { id: 'kj-050', character: '花', onyomi: ['カ'], kunyomi: ['はな'], meaningPt: 'flor', jlptLevel: 'N5', strokeCount: 7, examples: [{ japanese: '花', reading: 'はな', meaningPt: 'flor' }] },
 
-  // ---------- Comida ----------
+  // ---------- Food ----------
   { id: 'kj-051', character: '食', onyomi: ['ショク'], kunyomi: ['た'], meaningPt: 'comer / comida', jlptLevel: 'N5', strokeCount: 9, exampleWordIds: ['v-016'] },
   { id: 'kj-052', character: '飲', onyomi: ['イン'], kunyomi: ['の'], meaningPt: 'beber', jlptLevel: 'N5', strokeCount: 12, exampleWordIds: ['v-017'] },
   { id: 'kj-053', character: '飯', onyomi: ['ハン'], kunyomi: [], meaningPt: 'arroz cozido / refeição', jlptLevel: 'N5', strokeCount: 12, exampleWordIds: ['v-018'] },
@@ -71,13 +71,13 @@ export const kanji: KanjiItem[] = [
   { id: 'kj-055', character: '肉', onyomi: ['ニク'], kunyomi: [], meaningPt: 'carne', jlptLevel: 'N5', strokeCount: 6, examples: [{ japanese: '肉', reading: 'にく', meaningPt: 'carne' }] },
   { id: 'kj-056', character: '茶', onyomi: ['チャ'], kunyomi: [], meaningPt: 'chá', jlptLevel: 'N5', strokeCount: 9, examples: [{ japanese: 'お茶', reading: 'おちゃ', meaningPt: 'chá' }] },
 
-  // ---------- Cores ----------
+  // ---------- Colors ----------
   { id: 'kj-057', character: '赤', onyomi: ['セキ'], kunyomi: ['あか'], meaningPt: 'vermelho', jlptLevel: 'N5', strokeCount: 7, exampleWordIds: ['v-021'] },
   { id: 'kj-058', character: '青', onyomi: ['セイ'], kunyomi: ['あお'], meaningPt: 'azul', jlptLevel: 'N5', strokeCount: 8, exampleWordIds: ['v-022'] },
   { id: 'kj-059', character: '白', onyomi: ['ハク'], kunyomi: ['しろ'], meaningPt: 'branco', jlptLevel: 'N5', strokeCount: 5, exampleWordIds: ['v-023'] },
   { id: 'kj-060', character: '黒', onyomi: ['コク'], kunyomi: ['くろ'], meaningPt: 'preto', jlptLevel: 'N5', strokeCount: 11, exampleWordIds: ['v-024'] },
 
-  // ---------- Lugares ----------
+  // ---------- Places ----------
   { id: 'kj-061', character: '学', onyomi: ['ガク'], kunyomi: [], meaningPt: 'estudo / aprendizado', jlptLevel: 'N5', strokeCount: 8, exampleWordIds: ['v-029'] },
   { id: 'kj-062', character: '校', onyomi: ['コウ'], kunyomi: [], meaningPt: 'escola', jlptLevel: 'N5', strokeCount: 10, exampleWordIds: ['v-029'] },
   { id: 'kj-063', character: '家', onyomi: ['カ'], kunyomi: ['いえ'], meaningPt: 'casa', jlptLevel: 'N5', strokeCount: 10, exampleWordIds: ['v-030'] },
@@ -92,7 +92,7 @@ export const kanji: KanjiItem[] = [
   { id: 'kj-072', character: '室', onyomi: ['シツ'], kunyomi: [], meaningPt: 'sala', jlptLevel: 'N5', strokeCount: 9, examples: [{ japanese: '教室', reading: 'きょうしつ', meaningPt: 'sala de aula' }] },
   { id: 'kj-073', character: '教', onyomi: ['キョウ'], kunyomi: ['おし'], meaningPt: 'ensinar', jlptLevel: 'N5', strokeCount: 11, examples: [{ japanese: '教室', reading: 'きょうしつ', meaningPt: 'sala de aula' }] },
 
-  // ---------- Verbos ----------
+  // ---------- Verbs ----------
   { id: 'kj-074', character: '行', onyomi: ['コウ'], kunyomi: ['い'], meaningPt: 'ir', jlptLevel: 'N5', strokeCount: 6, exampleWordIds: ['v-033'] },
   { id: 'kj-075', character: '来', onyomi: ['ライ'], kunyomi: ['く'], meaningPt: 'vir', jlptLevel: 'N5', strokeCount: 7, exampleWordIds: ['v-034'] },
   { id: 'kj-076', character: '見', onyomi: ['ケン'], kunyomi: ['み'], meaningPt: 'ver', jlptLevel: 'N5', strokeCount: 7, exampleWordIds: ['v-035'] },
@@ -108,7 +108,7 @@ export const kanji: KanjiItem[] = [
   { id: 'kj-086', character: '買', onyomi: ['バイ'], kunyomi: ['か'], meaningPt: 'comprar', jlptLevel: 'N5', strokeCount: 12, examples: [{ japanese: '買う', reading: 'かう', meaningPt: 'comprar' }] },
   { id: 'kj-087', character: '言', onyomi: ['ゲン'], kunyomi: ['い'], meaningPt: 'dizer', jlptLevel: 'N5', strokeCount: 7, examples: [{ japanese: '言う', reading: 'いう', meaningPt: 'dizer' }] },
 
-  // ---------- Adjetivos e qualidades ----------
+  // ---------- Adjectives and qualities ----------
   { id: 'kj-088', character: '大', onyomi: ['ダイ'], kunyomi: ['おお'], meaningPt: 'grande', jlptLevel: 'N5', strokeCount: 3, exampleWordIds: ['v-041'] },
   { id: 'kj-089', character: '小', onyomi: ['ショウ'], kunyomi: ['こ'], meaningPt: 'pequeno', jlptLevel: 'N5', strokeCount: 3, exampleWordIds: ['v-042'] },
   { id: 'kj-090', character: '新', onyomi: ['シン'], kunyomi: ['あたら'], meaningPt: 'novo', jlptLevel: 'N5', strokeCount: 13, exampleWordIds: ['v-043'] },
@@ -120,13 +120,13 @@ export const kanji: KanjiItem[] = [
   { id: 'kj-096', character: '多', onyomi: ['タ'], kunyomi: ['おお'], meaningPt: 'muito', jlptLevel: 'N5', strokeCount: 6, examples: [{ japanese: '多い', reading: 'おおい', meaningPt: 'muitos' }] },
   { id: 'kj-097', character: '少', onyomi: ['ショウ'], kunyomi: ['すこ'], meaningPt: 'pouco', jlptLevel: 'N5', strokeCount: 4, examples: [{ japanese: '少ない', reading: 'すくない', meaningPt: 'pouco' }] },
 
-  // ---------- Corpo, língua e diversos ----------
+  // ---------- Body, language and miscellaneous ----------
   { id: 'kj-098', character: '体', onyomi: ['タイ'], kunyomi: ['からだ'], meaningPt: 'corpo', jlptLevel: 'N5', strokeCount: 7, examples: [{ japanese: '体', reading: 'からだ', meaningPt: 'corpo' }] },
   { id: 'kj-099', character: '語', onyomi: ['ゴ'], kunyomi: [], meaningPt: 'língua / palavra', jlptLevel: 'N5', strokeCount: 14, examples: [{ japanese: '日本語', reading: 'にほんご', meaningPt: 'língua japonesa' }] },
   { id: 'kj-100', character: '名', onyomi: ['メイ'], kunyomi: ['な'], meaningPt: 'nome', jlptLevel: 'N5', strokeCount: 6, examples: [{ japanese: '名前', reading: 'なまえ', meaningPt: 'nome' }] },
 
-  // ---------- N4 (primeiro lote, ~45 kanji) ----------
-  // Ações do dia a dia
+  // ---------- N4 (first batch, ~45 kanji) ----------
+  // Everyday actions
   { id: 'kj-101', character: '有', onyomi: ['ユウ'], kunyomi: ['あ'], meaningPt: 'ter / existir', jlptLevel: 'N4', strokeCount: 6, examples: [{ japanese: '有名', reading: 'ゆうめい', meaningPt: 'famoso' }] },
   { id: 'kj-102', character: '使', onyomi: ['シ'], kunyomi: ['つか'], meaningPt: 'usar', jlptLevel: 'N4', strokeCount: 8, examples: [{ japanese: '使う', reading: 'つかう', meaningPt: 'usar' }] },
   { id: 'kj-103', character: '働', onyomi: ['ドウ'], kunyomi: ['はたら'], meaningPt: 'trabalhar', jlptLevel: 'N4', strokeCount: 13, examples: [{ japanese: '働く', reading: 'はたらく', meaningPt: 'trabalhar' }] },
@@ -138,7 +138,7 @@ export const kanji: KanjiItem[] = [
   { id: 'kj-109', character: '着', onyomi: ['チャク'], kunyomi: ['き', 'つ'], meaningPt: 'vestir / chegar', jlptLevel: 'N4', strokeCount: 12, examples: [{ japanese: '着く', reading: 'つく', meaningPt: 'chegar' }] },
   { id: 'kj-110', character: '急', onyomi: ['キュウ'], kunyomi: ['いそ'], meaningPt: 'urgente / apressar', jlptLevel: 'N4', strokeCount: 9, examples: [{ japanese: '急ぐ', reading: 'いそぐ', meaningPt: 'apressar-se' }] },
 
-  // Transporte e movimento
+  // Transport and movement
   { id: 'kj-111', character: '乗', onyomi: ['ジョウ'], kunyomi: ['の'], meaningPt: 'embarcar', jlptLevel: 'N4', strokeCount: 9, examples: [{ japanese: '乗る', reading: 'のる', meaningPt: 'embarcar' }] },
   { id: 'kj-112', character: '降', onyomi: ['コウ'], kunyomi: ['お'], meaningPt: 'descer', jlptLevel: 'N4', strokeCount: 10, examples: [{ japanese: '降りる', reading: 'おりる', meaningPt: 'descer' }] },
   { id: 'kj-113', character: '歩', onyomi: ['ホ'], kunyomi: ['ある'], meaningPt: 'caminhar', jlptLevel: 'N4', strokeCount: 8, examples: [{ japanese: '歩く', reading: 'あるく', meaningPt: 'caminhar' }] },
@@ -148,7 +148,7 @@ export const kanji: KanjiItem[] = [
   { id: 'kj-117', character: '運', onyomi: ['ウン'], kunyomi: ['はこ'], meaningPt: 'transportar / sorte', jlptLevel: 'N4', strokeCount: 12, examples: [{ japanese: '運ぶ', reading: 'はこぶ', meaningPt: 'transportar' }] },
   { id: 'kj-118', character: '転', onyomi: ['テン'], kunyomi: [], meaningPt: 'girar / mudar', jlptLevel: 'N4', strokeCount: 11, examples: [{ japanese: '運転', reading: 'うんてん', meaningPt: 'dirigir' }] },
 
-  // Conceitos abstratos
+  // Abstract concepts
   { id: 'kj-119', character: '自', onyomi: ['ジ', 'シ'], kunyomi: [], meaningPt: 'próprio', jlptLevel: 'N4', strokeCount: 6, examples: [{ japanese: '自分', reading: 'じぶん', meaningPt: 'eu mesmo' }] },
   { id: 'kj-120', character: '由', onyomi: ['ユ', 'ユウ'], kunyomi: [], meaningPt: 'motivo / razão', jlptLevel: 'N4', strokeCount: 5, examples: [{ japanese: '自由', reading: 'じゆう', meaningPt: 'liberdade' }] },
   { id: 'kj-121', character: '事', onyomi: ['ジ'], kunyomi: ['こと'], meaningPt: 'coisa / assunto', jlptLevel: 'N4', strokeCount: 8, examples: [{ japanese: '仕事', reading: 'しごと', meaningPt: 'trabalho' }] },
@@ -162,20 +162,20 @@ export const kanji: KanjiItem[] = [
   { id: 'kj-129', character: '意', onyomi: ['イ'], kunyomi: [], meaningPt: 'intenção / significado', jlptLevel: 'N4', strokeCount: 13, examples: [{ japanese: '意味', reading: 'いみ', meaningPt: 'significado' }] },
   { id: 'kj-130', character: '味', onyomi: ['ミ'], kunyomi: ['あじ'], meaningPt: 'sabor / significado', jlptLevel: 'N4', strokeCount: 8, examples: [{ japanese: '意味', reading: 'いみ', meaningPt: 'significado' }] },
 
-  // Qualidades e comparações
+  // Qualities and comparisons
   { id: 'kj-131', character: '特', onyomi: ['トク'], kunyomi: [], meaningPt: 'especial', jlptLevel: 'N4', strokeCount: 10, examples: [{ japanese: '特に', reading: 'とくに', meaningPt: 'especialmente' }] },
   { id: 'kj-132', character: '別', onyomi: ['ベツ'], kunyomi: ['わか'], meaningPt: 'separado / diferente', jlptLevel: 'N4', strokeCount: 7, examples: [{ japanese: '別に', reading: 'べつに', meaningPt: 'separadamente' }] },
   { id: 'kj-133', character: '同', onyomi: ['ドウ'], kunyomi: ['おな'], meaningPt: 'mesmo', jlptLevel: 'N4', strokeCount: 6, examples: [{ japanese: '同じ', reading: 'おなじ', meaningPt: 'mesmo' }] },
   { id: 'kj-134', character: '悪', onyomi: ['アク'], kunyomi: ['わる'], meaningPt: 'mau / ruim', jlptLevel: 'N4', strokeCount: 11, examples: [{ japanese: '悪い', reading: 'わるい', meaningPt: 'ruim' }] },
 
-  // Sociedade e lugares
+  // Society and places
   { id: 'kj-135', character: '主', onyomi: ['シュ'], kunyomi: ['おも'], meaningPt: 'principal', jlptLevel: 'N4', strokeCount: 5, examples: [{ japanese: '主人', reading: 'しゅじん', meaningPt: 'marido / dono' }] },
   { id: 'kj-136', character: '世', onyomi: ['セ', 'セイ'], kunyomi: [], meaningPt: 'mundo / geração', jlptLevel: 'N4', strokeCount: 5, examples: [{ japanese: '世界', reading: 'せかい', meaningPt: 'mundo' }] },
   { id: 'kj-137', character: '界', onyomi: ['カイ'], kunyomi: [], meaningPt: 'mundo / limite', jlptLevel: 'N4', strokeCount: 9, examples: [{ japanese: '世界', reading: 'せかい', meaningPt: 'mundo' }] },
   { id: 'kj-138', character: '台', onyomi: ['ダイ'], kunyomi: [], meaningPt: 'plataforma / contador', jlptLevel: 'N4', strokeCount: 5, examples: [{ japanese: '台所', reading: 'だいどころ', meaningPt: 'cozinha' }] },
   { id: 'kj-139', character: '所', onyomi: ['ショ'], kunyomi: ['ところ'], meaningPt: 'lugar', jlptLevel: 'N4', strokeCount: 8, examples: [{ japanese: '台所', reading: 'だいどころ', meaningPt: 'cozinha' }] },
 
-  // Som e cultura
+  // Sound and culture
   { id: 'kj-140', character: '声', onyomi: ['セイ'], kunyomi: ['こえ'], meaningPt: 'voz', jlptLevel: 'N4', strokeCount: 7, examples: [{ japanese: '声', reading: 'こえ', meaningPt: 'voz' }] },
   { id: 'kj-141', character: '音', onyomi: ['オン'], kunyomi: ['おと'], meaningPt: 'som', jlptLevel: 'N4', strokeCount: 9, examples: [{ japanese: '音楽', reading: 'おんがく', meaningPt: 'música' }] },
   { id: 'kj-142', character: '楽', onyomi: ['ガク', 'ラク'], kunyomi: ['たの'], meaningPt: 'divertido / música', jlptLevel: 'N4', strokeCount: 13, examples: [{ japanese: '楽しい', reading: 'たのしい', meaningPt: 'divertido' }] },
@@ -190,5 +190,5 @@ export function getKanjiByLevel(level: KanjiItem['jlptLevel']): KanjiItem[] {
 
 export const KANJI_LEVELS: KanjiItem['jlptLevel'][] = ['N5', 'N4', 'N3', 'N2', 'N1'];
 
-/** Níveis com dados carregados no app (os demais aparecem como "em breve" na UI). */
+/** Levels with data loaded in the app (the rest show as coming soon in the UI). */
 export const KANJI_LEVELS_AVAILABLE: KanjiItem['jlptLevel'][] = ['N5', 'N4'];

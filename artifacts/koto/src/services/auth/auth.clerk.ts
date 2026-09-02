@@ -7,7 +7,7 @@ const ANONYMOUS_USER: AuthUser = {
   isAnonymous: true,
 };
 
-/** Sessão atual do usuário, baseada no Clerk. Enquanto a sessão carrega, retorna o visitante anônimo. */
+/** Current user session, backed by Clerk. While the session loads, returns the anonymous visitor. */
 export function useCurrentUser(): AuthSession {
   const { user, isSignedIn, isLoaded } = useUser();
 

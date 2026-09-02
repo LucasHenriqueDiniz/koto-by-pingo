@@ -7,7 +7,7 @@ interface NavLink {
   href: string;
   label: string;
   icon: MaterialIconName;
-  /** Quando true, ativo apenas em correspondência exata (evita conflito com sub-rotas). */
+  /** When true, active only on an exact match (avoids clashing with sub-routes). */
   exact?: boolean;
 }
 

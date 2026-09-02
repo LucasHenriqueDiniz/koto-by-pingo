@@ -24,7 +24,7 @@ export function TracingMode({ items, showRomajiHint }: TracingModeProps) {
 
   const activeChar = freeMode ? freeChar : (current?.character ?? '');
 
-  // Carrega os traços (usados como guia no canvas só depois da dica revelada, no modo kana)
+  // Loads the strokes (used as a canvas guide only after the hint is revealed, in kana mode)
   useEffect(() => {
     if (!activeChar) return;
     fetchStrokes(activeChar).then(setStrokes);
@@ -56,7 +56,7 @@ export function TracingMode({ items, showRomajiHint }: TracingModeProps) {
 
   return (
     <div className="flex flex-col gap-4 w-full max-w-sm mx-auto">
-      {/* Aviso: aqui é teste de desenho — ordem dos traços fica em Aprender */}
+      {/* Note: this is the drawing test — stroke order lives on the learn page */}
       <Link
         href="/kana/aprender"
         className="flex items-center gap-2 text-xs text-[--color-text-secondary] hover:text-primary transition-colors w-fit"

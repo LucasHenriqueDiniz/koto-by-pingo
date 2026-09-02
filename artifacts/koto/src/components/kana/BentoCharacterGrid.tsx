@@ -14,7 +14,7 @@ function classify(attempts: number, correct: number): MasteryState {
   return 'learning';
 }
 
-/** Grade "bento" de todos os kana do filtro, com estado visual de domínio (dado real). */
+/** Bento grid of every kana in the filter, with a visual mastery state (real data). */
 export function BentoCharacterGrid({ items }: BentoCharacterGridProps) {
   const statsMap = useMemo(() => getKanaStatsMap(), []);
 

@@ -71,7 +71,7 @@ export function DashboardPage() {
   const weakKanaIds = getWeakKana(basicKana.map(k => k.id), 4);
   const nextReviews = weakKanaIds.map(id => basicKana.find(k => k.id === id)).filter((k): k is NonNullable<typeof k> => !!k);
 
-  // Domínio de Kanji — só faz sentido mostrar depois que o usuário passou do N5 em Configurar Kanji.
+  // Kanji mastery — only worth showing once the user has moved past N5 in the kanji settings.
   const showKanjiMastery = kanjiUserLevel !== 'N5';
   const kanjiStatsMap = getKanjiStatsMap();
   const kanjiViewItems = useMemo(() => getKanjiByLevel(kanjiLevelView), [kanjiLevelView]);

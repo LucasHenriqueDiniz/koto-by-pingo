@@ -5,15 +5,15 @@ interface AchievementBadgeProps {
   label: string;
   description?: string;
   locked?: boolean;
-  /** Classe de gradiente do círculo (quando desbloqueado). */
+  /** Gradient class for the circle (when unlocked). */
   gradientClass?: string;
-  /** Cor do ícone (quando desbloqueado). */
+  /** Icon color (when unlocked). */
   iconClass?: string;
 }
 
 /**
- * Selo de conquista. ⚠️ Placeholder visual — o sistema de conquistas ainda não
- * tem lógica real (ver docs/TODO_GAMIFICATION.md).
+ * Achievement badge. ⚠️ Visual placeholder — the achievement system has no real
+ * logic yet (see docs/TODO_GAMIFICATION.md).
  */
 export function AchievementBadge({
   icon,

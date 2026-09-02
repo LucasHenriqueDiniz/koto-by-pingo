@@ -132,12 +132,12 @@
   --destructive: 0 75% 42%;
   --destructive-foreground: 0 0% 100%;
 
-  /* tertiary: #006856 (precisão/sucesso) */
+  /* tertiary: #006856 (accuracy/success) */
   --tertiary: 170 100% 20%;
   --tertiary-foreground: 0 0% 100%;
-  /* cherry-blossom-light: #FFF1F1 (mesma hue do accent, exposta com nome próprio do design) */
+  /* cherry-blossom-light: #FFF1F1 (same hue as accent, exposed under its own design name) */
   --cherry-blossom-light: 0 100% 97%;
-  /* text-secondary: #565e74 (texto secundário do mockup, distinto de --secondary do shadcn) */
+  /* text-secondary: #565e74 (mockup's secondary text, distinct from shadcn's --secondary) */
   --text-secondary: 224 15% 40%;
 
   /* charts */

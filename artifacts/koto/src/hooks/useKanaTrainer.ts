@@ -6,7 +6,7 @@ import { useKanaQueue } from './useKanaQueue';
 
 type FeedbackState = 'idle' | 'correct' | 'wrong';
 
-/** Modo Digitação: mostra o kana, usuário digita o romaji. */
+/** Typing mode: shows the kana, the user types the romaji. */
 export function useKanaTrainer(items: KanaItem[]) {
   const queue = useKanaQueue(items);
   const [feedback, setFeedback] = useState<FeedbackState>('idle');
