@@ -27,7 +27,22 @@ async function authedFetch(path: string, getToken: GetToken, init: RequestInit =
   headers.set('Authorization', `Bearer ${token}`);
   if (init.body) headers.set('Content-Type', 'application/json');
 
-  return fetch(`${API_BASE_URL}${path}`, { ...init, headers });
+  const response = await fetch(`${API_BASE_URL}${path}`, { ...init, headers });
+
+  // A wrong API_BASE_URL does not fail the way a broken request does, and that is the whole reason
+  // this check exists. When the value is empty the request goes to this app's own origin, where the
+  // SPA catch-all answers `200 text/html` for any unmatched path — so `response.ok` is true, every
+  // status check downstream passes, and the failure only surfaces as `Unexpected token '<'` out of
+  // `response.json()`. Naming the cause here costs one header read and saves that hunt.
+  const contentType = response.headers.get('Content-Type') ?? '';
+  if (!contentType.includes('application/json')) {
+    throw new Error(
+      `Expected JSON from ${API_BASE_URL || 'this origin'}${path} but got "${contentType || 'no content type'}" ` +
+        `(HTTP ${response.status}). The API is a separate Worker: set VITE_API_BASE_URL to its URL at build time.`,
+    );
+  }
+
+  return response;
 }
 
 /** Pushes all local progress (kana, vocabulary, mock exams, sessions) to the user's Clerk account. */
