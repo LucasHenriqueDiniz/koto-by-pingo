@@ -11,7 +11,7 @@ on:
 
 jobs:
   check:
-    name: Typecheck & Build
+    name: Workspace Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,8 +27,10 @@ jobs:
       - name: Typecheck libs
         run: pnpm run typecheck:libs
 
-      - name: Typecheck
-        run: pnpm run typecheck
-
-      - name: Build
+      # `build` aqui NÃO duplica o Cloudflare. O Pages publica um único pacote
+      # (artifacts/koto); o script é `typecheck && pnpm -r --if-present run build`,
+      # que alcança os outros 9 do workspace — api-server, mockup-sandbox,
+      # cloudflare, e as libs api-client-react/api-spec/api-zod/db. Nenhum host
+      # compila esses, então este passo é a única coisa que os olha.
+      - name: Typecheck & build workspace
         run: pnpm run build
