@@ -4,9 +4,9 @@ import { MaterialIcon, type MaterialIconName } from '../components/ui/MaterialIc
 import { updatePageSEO } from '../utils/seo';
 
 /**
- * Aulas Extras — material complementar (estilo Cure Dolly) para entender a
- * estrutura real do japonês. ⚠️ Placeholder visual: o conteúdo em vídeo/aula
- * ainda não existe (ver docs/TODO_AULAS_EXTRAS.md).
+ * Extra lessons — supplementary material (Cure Dolly style) for understanding the
+ * real structure of Japanese. ⚠️ Visual placeholder: the video/lesson content does
+ * not exist yet (see docs/TODO_AULAS_EXTRAS.md).
  */
 
 interface Lesson {

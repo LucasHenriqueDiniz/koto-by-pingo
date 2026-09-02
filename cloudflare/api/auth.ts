@@ -1,7 +1,7 @@
 import { verifyToken } from '@clerk/backend';
 import type { Env } from './types';
 
-/** Retorna o clerk_id (sub) do token de sessão, ou null se ausente/inválido. */
+/** Returns the clerk_id (sub) from the session token, or null when absent/invalid. */
 export async function requireUserId(request: Request, env: Env): Promise<string | null> {
   const authHeader = request.headers.get('Authorization');
   if (!authHeader?.startsWith('Bearer ')) return null;
@@ -16,7 +16,7 @@ export async function requireUserId(request: Request, env: Env): Promise<string 
   }
 }
 
-/** Garante que existe uma linha em `users` e `user_progress_summary` para este clerk_id. */
+/** Ensures a row exists in `users` and `user_progress_summary` for this clerk_id. */
 export async function ensureUser(db: D1Database, userId: string, displayName?: string, email?: string): Promise<void> {
   const now = new Date().toISOString();
   const existing = await db.prepare('SELECT id FROM users WHERE id = ?').bind(userId).first();

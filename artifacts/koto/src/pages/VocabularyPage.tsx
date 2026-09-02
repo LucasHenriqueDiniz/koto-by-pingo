@@ -136,7 +136,7 @@ export function VocabularyPage() {
           <>
             <AdPlaceholder slot="banner" />
 
-            {/* Modos de treino — cards estilo Kana */}
+            {/* Training modes — Kana-style cards */}
             <section>
               <h2 className="font-heading text-xl font-bold text-foreground mb-4">Modos de treino</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -215,7 +215,7 @@ export function VocabularyPage() {
               </div>
             </div>
 
-            {/* Hint do modo seleção */}
+            {/* Hint for the word-selection mode */}
             {mode === 'word_selection' && (
               <div className="flex items-center justify-between gap-3 bg-card border border-border rounded-xl px-4 py-2.5">
                 <span className="text-sm font-medium text-foreground">Mostrar tradução como dica</span>
@@ -242,7 +242,7 @@ export function VocabularyPage() {
         )}
       </div>
 
-      {/* Configurar — drawer */}
+      {/* Settings drawer */}
       <Sheet open={showConfig} onOpenChange={setShowConfig}>
         <SheetContent data-testid="vocab-config-drawer">
           <SheetHeader>

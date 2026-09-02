@@ -15,7 +15,7 @@ interface KanaModeComponentProps {
   showRomajiHint?: boolean;
 }
 
-/** Mapa de modo de treino → componente. Usado pela KanaTrainPage para renderizar o modo ativo. */
+/** Training mode → component map. Used by KanaTrainPage to render the active mode. */
 export const KANA_MODE_COMPONENTS: Record<KanaTrainingMode, ComponentType<KanaModeComponentProps>> = {
   typing: TypingMode,
   flashcards: FlashcardsMode,

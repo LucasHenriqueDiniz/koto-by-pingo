@@ -1,6 +1,6 @@
 export type KanaScript = 'hiragana' | 'katakana';
 
-/** Filtro de script usado nas páginas (mantém 'mixed' para hiragana+katakana). */
+/** Script filter used by the pages (keeps 'mixed' for hiragana+katakana). */
 export type KanaType = 'hiragana' | 'katakana' | 'mixed';
 
 export type KanaGroup = 'basic' | 'dakuten' | 'handakuten' | 'yoon';
@@ -26,11 +26,11 @@ export interface KanaItem {
   romaji: string;
   script: KanaScript;
   group: KanaGroup;
-  /** Linha do gojuon (ex: 'a', 'ka'... 'wa', 'n', 'ga'... 'pa', 'ky', 'sh'...). */
+  /** Gojuon row (e.g. 'a', 'ka'... 'wa', 'n', 'ga'... 'pa', 'ky', 'sh'...). */
   row: string;
-  /** Coluna/vogal (ex: 'a','i','u','e','o' ou 'n' para ん/ン). */
+  /** Column/vowel (e.g. 'a','i','u','e','o', or 'n' for ん/ン). */
   column: string;
-  /** ids de kana visualmente ou foneticamente parecidos. */
+  /** ids of kana that look or sound alike. */
   similarTo?: string[];
   examples?: KanaExample[];
 }

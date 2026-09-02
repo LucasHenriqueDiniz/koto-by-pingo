@@ -3,7 +3,7 @@ export interface KanaWord {
   word: string;
   romaji: string;
   meaningPt: string;
-  /** ids de KanaItem (hiragana) que formam a palavra, na ordem correta. */
+  /** KanaItem (hiragana) ids that spell the word, in order. */
   kanaIds: string[];
 }
 

@@ -137,7 +137,7 @@ export function ExamsPage() {
 
         <AdPlaceholder slot="banner" />
 
-        {/* Histórico */}
+        {/* History */}
         {sorted.length > 0 && (
           <section>
             <h3 className="font-heading text-lg font-bold text-foreground mb-4">Histórico de simulados</h3>

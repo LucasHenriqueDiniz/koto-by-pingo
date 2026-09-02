@@ -1,23 +1,25 @@
-# TODO — Aulas Extras (`/aulas`)
+# TODO — Extra lessons (`/aulas`)
 
-Página de material complementar (estilo Cure Dolly) para entender a estrutura real
-do japonês. Hoje é **placeholder visual** — não há conteúdo real (vídeos/aulas) nem
-progresso por aula.
+A page of supplementary material (Cure Dolly style) for understanding the real structure of
+Japanese. Today it is a **visual placeholder** — there is no real content (videos/lessons) and no
+per-lesson progress.
 
-Origem do design: view "Estudo · Curriculum" em `claude-design-refactor/Treino de Kana.dc.html`.
+Design origin: the `Estudo · Curriculum` view in `claude-design-refactor/Treino de Kana.dc.html`.
 
-## Estado atual
-- `src/pages/AulasExtrasPage.tsx` renderiza capítulos/aulas **bloqueados** (locked), com
-  títulos/subtítulos ilustrativos e progresso fixo em 0%.
-- Item de menu "Aulas Extras" no `DesktopSidebar` (ícone `auto_stories`).
+## Current state
+- `src/pages/AulasExtrasPage.tsx` renders chapters/lessons as **locked**, with illustrative
+  titles/subtitles and progress pinned at 0%.
+- A `Aulas Extras` menu item in `DesktopSidebar` (icon `auto_stories`).
 
-## Para implementar de verdade
-1. **Modelo de conteúdo**: criar `src/data/lessons.ts` com `Chapter[] { id, num, title, lessons: Lesson[] }`
-   e `Lesson { id, num, title, subtitle, videoUrl?, durationMin }`.
-2. **Progresso por aula**: nova chave `koto:lessons_progress` (`Record<lessonId, { watched: boolean; watchedAt: string }>`)
-   em `services/progress/progress.local.ts`, com `markLessonWatched(id)` e `getLessonsProgress()`.
-   Critério de "capítulo concluído": todas as aulas assistidas.
-3. **Desbloqueio sequencial**: um capítulo libera quando o anterior é concluído (hoje tudo é `locked`).
-4. **Player**: incorporar vídeo (YouTube/Vimeo) ou material textual por aula.
+## What a real implementation needs
+1. **Content model**: add `src/data/lessons.ts` with `Chapter[] { id, num, title, lessons: Lesson[] }`
+   and `Lesson { id, num, title, subtitle, videoUrl?, durationMin }`.
+2. **Per-lesson progress**: a new `koto:lessons_progress` key
+   (`Record<lessonId, { watched: boolean; watchedAt: string }>`) in
+   `services/progress/progress.local.ts`, with `markLessonWatched(id)` and `getLessonsProgress()`.
+   A chapter counts as completed once every one of its lessons has been watched.
+3. **Sequential unlocking**: a chapter opens up when the previous one is completed (today
+   everything is `locked`).
+4. **Player**: embed the video (YouTube/Vimeo) or the text material, per lesson.
 
-Enquanto não houver conteúdo, manter a página como placeholder honesto ("Em breve").
+Until there is real content, keep the page an honest placeholder ("Em breve" — coming soon).

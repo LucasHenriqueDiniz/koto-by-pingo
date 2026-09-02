@@ -72,7 +72,7 @@ export function KanaTrainPage() {
 
   return (
     <div>
-      {/* Top bar — voltar (encerra a sessão), título do modo, configurar */}
+      {/* Top bar — back (ends the session), mode title, settings */}
       <div className="border-b border-border bg-card/85 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link
@@ -101,13 +101,13 @@ export function KanaTrainPage() {
       <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
         <AdPlaceholder slot="banner" />
 
-        {/* Treino — cartão elevado */}
+        {/* Training — elevated card */}
         <div className="bg-card border border-border rounded-3xl shadow-sm p-8 sm:p-10">
           <ModeComponent key={trainerKey} items={filteredItems} showRomajiHint={showRomajiHint} />
         </div>
       </div>
 
-      {/* Configurar — drawer */}
+      {/* Settings drawer */}
       <Sheet open={showFilters} onOpenChange={setShowFilters}>
         <SheetContent data-testid="kana-train-filters-drawer">
           <SheetHeader>

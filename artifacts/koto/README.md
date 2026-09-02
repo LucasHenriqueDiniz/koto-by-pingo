@@ -1,8 +1,9 @@
 # Koto by Pingo
 
-> Japonês em pequenos treinos diários.
+> "Japonês em pequenos treinos diários." — Japanese in small daily drills.
 
-App web de japonês para brasileiros. Funciona 100% offline, sem backend — todo o progresso fica no `localStorage` do navegador.
+A Japanese web app for Brazilian learners. It works fully offline with no backend — all progress
+lives in the browser's `localStorage`. The interface is pt-BR.
 
 ---
 
@@ -10,114 +11,114 @@ App web de japonês para brasileiros. Funciona 100% offline, sem backend — tod
 
 - React + Vite + TypeScript
 - Tailwind CSS + framer-motion
-- Wouter (roteamento)
-- lucide-react (ícones)
-- Web Speech API (modo Escuta)
+- Wouter (routing)
+- lucide-react (icons)
+- Web Speech API (listening mode)
 
 ---
 
-## Módulos
+## Modules
 
-| Módulo | Descrição |
-|--------|-----------|
-| **Kana** | Trainer de hiragana, katakana e misto |
-| **Vocabulário** | 45 palavras N5 em 4 modos de treino |
-| **Escuta** | Reconhecimento auditivo via Web Speech API |
-| **Simulados** | N5 Mini + N4 Mini com revisão por questão |
-| **Progresso** | Dashboard com estatísticas de kana e vocabulário |
+| Module | Description |
+|--------|-------------|
+| **Kana** | Trainer for hiragana, katakana and both mixed |
+| **Vocabulary** | 45 N5 words across 4 training modes |
+| **Listening** | Audio recognition through the Web Speech API |
+| **Mock exams** | N5 Mini + N4 Mini, with per-question review |
+| **Progress** | Dashboard with kana and vocabulary statistics |
 
 ---
 
-## Modos de vocabulário
+## Vocabulary modes
 
-1. **Flashcards** — Vire o card, avalie acerto/erro
-2. **Seleção de palavras** — Escolha a leitura correta em romaji
-3. **Combinar pares** — Associe palavras japonesas às leituras/significados
-4. **Quiz de tradução** — Escolha o significado correto em português
+1. **Flashcards** — flip the card, mark it right or wrong
+2. **Word selection** — pick the correct romaji reading
+3. **Matching pairs** — match Japanese words to their readings/meanings
+4. **Translation quiz** — pick the correct pt-BR meaning
 
 ---
 
 ## Layout
 
-- **Desktop (>= 1024px):** sidebar fixa à esquerda + área de conteúdo + painel lateral de estudo (xl+)
-- **Tablet:** sidebar oculta, conteúdo centralizado
-- **Mobile (< 768px):** top bar + bottom navigation, sem sidebar
+- **Desktop (>= 1024px):** fixed left sidebar + content area + right study panel (xl+)
+- **Tablet:** sidebar hidden, content centered
+- **Mobile (< 768px):** top bar + bottom navigation, no sidebar
 
 ---
 
-## Regras de AdSense / UX
+## AdSense / UX rules
 
-> **IMPORTANTE:** estas regras devem ser mantidas em qualquer futura integração de anúncios reais.
+> **IMPORTANT:** these rules must hold for any future integration of real ads.
 
-### O que é proibido
+### Forbidden
 
-- ❌ Colocar anúncio **dentro do card de exercício** (flashcard, questão, par)
-- ❌ Colocar anúncio **imediatamente antes ou depois** de botões de ação (Confirmar, Próxima, Acertei, Errei, Iniciar)
-- ❌ Colocar anúncio **entre opções de resposta** em qualquer quiz
-- ❌ Colocar anúncio que **interrompa o fluxo** de uma sessão em andamento
-- ❌ Anúncio flutuante que sobreponha conteúdo de treino
+- ❌ An ad **inside an exercise card** (flashcard, question, matching pair)
+- ❌ An ad **immediately before or after** action buttons (`Confirmar`, `Próxima`, `Acertei`, `Errei`, `Iniciar` — confirm, next, got it right, got it wrong, start)
+- ❌ An ad **between answer options** in any quiz
+- ❌ An ad that **interrupts the flow** of a session in progress
+- ❌ A floating ad overlapping training content
 
-### O que é permitido
+### Allowed
 
-- ✅ Antes de iniciar uma sessão (entre a seleção de filtros e o card)
-- ✅ Depois de completar uma sessão (na tela de resultado)
-- ✅ Na sidebar direita do desktop, com espaçamento seguro (≥ 16px dos cards)
-- ✅ Entre blocos de conteúdo editorial (ex: na página Sobre, entre parágrafos)
-- ✅ No Dashboard, após as estatísticas e antes do botão de reset
+- ✅ Before a session starts (between the filter selection and the card)
+- ✅ After a session completes (on the result screen)
+- ✅ In the desktop right sidebar, with safe spacing (≥ 16px from the cards)
+- ✅ Between editorial content blocks (e.g. on the About page, between paragraphs)
+- ✅ On the dashboard, after the statistics and before the reset button
 
-### Componente
+### Component
 
-Use sempre `<AdPlaceholder slot="banner" />` ou `<AdPlaceholder slot="rectangle" />`.
-Nunca coloque o marcador dentro de `<form>`, `<dialog>` ou qualquer container de questão.
+Always use `<AdPlaceholder slot="banner" />` or `<AdPlaceholder slot="rectangle" />`.
+Never put the marker inside a `<form>`, a `<dialog>`, or any question container.
 
 ---
 
-## Progresso
+## Progress
 
-Todo o acesso ao `localStorage` passa exclusivamente por:
+Every `localStorage` access goes exclusively through:
 
 ```
 src/services/progress/progress.local.ts
 ```
 
-Nenhum componente ou página deve chamar `localStorage` diretamente.
+No component and no page may call `localStorage` directly.
 
-### Critérios de classificação de palavras
+### Word classification criteria
 
-| Classificação | Tentativas | Acerto |
-|--------------|-----------|--------|
-| **Dominada** | ≥ 5 | ≥ 85% |
-| **Problemática** | ≥ 3 | < 60% |
-| **Nunca vista** | 0 | — |
-
----
-
-## Arquitetura futura
-
-Ver documentação técnica em `/docs/`:
-
-| Arquivo | Conteúdo |
-|---------|----------|
-| `TODO_CLERK_AUTH.md` | Plano de autenticação com Clerk |
-| `TODO_CLOUDFLARE_D1.md` | Migração para banco Cloudflare D1 |
-| `TODO_TRACING.md` | Feature de traçado de kana |
-| `TODO_EXAMS.md` | Expansão dos simulados JLPT |
+| Classification | Attempts | Accuracy |
+|----------------|----------|----------|
+| **Mastered** | ≥ 5 | ≥ 85% |
+| **Troublesome** | ≥ 3 | < 60% |
+| **Never seen** | 0 | — |
 
 ---
 
-## Mascote
+## Future architecture
 
-**Pingo-sensei** — pinguim preto, mascote do app.
+See the technical documentation in `/docs/`:
 
-- SVG embutido em 5 variantes: `default`, `kana`, `listening`, `exam`, `progress`
-- Para usar imagem real: adicione `public/brand/pingo.png`
+| File | Content |
+|------|---------|
+| `TODO_CLERK_AUTH.md` | Clerk authentication plan |
+| `TODO_CLOUDFLARE_D1.md` | Migration to the Cloudflare D1 database |
+| `TODO_TRACING.md` | Kana stroke-tracing feature |
+| `TODO_EXAMS.md` | Expansion of the JLPT mock exams |
+
+---
+
+## Mascot
+
+**Pingo-sensei** — a black penguin, the app's mascot.
+
+- Inline SVG in 5 variants: `default`, `kana`, `listening`, `exam`, `progress`
+- To use a real image: add `public/brand/pingo.png`
 
 ---
 
 ## Scripts
 
 ```bash
-pnpm dev      # servidor de desenvolvimento
-pnpm build    # build de produção
-pnpm preview  # preview do build
+pnpm dev      # dev server
+pnpm build    # production build
+pnpm preview  # preview the build
 ```

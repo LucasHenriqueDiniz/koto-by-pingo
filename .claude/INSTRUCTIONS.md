@@ -1,157 +1,157 @@
-# 🇯🇵 Koto by Pingo — Instruções para Agentes
+# 🇯🇵 Koto by Pingo — Instructions for Agents
 
-Guia rápido para agentes IA trabalhando neste projeto.
+Quick guide for AI agents working on this project.
 
 ---
 
-## O que é Koto by Pingo
+## What Koto by Pingo is
 
-App web de aprendizado de japonês para estudantes brasileiros. 100% offline-first com autenticação Clerk opcional.
+A Japanese-learning web app for Brazilian students. Fully offline-first, with optional Clerk authentication.
 
 **Stack:** React 19 + Vite + TypeScript + Tailwind + Wouter + @tanstack/react-query  
-**Banco:** localStorage primary + Cloudflare D1 (opcional, quando logado)  
-**Ícones:** Material Symbols Outlined (removeu lucide-react)
+**Storage:** localStorage as the primary source + Cloudflare D1 (optional, only when signed in)  
+**Icons:** Material Symbols Outlined (lucide-react was removed)
 
 ---
 
-## Hard Constraints — Nunca viole
+## Hard constraints — never violate
 
-1. **localStorage via serviço only**
+1. **localStorage only through the service**
    ```js
    ✅ import { recordKanaAttempt } from '../services/progress/progress.local';
-   ❌ localStorage.setItem(...)  // proibido em componentes
+   ❌ localStorage.setItem(...)  // forbidden in components
    ```
 
-2. **Wouter, não React Router**
+2. **Wouter, not React Router**
    ```tsx
    ✅ import { Link, useLocation } from 'wouter';
-   ❌ react-router-dom  // proibido
+   ❌ react-router-dom  // forbidden
    ```
 
-3. **Sem `any` implícito** — TypeScript estrito
+3. **No implicit `any`** — TypeScript is strict
    ```bash
-   pnpm --filter @workspace/koto run build  # deve passar
+   pnpm --filter @workspace/koto run build  # must pass
    ```
 
-4. **AdSense: não colocar dentro de cards** (flashcard, questão)
-   - ✅ Antes/depois de sessão, sidebar direita, entre blocos editoriais
-   - ❌ Entre opções, adjacente a botões, dentro de exercícios
+4. **AdSense: never inside a card** (flashcard, question)
+   - ✅ Before/after a session, right sidebar, between editorial blocks
+   - ❌ Between answer options, next to action buttons, inside exercises
 
-5. **Clerk + D1 já estão integrados** — não crie segundo serviço de auth
+5. **Clerk + D1 are already wired** — do not add a second auth service
 
 ---
 
-## Estrutura de pastas (rápido)
+## Folder structure (short version)
 
 ```
 artifacts/koto/src/
-├── App.tsx                    # Rotas (Wouter)
-├── pages/                     # 6 páginas de Kana + 4 de Vocabulário + Simulados + Dashboard
+├── App.tsx                    # Routes (Wouter)
+├── pages/                     # 6 Kana pages + 4 Vocabulary pages + mock exams + dashboard
 ├── components/
-│   ├── kana/modes/            # 7 modos de treino (typing, flashcards, multiple_choice, etc)
+│   ├── kana/modes/            # 7 training modes (typing, flashcards, multiple_choice, etc)
 │   ├── layout/                # AppLayout, DesktopSidebar, MobileBottomNav
-│   └── ui/                    # Shadcn + componentes custom
-├── services/progress/         # ÚNICA fonte de localStorage
+│   └── ui/                    # Shadcn + custom components
+├── services/progress/         # THE ONLY localStorage entry point
 ├── data/
-│   ├── kana.ts               # 46 hiragana + 46 katakana + variações
-│   ├── vocabulary.ts         # 45 palavras N5 em 9 categorias
-│   └── mockExams.ts          # Simulados N5/N4
+│   ├── kana.ts               # 46 hiragana + 46 katakana + variants
+│   ├── vocabulary.ts         # 45 N5 words across 9 categories
+│   └── mockExams.ts          # N5/N4 mock exams
 └── types/                    # KanaItem, VocabularyWord, Attempt, etc
 ```
 
-**CLAUDE.md no repo** tem estrutura completa.
+**`CLAUDE.md` at the repo root** carries the full structure.
 
 ---
 
-## Fluxo padrão de trabalho
+## Standard workflow
 
-1. **Clonar / receber task**
+1. **Clone / pick up a task**
    ```bash
    pnpm install
-   pnpm --filter @workspace/koto run dev  # porta 5173
+   pnpm --filter @workspace/koto run dev  # port 5173
    ```
 
-2. **Ler contexto**
-   - Ler `CLAUDE.md` (hard constraints)
-   - Ler `AGENT_REFERENCE.md` (tasks específicas)
-   - Abrir preview do app em browser
+2. **Read the context**
+   - Read `CLAUDE.md` (hard constraints)
+   - Read `AGENT_REFERENCE.md` (specific tasks)
+   - Open the app preview in a browser
 
-3. **Implementar**
-   - Editar código conforme instrução
-   - Seguir convenções (ver AGENT_REFERENCE.md)
-   - Usar serviços de progress para localStorage
+3. **Implement**
+   - Edit the code as instructed
+   - Follow the conventions (see AGENT_REFERENCE.md)
+   - Go through the progress services for localStorage
 
-4. **Validar**
+4. **Validate**
    ```bash
    ./.claude/skills/validate-koto-build.sh  # build + types + files
    pnpm --filter @workspace/koto run build  # full build
    ```
 
-5. **Commit + Push**
+5. **Commit + push**
    ```bash
    git add artifacts/koto/
-   git commit -m "Feature: descrição breve"
+   git commit -m "Feature: short description"
    git push origin main
    ```
 
-6. **Audit opcional** (PRs grandes)
+6. **Optional audit** (large PRs)
    ```bash
    ./.claude/skills/full-audit.sh draft  # local checks
    ```
 
 ---
 
-## Tasks mais comuns
+## Most common tasks
 
-| Task | Arquivos | Comando |
-|------|----------|---------|
-| Adicionar palavra | `data/vocabulary.ts` | `pnpm run dev` → testar em `/vocabulario/treinar` |
-| Adicionar questão | `data/mockExams.ts` | `pnpm run dev` → testar em `/simulados` |
-| Novo modo de treino | `components/kana/modes/` | criar arquivo + registrar em `index.ts` |
-| Ajustar critérios | `services/progress/progress.local.ts` | validar getWeakKana, getMasteredKana |
-| Adicionar página | `pages/NomePage.tsx` → `App.tsx` | adicionar rota + nav |
+| Task | Files | Command |
+|------|-------|---------|
+| Add a word | `data/vocabulary.ts` | `pnpm run dev` → try it at `/vocabulario/treinar` |
+| Add a question | `data/mockExams.ts` | `pnpm run dev` → try it at `/simulados` |
+| New training mode | `components/kana/modes/` | create the file + register it in `index.ts` |
+| Adjust the criteria | `services/progress/progress.local.ts` | check getWeakKana, getMasteredKana |
+| Add a page | `pages/SomePage.tsx` → `App.tsx` | add the route + the nav entry |
 
-Ver `AGENT_REFERENCE.md` para detalhes.
+See `AGENT_REFERENCE.md` for the details.
 
 ---
 
-## Validação antes de commit
+## Validation before committing
 
 ```bash
-# 1. Build passa sem erros TS
+# 1. The build passes with no TS errors
 pnpm --filter @workspace/koto run build
 
-# 2. Dev server roda
+# 2. The dev server runs
 pnpm --filter @workspace/koto run dev
 
-# 3. Testar feature no browser (http://localhost:5173)
+# 3. Try the feature in the browser (http://localhost:5173)
 
-# 4. Validar com script
+# 4. Validate with the script
 ./.claude/skills/validate-koto-build.sh
 ```
 
 ---
 
-## SEO e AdSense
+## SEO and AdSense
 
-- **Meta tags:** `updatePageSEO(title, description)` em toda página
-- **AdPlaceholder:** Usar com cuidado (ver CLAUDE.md, seção "Regras de AdSense")
-- **External audits:** Ver `EXTERNAL_SKILLS.md` (Claude SEO, AdSense Auditor)
+- **Meta tags:** `updatePageSEO(title, description)` on every page
+- **AdPlaceholder:** use with care (see CLAUDE.md, section "AdSense rules")
+- **External audits:** see `EXTERNAL_SKILLS.md` (Claude SEO, AdSense Auditor)
 
 ---
 
-## Referências rápidas
+## Quick references
 
-- **CLAUDE.md** — Tudo sobre o projeto (stack, regras, rotas, tipos)
-- **AGENT_REFERENCE.md** — Tasks com exact steps
+- **CLAUDE.md** — everything about the project (stack, rules, routes, types)
+- **AGENT_REFERENCE.md** — tasks with exact steps
 - **EXTERNAL_SKILLS.md** — Claude SEO + AdSense Auditor
-- **settings.json** — Config do projeto
-- **Docs/** — TODO_CLERK_AUTH.md, TODO_CLOUDFLARE_D1.md, TODO_TRACING.md, etc
+- **settings.json** — project config
+- **docs/** — TODO_CLERK_AUTH.md, TODO_CLOUDFLARE_D1.md, TODO_TRACING.md, etc
 
 ---
 
-## Contato / Ajuda
+## Contact / help
 
-Leia AGENT_REFERENCE.md para task específica.  
-Leia CLAUDE.md para hard constraints e convenções.  
-Rode `./.claude/skills/validate-koto-build.sh` antes de commit.
+Read AGENT_REFERENCE.md for a specific task.  
+Read CLAUDE.md for the hard constraints and conventions.  
+Run `./.claude/skills/validate-koto-build.sh` before committing.

@@ -71,7 +71,7 @@ export function DashboardPage() {
   const weakKanaIds = getWeakKana(basicKana.map(k => k.id), 4);
   const nextReviews = weakKanaIds.map(id => basicKana.find(k => k.id === id)).filter((k): k is NonNullable<typeof k> => !!k);
 
-  // Domínio de Kanji — só faz sentido mostrar depois que o usuário passou do N5 em Configurar Kanji.
+  // Kanji mastery — only worth showing once the user has moved past N5 in the kanji settings.
   const showKanjiMastery = kanjiUserLevel !== 'N5';
   const kanjiStatsMap = getKanjiStatsMap();
   const kanjiViewItems = useMemo(() => getKanjiByLevel(kanjiLevelView), [kanjiLevelView]);
@@ -115,7 +115,7 @@ export function DashboardPage() {
 
         {/* Stats row */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {/* Kana dominados — REAL */}
+          {/* Mastered kana — REAL */}
           <div className="bg-card border border-border rounded-2xl p-5 flex flex-col gap-1">
             <MaterialIcon name="check_circle" filled size={24} className="text-primary" />
             <div className="flex items-baseline gap-1 mt-1">
@@ -126,7 +126,7 @@ export function DashboardPage() {
             <span className="text-[11px] font-semibold text-[hsl(var(--tertiary))] mt-1">{masteryPct}% do total completo</span>
           </div>
 
-          {/* Kanji dominados — REAL */}
+          {/* Mastered kanji — REAL */}
           <div className="bg-card border border-border rounded-2xl p-5 flex flex-col gap-1">
             <MaterialIcon name="language" filled size={24} className="text-primary" />
             <div className="flex items-baseline gap-1 mt-1">
@@ -137,7 +137,7 @@ export function DashboardPage() {
             <span className="text-[11px] font-semibold text-[hsl(var(--tertiary))] mt-1">{kanjiStats.seen} já vistos</span>
           </div>
 
-          {/* Vocabulário — REAL */}
+          {/* Vocabulary — REAL */}
           <div className="bg-card border border-border rounded-2xl p-5 flex flex-col gap-1">
             <MaterialIcon name="menu_book" filled size={24} className="text-primary" />
             <div className="flex items-baseline gap-1 mt-1">
@@ -148,7 +148,7 @@ export function DashboardPage() {
             <span className="text-[11px] font-semibold text-[hsl(var(--tertiary))] mt-1">{vocabStats.seen} já vistas</span>
           </div>
 
-          {/* Atividade da semana — REAL */}
+          {/* Weekly activity — REAL */}
           <div className="bg-card border border-border rounded-2xl p-5 flex flex-col gap-1">
             <MaterialIcon name="schedule" filled size={24} className="text-primary" />
             <div className="flex items-baseline gap-1 mt-1">
@@ -269,7 +269,7 @@ export function DashboardPage() {
           </div>
         </section>
 
-        {/* Kanji mastery — só aparece depois que o usuário avança além do N5 */}
+        {/* Kanji mastery — only shown once the user has moved past N5 */}
         {showKanjiMastery && (
           <section className="bg-card border border-border rounded-2xl p-7">
             <div className="flex items-start justify-between gap-3 mb-4 flex-wrap">
@@ -375,7 +375,7 @@ export function DashboardPage() {
 
         <AdPlaceholder slot="banner" />
 
-        {/* Achievements — PLACEHOLDER (ver docs/TODO_GAMIFICATION.md) */}
+        {/* Achievements — PLACEHOLDER (see docs/TODO_GAMIFICATION.md) */}
         <section className="bg-card border border-border rounded-2xl p-7">
           <div className="flex items-center justify-between mb-5">
             <div>

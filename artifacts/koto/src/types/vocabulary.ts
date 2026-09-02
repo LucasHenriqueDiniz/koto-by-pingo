@@ -22,7 +22,7 @@ export interface VocabularyWord {
   level: string;
   tags?: string[];
   examples?: VocabularyExample[];
-  /** ids em data/kanji.ts dos kanji usados nesta palavra, quando já cadastrados. */
+  /** data/kanji.ts ids of the kanji used in this word, when already registered. */
   kanjiIds?: string[];
 }
 

@@ -1,32 +1,32 @@
-# Imagem do mascote Pingo
+# The Pingo mascot image
 
-## Como usar o mascote real
+## How to use the real mascot
 
-Coloque a imagem do Pingo-sensei neste diretório com o nome exato:
+Drop the Pingo-sensei image in this directory under exactly this name:
 
 ```
 public/brand/pingo.png
 ```
 
-O componente `PingoMascot` tentará carregar `/brand/pingo.png` automaticamente.
-Se a imagem não existir ou falhar ao carregar, ele usará o placeholder SVG embutido.
+The `PingoMascot` component tries to load `/brand/pingo.png` on its own. When the image is missing
+or fails to load, it falls back to the inline SVG placeholder.
 
-## Referência visual
+## Visual reference
 
-O mascote Pingo é um pinguim preto da marca Pingo Concursos.
-Veja referências em: https://lucashdo.com/gallery
+The Pingo mascot is a black penguin, from the Pingo Concursos brand.
+References: https://lucashdo.com/gallery
 
-## Formatos recomendados
+## Recommended format
 
-- Formato: PNG com fundo transparente
-- Tamanho sugerido: pelo menos 400×400px
-- Fundo: transparente
+- Format: PNG with a transparent background
+- Suggested size: at least 400×400px
+- Background: transparent
 
-## Variantes suportadas
+## Supported variants
 
-O componente aceita as seguintes variantes:
-- `default` — pose padrão
-- `kana` — com faixa hachimaki e flashcard
-- `listening` — com fone de ouvido
-- `exam` — com faixa hachimaki
-- `progress` — com lápis
+The component accepts these variants:
+- `default` — the default pose
+- `kana` — with a hachimaki headband and a flashcard
+- `listening` — with headphones
+- `exam` — with a hachimaki headband
+- `progress` — with a pencil

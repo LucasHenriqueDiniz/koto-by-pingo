@@ -7,7 +7,7 @@ export type KanjiTrainingMode =
   | 'tracing';
 
 export interface KanjiExampleWord {
-  /** id em vocabulary.ts, quando a palavra já existe lá. */
+  /** id in vocabulary.ts, when the word already exists there. */
   vocabId?: string;
   japanese: string;
   reading: string;
@@ -15,18 +15,18 @@ export interface KanjiExampleWord {
 }
 
 export interface KanjiItem {
-  /** ex: 'kj-001' — sequencial, não derivado do caractere (kanji têm variantes/compostos que podem colidir). */
+  /** e.g. 'kj-001' — sequential, not derived from the character (kanji have variants/compounds that can collide). */
   id: string;
   character: string;
-  /** Múltiplas leituras on'yomi (em katakana, convenção tradicional). */
+  /** Multiple on'yomi readings (in katakana, by traditional convention). */
   onyomi: string[];
-  /** Múltiplas leituras kun'yomi (em hiragana). */
+  /** Multiple kun'yomi readings (in hiragana). */
   kunyomi: string[];
   meaningPt: string;
   jlptLevel: KanjiJlptLevel;
   strokeCount?: number;
-  /** ids em vocabulary.ts, só quando o kanji já aparece numa palavra cadastrada. */
+  /** ids in vocabulary.ts, only when the kanji already appears in a registered word. */
   exampleWordIds?: string[];
-  /** Fallback inline quando não há entry em vocabulary.ts ainda. */
+  /** Inline fallback when there is no vocabulary.ts entry yet. */
   examples?: KanjiExampleWord[];
 }

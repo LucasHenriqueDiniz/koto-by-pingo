@@ -1,21 +1,22 @@
-# TODO — Gamificação (Streak, XP/Nível, Conquistas)
+# TODO — Gamification (streak, XP/level, achievements)
 
-> **Status:** ❌ não implementado. A UI já existe como **placeholder visual** (criada no
-> refactor de design de 2026-06). Os números exibidos (ofensiva, XP, "Top 5%", conquistas,
-> metas semanais) são fixos/mockados. Este documento descreve o que falta para torná-los reais.
+> **Status:** ❌ not implemented. The UI already exists as a **visual placeholder** (built during
+> the 2026-06 design refactor). The numbers on screen (streak, XP, "Top 5%", achievements, weekly
+> goals) are hard-coded mocks. This document describes what is missing to make them real.
 
-A regra do projeto continua valendo: **todo estado persistente passa por
-`src/services/progress/progress.local.ts`** (prefixo `koto:`). Não criar serviço de
-sync/auth paralelo — quando houver backend, estender `progress.remote.ts`.
+The project rule still holds: **all persistent state goes through
+`src/services/progress/progress.local.ts`** (prefix `koto:`). Do not add a parallel sync/auth
+service — when there is a backend, extend `progress.remote.ts`.
 
 ---
 
-## 1. Streak / Ofensiva diária
+## 1. Daily streak
 
-**Onde aparece (placeholder):** `src/pages/DashboardPage.tsx` (card "Ofensiva Atual", mostra `0`).
+**Where it shows (placeholder):** `src/pages/DashboardPage.tsx` (the `Ofensiva Atual` card —
+"current streak" — showing `0`).
 
-**Implementar:**
-- Tipo em `src/services/progress/progress.types.ts`:
+**To implement:**
+- A type in `src/services/progress/progress.types.ts`:
   ```ts
   export interface StreakRecord {
     currentStreak: number;
@@ -23,73 +24,75 @@ sync/auth paralelo — quando houver backend, estender `progress.remote.ts`.
     lastActiveDate: string; // YYYY-MM-DD
   }
   ```
-- Nova chave localStorage: `koto:streak`.
-- Função `recordDailyActivity()` em `progress.local.ts`, chamada dentro de
-  `recordKanaAttempt`, `recordWordAttempt` e na conclusão de simulado:
-  - se `lastActiveDate === hoje` → não faz nada;
-  - se `=== ontem` → `currentStreak += 1`;
-  - senão → `currentStreak = 1`;
-  - atualizar `longestStreak` e `lastActiveDate`.
-- Expor `getStreak(): StreakRecord` e consumir no card do Dashboard.
+- A new localStorage key: `koto:streak`.
+- A `recordDailyActivity()` function in `progress.local.ts`, called from within
+  `recordKanaAttempt`, `recordWordAttempt` and on mock-exam completion:
+  - if `lastActiveDate === today` → do nothing;
+  - if `=== yesterday` → `currentStreak += 1`;
+  - otherwise → `currentStreak = 1`;
+  - update `longestStreak` and `lastActiveDate`.
+- Expose `getStreak(): StreakRecord` and read it from the dashboard card.
 
 ---
 
-## 2. XP / Nível
+## 2. XP / level
 
-**Onde aparece (placeholder):** `src/pages/DashboardPage.tsx` (card "Nível do Aprendizado",
-barra de XP e selo "Top 5% este mês").
+**Where it shows (placeholder):** `src/pages/DashboardPage.tsx` (the `Nível do Aprendizado` card —
+"learning level" — with the XP bar and the `Top 5% este mês` badge, "top 5% this month").
 
-**Implementar:**
-- Nova chave: `koto:xp` → `{ totalXp: number; level: number }`.
-- Fórmula de XP por ação (sugestão): +10 acerto, +2 erro, +50 simulado concluído.
-- Curva de nível por thresholds progressivos (ex.: nível N exige `N * 150` XP acumulado).
-- Conceder XP nos mesmos pontos de registro de progresso (kana/vocab/exam).
-- Componente `src/components/ui/LevelCard.tsx` pode ser extraído do bloco inline atual.
+**To implement:**
+- A new key: `koto:xp` → `{ totalXp: number; level: number }`.
+- An XP formula per action (suggestion): +10 for a correct answer, +2 for a wrong one, +50 for a
+  completed mock exam.
+- A level curve of progressive thresholds (e.g. level N requires `N * 150` accumulated XP).
+- Award XP at the same points where progress is recorded (kana/vocab/exam).
+- A `src/components/ui/LevelCard.tsx` component could be extracted from the current inline block.
 
-**⚠️ Selo "Top 5% este mês":** é comparativo entre usuários → **exige dados agregados de
-backend**, fora do escopo local-first atual. Mantido como placeholder fixo por decisão do
-produto. Ao implementar, ou (a) ligar a um endpoint de ranking no Worker/D1, ou (b) trocar
-por métrica não-comparativa (ex.: "melhor semana sua até agora").
+**⚠️ The `Top 5% este mês` badge:** it compares users against each other, so it **requires
+aggregated backend data** and sits outside the current local-first scope. It stays a fixed
+placeholder by product decision. When implementing, either (a) hook it to a ranking endpoint on the
+Worker/D1, or (b) swap it for a non-comparative metric (e.g. "your best week so far").
 
 ---
 
-## 3. Conquistas / Achievements
+## 3. Achievements
 
-**Onde aparece (placeholder):** `src/pages/DashboardPage.tsx` (grid de `AchievementBadge`,
-todos `locked`) e `src/pages/KanaTrainPage.tsx` (card "Próxima recompensa").
-Componente pronto: `src/components/ui/AchievementBadge.tsx`.
+**Where it shows (placeholder):** `src/pages/DashboardPage.tsx` (the `AchievementBadge` grid, all
+`locked`) and `src/pages/KanaTrainPage.tsx` (the `Próxima recompensa` card — "next reward").
+The component already exists: `src/components/ui/AchievementBadge.tsx`.
 
-**Implementar:**
-- Catálogo em `src/data/achievements.ts`:
+**To implement:**
+- A catalogue in `src/data/achievements.ts`:
   ```ts
   export interface Achievement {
     id: string;
     label: string;
     description: string;
     icon: MaterialIconName;
-    /** Avalia o progresso atual e diz se está desbloqueada. */
+    /** Evaluates the current progress and says whether this is unlocked. */
     isUnlocked: (ctx: AchievementContext) => boolean;
   }
   ```
-- Nova chave: `koto:achievements` → `Record<achievementId, { unlockedAt: string }>`.
-- Avaliar condições após cada registro de progresso; persistir desbloqueios.
-- Exemplos de condição: "domine todo o hiragana básico", "ofensiva de 7 dias",
-  "100% em um simulado".
+- A new key: `koto:achievements` → `Record<achievementId, { unlockedAt: string }>`.
+- Evaluate the conditions after each progress record; persist the unlocks.
+- Example conditions: "master all of the basic hiragana", "a 7-day streak",
+  "100% on a mock exam".
 
 ---
 
-## 4. Metas semanais
+## 4. Weekly goals
 
-**Onde aparece (placeholder):** `src/pages/DashboardPage.tsx` (card "Metas Semanais", barras zeradas).
+**Where it shows (placeholder):** `src/pages/DashboardPage.tsx` (the `Metas Semanais` card —
+"weekly goals" — with the bars at zero).
 
-**Implementar:** definir metas (kana novos, minutos de estudo, revisões) configuráveis em
-`src/services/settings/settings.local.ts` (já existe `dailyGoalMinutes`) e calcular o
-progresso da semana a partir dos `attempts[]` + sessões.
+**To implement:** define the goals (new kana, study minutes, reviews) as configurable in
+`src/services/settings/settings.local.ts` (`dailyGoalMinutes` already exists) and compute the
+week's progress from `attempts[]` + the sessions.
 
 ---
 
-## ✅ Já é real (não é gamificação)
+## ✅ Already real (and not gamification)
 
-- **Atividade Semanal** (`WeeklyActivityChart`): usa `getWeeklyActivity()` em
-  `progress.local.ts`, agregando `attempts[].timestamp` reais de kana + vocabulário.
-- **Precisão Global / por Categoria**: `getKanaStats()`, `getKanaGroupStats()`, `getVocabStats()`.
+- **Weekly activity** (`WeeklyActivityChart`): uses `getWeeklyActivity()` in `progress.local.ts`,
+  aggregating real `attempts[].timestamp` values from kana + vocabulary.
+- **Global / per-category accuracy**: `getKanaStats()`, `getKanaGroupStats()`, `getVocabStats()`.

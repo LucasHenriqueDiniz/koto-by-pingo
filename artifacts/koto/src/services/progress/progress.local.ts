@@ -69,7 +69,7 @@ export function getKanaAccuracy(): number {
   return Math.round((counted.filter(a => a.correct).length / counted.length) * 100);
 }
 
-/** Per-kana stats map: kanaId → { attempts, correct } (tentativas puladas não contam). */
+/** Per-kana stats map: kanaId → { attempts, correct } (skipped attempts do not count). */
 export function getKanaStatsMap(): Record<string, { attempts: number; correct: number }> {
   const { attempts } = getKanaProgress();
   const map: Record<string, { attempts: number; correct: number }> = {};
@@ -82,7 +82,7 @@ export function getKanaStatsMap(): Record<string, { attempts: number; correct: n
   return map;
 }
 
-/** Per-kana skip count: kanaId → número de vezes pulado. */
+/** Per-kana skip count: kanaId → number of times skipped. */
 export function getKanaSkipMap(): Record<string, number> {
   const { attempts } = getKanaProgress();
   const map: Record<string, number> = {};
@@ -92,7 +92,7 @@ export function getKanaSkipMap(): Record<string, number> {
   return map;
 }
 
-/** Estatísticas detalhadas de um caractere (tentativas, acertos, erros, pulos, precisão). */
+/** Detailed stats for one character (attempts, correct, wrong, skips, accuracy). */
 export function getKanaCharacterStats(kanaId: string): KanaCharacterStats {
   const stats = getKanaStatsMap()[kanaId];
   const attempts = stats?.attempts ?? 0;
@@ -107,7 +107,7 @@ export function getKanaCharacterStats(kanaId: string): KanaCharacterStats {
   };
 }
 
-/** Taxa de acerto agregada por grupo (basic/dakuten/handakuten/yoon). */
+/** Accuracy aggregated by group (basic/dakuten/handakuten/yoon). */
 export function getKanaGroupStats(): KanaGroupStats[] {
   const statsMap = getKanaStatsMap();
   const groupOf = new Map(allKana.map(k => [k.id, k.group]));
@@ -134,7 +134,7 @@ export function getKanaGroupStats(): KanaGroupStats[] {
   }));
 }
 
-/** Reseta apenas o progresso de kana (mantém vocabulário, simulados e sessões). */
+/** Resets kana progress only (keeps vocabulary, mock exams and sessions). */
 export function resetKanaProgress(): void {
   storageSet(KEYS.KANA, { attempts: [], lastUpdated: new Date().toISOString() });
 }
@@ -211,7 +211,7 @@ export function recordKanjiAttempt(
   storageSet(KEYS.KANJI, progress);
 }
 
-/** Per-kanji stats map: kanjiId → { attempts, correct } (tentativas puladas não contam). */
+/** Per-kanji stats map: kanjiId → { attempts, correct } (skipped attempts do not count). */
 export function getKanjiStatsMap(): Record<string, { attempts: number; correct: number }> {
   const { attempts } = getKanjiProgress();
   const map: Record<string, { attempts: number; correct: number }> = {};
@@ -224,7 +224,7 @@ export function getKanjiStatsMap(): Record<string, { attempts: number; correct: 
   return map;
 }
 
-/** Per-kanji skip count: kanjiId → número de vezes pulado. */
+/** Per-kanji skip count: kanjiId → number of times skipped. */
 export function getKanjiSkipMap(): Record<string, number> {
   const { attempts } = getKanjiProgress();
   const map: Record<string, number> = {};
@@ -234,7 +234,7 @@ export function getKanjiSkipMap(): Record<string, number> {
   return map;
 }
 
-/** Estatísticas detalhadas de um kanji (tentativas, acertos, erros, pulos, precisão). */
+/** Detailed stats for one kanji (attempts, correct, wrong, skips, accuracy). */
 export function getKanjiCharacterStats(kanjiId: string): KanjiCharacterStats {
   const stats = getKanjiStatsMap()[kanjiId];
   const attempts = stats?.attempts ?? 0;
@@ -249,7 +249,7 @@ export function getKanjiCharacterStats(kanjiId: string): KanjiCharacterStats {
   };
 }
 
-/** Taxa de acerto agregada por nível JLPT. */
+/** Accuracy aggregated by JLPT level. */
 export function getKanjiLevelStats(): KanjiLevelStats[] {
   const statsMap = getKanjiStatsMap();
   const levelOf = new Map(kanji.map(k => [k.id, k.jlptLevel]));
@@ -277,7 +277,7 @@ export function getKanjiLevelStats(): KanjiLevelStats[] {
   }));
 }
 
-/** Reseta apenas o progresso de kanji (mantém kana, vocabulário, simulados e sessões). */
+/** Resets kanji progress only (keeps kana, vocabulary, mock exams and sessions). */
 export function resetKanjiProgress(): void {
   storageSet(KEYS.KANJI, { attempts: [], lastUpdated: new Date().toISOString() });
 }
@@ -512,23 +512,23 @@ export function getProgressSummary() {
   };
 }
 
-// ---------- ATIVIDADE SEMANAL (dado real derivado dos attempts) ----------
+// ---------- WEEKLY ACTIVITY (real data derived from attempts) ----------
 export interface DailyActivity {
-  /** Data ISO (YYYY-MM-DD) do dia. */
+  /** ISO date (YYYY-MM-DD) of the day. */
   date: string;
-  /** Rótulo curto pt-BR do dia da semana (Seg, Ter...). */
+  /** Short pt-BR weekday label, as rendered (`Seg`, `Ter`, ...). */
   label: string;
-  /** Total de tentativas (kana + vocabulário) registradas no dia. */
+  /** Total attempts (kana + vocabulary) recorded on that day. */
   count: number;
-  /** Indica se é o dia de hoje. */
+  /** Whether this day is today. */
   isToday: boolean;
 }
 
 const WEEKDAY_LABELS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
 /**
- * Atividade dos últimos 7 dias (incluindo hoje), agregando tentativas de kana e
- * vocabulário por data local. Dado 100% real — não depende de gamificação.
+ * Activity for the last 7 days (today included), aggregating kana and vocabulary
+ * attempts by local date. Fully real data — it does not depend on gamification.
  */
 export function getWeeklyActivity(): DailyActivity[] {
   const kana = getKanaProgress().attempts;
@@ -569,8 +569,8 @@ export interface HeatmapDay {
 }
 
 /**
- * Calendário de atividade das últimas N semanas (seg–dom), agregando tentativas
- * de kana e vocabulário por data local. Dado 100% real — não depende de gamificação.
+ * Activity calendar for the last N weeks (Mon–Sun), aggregating kana and
+ * vocabulary attempts by local date. Fully real data — it does not depend on gamification.
  */
 export function getActivityHeatmap(weeks = 10): HeatmapDay[][] {
   const kana = getKanaProgress().attempts;
@@ -590,7 +590,7 @@ export function getActivityHeatmap(weeks = 10): HeatmapDay[][] {
 
   const today = new Date();
   const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-  // Segunda-feira da semana atual.
+  // Monday of the current week.
   const mondayOffset = (today.getDay() + 6) % 7;
   const currentMonday = new Date(today);
   currentMonday.setDate(today.getDate() - mondayOffset);
@@ -611,7 +611,7 @@ export function getActivityHeatmap(weeks = 10): HeatmapDay[][] {
   return result;
 }
 
-// ---------- TRAÇADO (placeholder, ver docs/TODO_TRACING.md) ----------
+// ---------- TRACING (placeholder, see docs/TODO_TRACING.md) ----------
 export function getTracingPracticeMap(): Record<string, number> {
   return storageGet<Record<string, number>>(KEYS.TRACING) ?? {};
 }
@@ -627,8 +627,8 @@ export function resetAllProgress(): void {
   storageClear();
 }
 
-// ---------- SYNC REMOTO ----------
-/** Indica se o progresso local já foi enviado para a conta na nuvem (D1). */
+// ---------- REMOTE SYNC ----------
+/** Whether local progress has already been pushed to the cloud account (D1). */
 export function hasSyncedToRemote(): boolean {
   return storageGet<boolean>(KEYS.REMOTE_SYNC) ?? false;
 }

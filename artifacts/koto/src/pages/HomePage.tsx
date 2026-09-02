@@ -46,7 +46,7 @@ export function HomePage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-7">
-      {/* Saudação */}
+      {/* Greeting */}
       <motion.div
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
@@ -56,7 +56,7 @@ export function HomePage() {
         <div>
           <h1 className="font-heading text-2xl md:text-3xl font-extrabold text-foreground mb-2">Olá! Bom trabalho 🌸</h1>
           <div className="flex items-center gap-2.5 flex-wrap">
-            {/* Placeholder de nível/ofensiva — ver docs/TODO_GAMIFICATION.md */}
+            {/* Level/streak placeholder — see docs/TODO_GAMIFICATION.md */}
             <span className="bg-accent text-primary text-xs font-bold px-3 py-1 rounded-full border border-primary/30">Nível não definido</span>
             <span className="flex items-center gap-1.5 text-[--color-text-secondary] text-sm">
               <MaterialIcon name="local_fire_department" filled size={18} className="text-primary" />
@@ -72,11 +72,11 @@ export function HomePage() {
         </Link>
       </motion.div>
 
-      {/* Grid principal */}
+      {/* Main grid */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5 items-start">
-        {/* Coluna esquerda */}
+        {/* Left column */}
         <div className="flex flex-col gap-5">
-          {/* Continue de onde parou (progresso real de kana) */}
+          {/* Pick up where you left off (real kana progress) */}
           <div className="relative overflow-hidden bg-primary rounded-2xl p-7 text-primary-foreground flex items-center gap-6">
             <div className="absolute -right-5 -bottom-8 font-japanese font-bold text-[160px] leading-none opacity-10 pointer-events-none select-none">さ</div>
             <div className="flex-1 relative z-10 min-w-0">
@@ -98,7 +98,7 @@ export function HomePage() {
             </Link>
           </div>
 
-          {/* Acesso rápido */}
+          {/* Quick access */}
           <div>
             <div className="text-xs font-bold text-[--color-text-secondary] uppercase tracking-wider mb-3.5">Acesso rápido</div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -118,7 +118,7 @@ export function HomePage() {
             </div>
           </div>
 
-          {/* Stats mini */}
+          {/* Mini stats */}
           <div className="grid grid-cols-3 gap-3">
             <div className="bg-card border border-border rounded-xl p-4">
               <div className="text-[11px] text-[--color-text-secondary] font-semibold uppercase tracking-wider mb-1.5">Kana dominados</div>
@@ -137,9 +137,9 @@ export function HomePage() {
           </div>
         </div>
 
-        {/* Coluna direita */}
+        {/* Right column */}
         <div className="flex flex-col gap-4">
-          {/* Palavra do dia */}
+          {/* Word of the day */}
           <div className="bg-foreground rounded-2xl overflow-hidden relative">
             <div className="p-5 pb-0 relative">
               <div className="text-[10px] font-bold tracking-widest uppercase text-background/50 mb-3">Palavra do dia</div>
@@ -155,7 +155,7 @@ export function HomePage() {
             </div>
           </div>
 
-          {/* XP / ofensiva — placeholder (ver docs/TODO_GAMIFICATION.md) */}
+          {/* XP / streak — placeholder (see docs/TODO_GAMIFICATION.md) */}
           <div className="bg-card border border-border rounded-2xl p-5">
             <div className="flex items-center gap-3 mb-3.5">
               <MaterialIcon name="local_fire_department" filled size={24} className="text-primary" />

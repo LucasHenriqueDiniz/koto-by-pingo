@@ -1,61 +1,64 @@
 # Cloudflare D1 + Workers API — Koto by Pingo
 
-Backend opcional para sincronizar o progresso (kana, vocabulário, simulados) com a conta Clerk
-do usuário, usando Cloudflare D1 (SQLite) + Workers.
+An optional backend that syncs progress (kana, vocabulary, mock exams) to the user's Clerk account,
+on Cloudflare D1 (SQLite) + Workers.
 
-## Configuração
+## Setup
 
-1. Copie `wrangler.example.toml` (raiz do repo) para `wrangler.toml` (não versionado)
-2. Crie o banco no Cloudflare:
+1. Copy `wrangler.example.toml` (repo root) to `wrangler.toml` (not versioned)
+2. Create the database on Cloudflare:
    ```bash
    npx wrangler d1 create koto_by_pingo
    ```
-3. Substitua `database_id` em `wrangler.toml` pelo ID gerado
-4. Aplique as migrations:
+3. Replace `database_id` in `wrangler.toml` with the generated ID
+4. Apply the migrations:
    ```bash
    npx wrangler d1 migrations apply koto_by_pingo
-   # ou --local para desenvolvimento
+   # or --local for development
    ```
-5. Configure a secret do Clerk (necessária para validar os tokens de sessão):
+5. Set the Clerk secret (needed to validate the session tokens):
    ```bash
    npx wrangler secret put CLERK_SECRET_KEY
    ```
 
-## Estrutura
+## Structure
 
-- `schema.sql` — schema completo do banco (referência)
-- `migrations/0001_initial.sql` — schema inicial (users, sessions, attempts, exams)
-- `migrations/0002_word_progress_and_preferences.sql` — progresso granular por palavra,
-  metadados de tentativas de kana (modo/grupo/skipped) e preferências do usuário
-- `api/index.ts` — entrypoint do Worker (router)
-- `api/auth.ts` — validação do token Clerk (`@clerk/backend`) e upsert de usuário
-- `api/handlers/` — handlers de progresso, kana, vocabulário, simulados e preferências
+- `schema.sql` — the complete database schema (reference)
+- `migrations/0001_initial.sql` — initial schema (users, sessions, attempts, exams)
+- `migrations/0002_word_progress_and_preferences.sql` — per-word progress, kana attempt
+  metadata (mode/group/skipped) and user preferences
+- `api/index.ts` — the Worker entrypoint (router)
+- `api/auth.ts` — Clerk token validation (`@clerk/backend`) and the user upsert
+- `api/handlers/` — handlers for progress, kana, vocabulary, mock exams and preferences
 
 ## Endpoints
 
-Todos exigem `Authorization: Bearer <token Clerk>`.
+All of them require `Authorization: Bearer <Clerk token>`.
 
 ```
-POST   /api/progress/sync         — sincroniza progresso local (uso único, pós-login)
-GET    /api/progress              — busca progresso salvo na conta
-DELETE /api/progress/reset         — reseta o progresso da conta
-POST   /api/kana/attempt          — registra uma tentativa de kana
-POST   /api/vocab/attempt         — registra uma tentativa de vocabulário
-POST   /api/exam/attempt          — salva o resultado de um simulado
-GET    /api/user/preferences      — busca preferências do usuário
-PUT    /api/user/preferences      — salva preferências do usuário
+POST   /api/progress/sync         — syncs local progress (one-shot, right after login)
+GET    /api/progress              — reads the progress stored on the account
+DELETE /api/progress/reset         — resets the account's progress
+POST   /api/kana/attempt          — records one kana attempt
+POST   /api/vocab/attempt         — records one vocabulary attempt
+POST   /api/exam/attempt          — saves a mock-exam result
+GET    /api/user/preferences      — reads the user's preferences
+PUT    /api/user/preferences      — saves the user's preferences
 ```
 
-## Desenvolvimento local
+Note that the error bodies these endpoints return are pt-BR strings, because they surface in the
+app's own interface.
+
+## Local development
 
 ```bash
 npx wrangler dev --config ../wrangler.toml --local
 ```
 
-## Integração com o app
+## How the app uses it
 
 - `src/services/auth/auth.clerk.ts` — `useCurrentUser()` / `useSignOut()` (Clerk)
 - `src/services/progress/progress.remote.ts` — `syncProgressToRemote()` / `fetchProgressFromRemote()`
-- `src/components/ui/SyncProgressBanner.tsx` — banner pós-login no Dashboard que oferece
-  sincronizar o progresso local com a conta
-- A URL base da API é configurável via `VITE_API_BASE_URL` (vazio = mesma origem)
+- `src/components/ui/SyncProgressBanner.tsx` — the post-login banner on the dashboard that offers
+  to sync local progress to the account
+- The API base URL is configurable through `VITE_API_BASE_URL` (empty = same origin)

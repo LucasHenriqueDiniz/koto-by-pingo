@@ -6,8 +6,8 @@ on:
   pull_request:
     branches: [main]
 
-# A action de pnpm não recebe 'version' — ela lê o campo packageManager do
-# package.json, que é o que mantém o CI e as máquinas locais na mesma versão.
+# The pnpm action gets no 'version' — it reads the packageManager field from
+# package.json, which is what keeps CI and local machines on the same version.
 
 jobs:
   check:
@@ -22,15 +22,15 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
 
-      # As libs compartilhadas são checadas à parte porque os artefatos as
-      # consomem já compiladas — um erro aqui aparece nos dois artifacts.
+      # The shared libs are checked separately because the artifacts consume them
+      # already compiled — an error here surfaces in both artifacts.
       - name: Typecheck libs
         run: pnpm run typecheck:libs
 
-      # `build` aqui NÃO duplica o Cloudflare. O Pages publica um único pacote
-      # (artifacts/koto); o script é `typecheck && pnpm -r --if-present run build`,
-      # que alcança os outros 9 do workspace — api-server, mockup-sandbox,
-      # cloudflare, e as libs api-client-react/api-spec/api-zod/db. Nenhum host
-      # compila esses, então este passo é a única coisa que os olha.
+      # `build` here does NOT duplicate Cloudflare. Pages publishes a single package
+      # (artifacts/koto); the script is `typecheck && pnpm -r --if-present run build`,
+      # which reaches the other 9 in the workspace — api-server, mockup-sandbox,
+      # cloudflare, and the api-client-react/api-spec/api-zod/db libs. No host builds
+      # those, so this step is the only thing that looks at them.
       - name: Typecheck & build workspace
         run: pnpm run build

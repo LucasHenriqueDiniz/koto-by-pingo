@@ -25,7 +25,7 @@ export function LoginPage() {
 
   return (
     <div className="flex min-h-screen">
-      {/* Painel esquerdo — hero vermelho */}
+      {/* Left panel — red hero */}
       <div className="hidden md:flex md:w-[42%] relative overflow-hidden flex-col items-center justify-center bg-primary px-12 py-16">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none pointer-events-none font-japanese font-extrabold text-white opacity-[0.06] leading-none text-[460px]">
           語
@@ -56,7 +56,7 @@ export function LoginPage() {
         <p className="absolute bottom-6 text-xs text-white/40">© {new Date().getFullYear()} Pingo Concursos</p>
       </div>
 
-      {/* Painel direito — Clerk SignIn */}
+      {/* Right panel — Clerk SignIn */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 bg-background">
         <div className="w-full max-w-md flex flex-col items-center gap-6">
           <div className="text-center md:hidden">

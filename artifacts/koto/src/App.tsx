@@ -39,11 +39,11 @@ const queryClient = new QueryClient();
 function Router() {
   return (
     <Switch>
-      {/* Rotas full-screen, sem o shell do app */}
+      {/* Full-screen routes, outside the app shell */}
       <Route path="/" component={LandingPage} />
       <Route path="/entrar" component={LoginPage} />
 
-      {/* Demais rotas dentro do layout padrão */}
+      {/* Every other route inside the default layout */}
       <Route>
         <AppShellRoutes />
       </Route>

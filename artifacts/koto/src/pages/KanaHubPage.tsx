@@ -74,7 +74,7 @@ export function KanaHubPage() {
 
         <AdPlaceholder slot="banner" />
 
-        {/* Modos de treino */}
+        {/* Training modes */}
         <section>
           <h2 className="font-heading text-xl font-bold text-foreground mb-4">Modos de treino</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -105,7 +105,7 @@ export function KanaHubPage() {
           </div>
         </section>
 
-        {/* Seu progresso */}
+        {/* Your progress */}
         <section className="bg-card border border-border rounded-2xl p-6">
           <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
             <h3 className="font-heading text-lg font-bold text-foreground">Seu progresso</h3>
@@ -127,7 +127,7 @@ export function KanaHubPage() {
           <BentoCharacterGrid items={basicKana} />
         </section>
 
-        {/* Cross-link para Kanji (acesso direto no mobile estreito, sem aba própria) */}
+        {/* Cross-link to Kanji (direct access on narrow mobile, which has no tab of its own) */}
         <Link
           href="/kanji"
           className="flex items-center justify-between gap-3 bg-card border border-border rounded-2xl p-5 hover:border-primary transition-colors"

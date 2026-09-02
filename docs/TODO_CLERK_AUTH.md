@@ -1,67 +1,67 @@
-# TODO — Autenticação: Clerk
+# TODO — Authentication: Clerk
 
-**Status:** implementado. `src/services/auth/auth.clerk.ts` substitui o antigo placeholder.
-
----
-
-## Por que Clerk
-
-- Autenticação gerenciada sem infraestrutura própria.
-- Login social (Google, GitHub), magic link, e-mail+senha.
-- SDK React (`@clerk/clerk-react`) com hooks prontos.
-- `userId` do Clerk será a chave externa lógica no Cloudflare D1.
-- Compatível com Cloudflare Workers (edge runtime).
+**Status:** implemented. `src/services/auth/auth.clerk.ts` replaces the old placeholder.
 
 ---
 
-## Fluxo de autenticação planejado
+## Why Clerk
+
+- Managed authentication with no infrastructure of our own.
+- Social login (Google, GitHub), magic link, email + password.
+- A React SDK (`@clerk/clerk-react`) with ready-made hooks.
+- The Clerk `userId` becomes the logical foreign key in Cloudflare D1.
+- Compatible with Cloudflare Workers (edge runtime).
+
+---
+
+## Planned authentication flow
 
 ```
-1. Usuário anônimo
-   └── Usa o app com localStorage
-   └── Sem conta, sem servidor
+1. Anonymous visitor
+   └── Uses the app on localStorage
+   └── No account, no server
 
-2. Usuário decide criar conta
-   └── Clique em "Criar conta" ou "Entrar"
-   └── Clerk abre modal de login/cadastro
-   └── Após autenticação: userId disponível via useUser()
+2. The visitor decides to create an account
+   └── Clicks "Criar conta" (create account) or "Entrar" (sign in)
+   └── Clerk opens the sign-in/sign-up modal
+   └── After authentication: userId is available through useUser()
 
-3. Pós-login
-   └── App verifica se há dados no localStorage
-   └── Se sim: perguntar "Deseja sincronizar?"
-   └── Se sim: POST /api/progress/sync
-   └── Progresso agora associado ao userId do Clerk
+3. Post-login
+   └── The app checks whether there is data in localStorage
+   └── If there is: ask "Deseja sincronizar?" (sync it?)
+   └── If yes: POST /api/progress/sync
+   └── The progress is now tied to the Clerk userId
 
-4. Sessão ativa
-   └── Tentativas enviadas simultaneamente ao D1
-   └── localStorage funciona como cache
+4. Active session
+   └── Attempts are sent to D1 as they happen
+   └── localStorage acts as a cache
 
-5. Logout
-   └── localStorage local permanece intacto
-   └── Dados no D1 permanecem associados à conta
-   └── Próximo login recarrega do D1
+5. Sign-out
+   └── The local localStorage is left untouched
+   └── The data in D1 stays tied to the account
+   └── The next sign-in reloads it from D1
 ```
 
 ---
 
-## Como foi implementado
+## How it was implemented
 
-### 1. Dependência
+### 1. Dependency
 
 ```bash
 pnpm --filter @workspace/koto add @clerk/react
 ```
 
-> Nota: `@clerk/clerk-react` foi descontinuado em favor de `@clerk/react` (Clerk "Core 3").
+> Note: `@clerk/clerk-react` was discontinued in favour of `@clerk/react` (Clerk "Core 3").
 
-### 2. Variável de ambiente
+### 2. Environment variable
 
-`artifacts/koto/.env.local` (não versionado):
+`artifacts/koto/.env.local` (not versioned):
 ```bash
 VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
 ```
 
-### 3. App envolvido com `ClerkProvider`
+### 3. The app wrapped in `ClerkProvider`
 
 `src/main.tsx`:
 ```tsx
@@ -74,36 +74,36 @@ const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 </ClerkProvider>
 ```
 
-### 4. Serviço de auth
+### 4. The auth service
 
-`src/services/auth/auth.clerk.ts` expõe `useCurrentUser()` (baseado em `useUser()`) e
-`useSignOut()` (baseado em `useClerk()`), mapeando para os tipos `AuthUser`/`AuthSession`
-de `auth.types.ts`. Substitui o antigo `auth.placeholder.ts`.
+`src/services/auth/auth.clerk.ts` exposes `useCurrentUser()` (built on `useUser()`) and
+`useSignOut()` (built on `useClerk()`), mapping onto the `AuthUser`/`AuthSession` types in
+`auth.types.ts`. It replaces the old `auth.placeholder.ts`.
 
-### 5. Botões de login (UI)
+### 5. Sign-in buttons (UI)
 
 `<Show when="signed-out">` + `<SignInButton mode="modal">` / `<Show when="signed-in">` +
-`<UserButton />`, ambos de `@clerk/react`.
+`<UserButton />`, both from `@clerk/react`.
 
 ---
 
-## Onde o Clerk aparece na UI
+## Where Clerk shows up in the UI
 
-| Local | Componente | Status |
+| Place | Component | Status |
 |-------|-----------|--------|
-| Sidebar (desktop) | botão "Entrar" ou `<UserButton>` | ✅ `DesktopSidebar.tsx` |
-| MobileTopBar | ícone de perfil | ✅ `MobileTopBar.tsx` |
-| Dashboard | banner "Sincronize seu progresso" | ✅ `SyncProgressBanner.tsx` |
-| Após completar simulado | "Salvar resultado na conta" | não implementado |
+| Sidebar (desktop) | the `Entrar` button ("sign in") or `<UserButton>` | ✅ `DesktopSidebar.tsx` |
+| MobileTopBar | profile icon | ✅ `MobileTopBar.tsx` |
+| Dashboard | the `Sincronize seu progresso` banner ("sync your progress") | ✅ `SyncProgressBanner.tsx` |
+| After finishing a mock exam | `Salvar resultado na conta` ("save the result to the account") | not implemented |
 
 ---
 
 ## Status
 
-| Etapa | Status |
-|-------|--------|
-| Integração Clerk (`@clerk/react`) | ✅ implementado |
-| `auth.clerk.ts` | ✅ implementado |
-| UI de login (sidebar + mobile) | ✅ implementado |
-| Fluxo de sync pós-login | ✅ implementado — ver `docs/TODO_CLOUDFLARE_D1.md` |
-| `CLERK_SECRET_KEY` no Worker (backend) | pendente — `wrangler secret put CLERK_SECRET_KEY` |
+| Step | Status |
+|------|--------|
+| Clerk integration (`@clerk/react`) | ✅ implemented |
+| `auth.clerk.ts` | ✅ implemented |
+| Sign-in UI (sidebar + mobile) | ✅ implemented |
+| Post-login sync flow | ✅ implemented — see `docs/TODO_CLOUDFLARE_D1.md` |
+| `CLERK_SECRET_KEY` on the Worker (backend) | pending — `wrangler secret put CLERK_SECRET_KEY` |

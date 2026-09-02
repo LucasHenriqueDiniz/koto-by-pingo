@@ -9,7 +9,7 @@ interface SyncProgressBannerProps {
   hasLocalProgress: boolean;
 }
 
-/** Banner pós-login que oferece sincronizar o progresso local com a conta na nuvem (D1). */
+/** Post-login banner offering to sync local progress with the cloud account (D1). */
 export function SyncProgressBanner({ hasLocalProgress }: SyncProgressBannerProps) {
   const { isAuthenticated, user } = useCurrentUser();
   const { getToken } = useAuth();

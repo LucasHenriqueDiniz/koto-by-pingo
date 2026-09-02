@@ -10,8 +10,8 @@ const DEFAULT_GROUP_PREFS: Record<KanaGroup, boolean> = KANA_GROUPS.reduce(
 );
 
 /**
- * Preferências compartilhadas de filtro de kana (script, grupos, apenas problemáticos),
- * persistidas em localStorage e usadas por Aprender/Treinar/Revisar/Configurar.
+ * Shared kana filter preferences (script, groups, troublesome-only), persisted in
+ * localStorage and used by the learn/train/review/settings pages.
  */
 export function useKanaFilters() {
   const [script, setScript] = useLocalStorage<KanaType>('kana_type', 'hiragana');
@@ -20,13 +20,13 @@ export function useKanaFilters() {
 
   const baseItems = useMemo(() => getKanaByType(script), [script]);
 
-  /** Itens do script atual, restritos aos grupos habilitados (sem aplicar "apenas problemáticos"). */
+  /** Items of the current script, restricted to the enabled groups (troublesome-only not applied). */
   const groupFilteredItems = useMemo<KanaItem[]>(() => {
     const pool = baseItems.filter(k => groupPrefs[k.group]);
     return pool.length > 0 ? pool : baseItems;
   }, [baseItems, groupPrefs]);
 
-  /** Itens prontos para treino: grupos habilitados + filtro "apenas problemáticos" (com fallback). */
+  /** Items ready for training: enabled groups + troublesome-only filter (with fallback). */
   const filteredItems = useMemo<KanaItem[]>(() => {
     if (!onlyWeak) return groupFilteredItems;
     const weakIds = new Set(getWeakKana(groupFilteredItems.map(k => k.id), 200));

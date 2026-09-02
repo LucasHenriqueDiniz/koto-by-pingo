@@ -1,14 +1,14 @@
 interface CircularProgressProps {
-  /** Valor atual (0–max). */
+  /** Current value (0–max). */
   value: number;
   max?: number;
   size?: number;
   strokeWidth?: number;
-  /** Cor do arco preenchido (CSS color). Default: tertiary verde. */
+  /** Color of the filled arc (CSS color). Defaults to the green tertiary. */
   color?: string;
-  /** Cor da trilha de fundo. */
+  /** Color of the background track. */
   trackColor?: string;
-  /** Texto central (ex: "90%"). Se omitido, mostra o percentual. */
+  /** Center label (e.g. "90%"). When omitted, the percentage is shown. */
   label?: string;
   className?: string;
 }

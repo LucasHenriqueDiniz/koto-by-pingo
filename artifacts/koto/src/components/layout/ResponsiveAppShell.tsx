@@ -52,7 +52,7 @@ export function ResponsiveAppShell({ children }: ResponsiveAppShellProps) {
           {children}
         </main>
 
-        {/* Desktop footer — escondido durante treino/simulado ativo */}
+        {/* Desktop footer — hidden while a training or mock-exam session is active */}
         {!isSessionActive && (
           <div className="hidden lg:block">
             <Footer />
