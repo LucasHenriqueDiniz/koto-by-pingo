@@ -1,92 +1,93 @@
-# TODO — Feature: Simulados JLPT
+# TODO — Feature: JLPT mock exams
 
-**Status:** MVP implementado com N5 e N4 mini. Expansão planejada.
-
----
-
-## Estrutura atual
-
-- 2 simulados: JLPT N5 Mini (7 questões) e JLPT N4 Mini (5 questões)
-- Seções: vocabulário, leitura, gramática
-- Resultado com revisão por questão e explicações
-- Progresso salvo no localStorage
+**Status:** MVP implemented with the N5 and N4 minis. Expansion planned.
 
 ---
 
-## Organização por nível JLPT
+## Current structure
 
-| Nível | Alvo | Vocabulário | Kanji | Gramática |
-|-------|------|-------------|-------|-----------|
-| N5 | iniciante | ~800 palavras | ~100 | estruturas básicas |
-| N4 | básico | ~1.500 palavras | ~300 | formas verbais |
-| N3 | intermediário | ~3.750 palavras | ~650 | estruturas complexas |
-| N2 | avançado | ~6.000 palavras | ~1.000 | gramática avançada |
-| N1 | proficiente | ~10.000 palavras | ~2.000 | nível nativo |
+- 2 mock exams: JLPT N5 Mini (7 questions) and JLPT N4 Mini (5 questions)
+- Sections: vocabulary, reading, grammar
+- A result screen with per-question review and explanations
+- Progress saved in localStorage
 
 ---
 
-## Seções por simulado completo
+## Breakdown by JLPT level
 
-Cada simulado JLPT real tem 4 seções:
+| Level | Target | Vocabulary | Kanji | Grammar |
+|-------|--------|------------|-------|---------|
+| N5 | beginner | ~800 words | ~100 | basic structures |
+| N4 | elementary | ~1,500 words | ~300 | verb forms |
+| N3 | intermediate | ~3,750 words | ~650 | complex structures |
+| N2 | advanced | ~6,000 words | ~1,000 | advanced grammar |
+| N1 | proficient | ~10,000 words | ~2,000 | native level |
+
+---
+
+## Sections in a full mock exam
+
+Every real JLPT exam has 4 sections:
 
 ```ts
 type SectionType = 'vocabulary' | 'grammar' | 'reading' | 'listening';
 ```
 
-| Seção | O que testa | Obs. |
-|-------|-------------|------|
-| Vocabulário | leitura, significado, uso contextual | ✅ implementado |
-| Gramática | partículas, conjugação, estrutura | ✅ implementado (N4) |
-| Leitura | interpretação de texto japonês | 🔲 em desenvolvimento |
-| Escuta | reconhecimento auditivo | 🔲 depende de áudio |
+| Section | What it tests | Notes |
+|---------|---------------|-------|
+| Vocabulary | reading, meaning, contextual use | ✅ implemented |
+| Grammar | particles, conjugation, structure | ✅ implemented (N4) |
+| Reading | interpreting a Japanese text | 🔲 in progress |
+| Listening | audio recognition | 🔲 blocked on audio |
 
 ---
 
-## Features planejadas
+## Planned features
 
-### Timer por seção
-- [ ] Contador regressivo por seção (ex: 25 min para vocabulário)
-- [ ] Alerta ao restarem 5 minutos
-- [ ] Submissão automática ao expirar
-- [ ] Salvar tempo gasto por questão
+### Per-section timer
+- [ ] A countdown per section (e.g. 25 min for vocabulary)
+- [ ] A warning when 5 minutes are left
+- [ ] Automatic submission when it expires
+- [ ] Record the time spent per question
 
-### Histórico de tentativas
-- [ ] Listar todos os simulados realizados com data e pontuação
-- [ ] Comparar performance entre tentativas
-- [ ] Gráfico de evolução por simulado
+### Attempt history
+- [ ] List every mock exam taken, with date and score
+- [ ] Compare performance across attempts
+- [ ] An evolution chart per exam
 
-### Revisão por erro
-- [ ] Após o simulado: filtrar questões erradas
-- [ ] Modo "Refazer apenas erros"
-- [ ] Salvar questões problemáticas
+### Review by mistake
+- [ ] After the exam: filter down to the wrong answers
+- [ ] A "redo only the mistakes" mode
+- [ ] Save the troublesome questions
 
-### Banco de questões
-- [ ] Estrutura para >100 questões por nível
-- [ ] Tags por tópico (ex: "partículas", "tempo verbal", "leitura N3")
-- [ ] Dificuldade por questão (1–5)
-- [ ] Seleção aleatória por dificuldade
+### Question bank
+- [ ] A structure that holds >100 questions per level
+- [ ] Topic tags (e.g. particles, verb tense, N3 reading)
+- [ ] Difficulty per question (1–5)
+- [ ] Random selection by difficulty
 
-### Importação de conteúdo
-- [ ] Formato JSON para importar banco de questões
-- [ ] Validação de schema
-- [ ] Admin panel para gerenciar questões (futuro)
-
----
-
-## Próximos simulados a criar
-
-| Simulado | Prioridade | Questões previstas |
-|----------|------------|-------------------|
-| N5 Completo | Alta | 35 questões, 3 seções |
-| N4 Completo | Alta | 35 questões, 3 seções |
-| N5 Gramática | Média | 15 questões |
-| N3 Mini | Baixa | 10 questões |
+### Content import
+- [ ] A JSON format for importing a question bank
+- [ ] Schema validation
+- [ ] An admin panel for managing questions (later)
 
 ---
 
-## Como adicionar questões
+## Next mock exams to author
 
-Editar `src/data/mockExams.ts`:
+| Exam | Priority | Expected questions |
+|------|----------|--------------------|
+| N5 Full | High | 35 questions, 3 sections |
+| N4 Full | High | 35 questions, 3 sections |
+| N5 Grammar | Medium | 15 questions |
+| N3 Mini | Low | 10 questions |
+
+---
+
+## How to add questions
+
+Edit `src/data/mockExams.ts`. The content fields and the topic tags are product data, authored in
+pt-BR like the rest of the learning content:
 
 ```ts
 {
@@ -114,10 +115,10 @@ Editar `src/data/mockExams.ts`:
 
 | Feature | Status |
 |---------|--------|
-| Simulado N5 Mini | ✅ implementado |
-| Simulado N4 Mini | ✅ implementado |
-| Timer por seção | não implementado |
-| Histórico completo | parcial (localStorage) |
-| Revisão por erro | ✅ implementado |
-| Banco de questões | mínimo |
-| N3 / N2 / N1 | não implementado |
+| N5 Mini exam | ✅ implemented |
+| N4 Mini exam | ✅ implemented |
+| Per-section timer | not implemented |
+| Full history | partial (localStorage) |
+| Review by mistake | ✅ implemented |
+| Question bank | minimal |
+| N3 / N2 / N1 | not implemented |

@@ -78,7 +78,7 @@ export function DesktopSidebar({ collapsed, onToggleCollapse }: DesktopSidebarPr
         </Link>
       </div>
 
-      {/* Toggle de colapso */}
+      {/* Collapse toggle */}
       <button
         onClick={onToggleCollapse}
         aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
@@ -127,7 +127,7 @@ export function DesktopSidebar({ collapsed, onToggleCollapse }: DesktopSidebarPr
           );
         })}
 
-        {/* Autenticação */}
+        {/* Authentication */}
         <Show when="signed-out">
           <Link
             href="/entrar"

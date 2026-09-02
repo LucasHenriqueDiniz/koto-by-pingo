@@ -49,7 +49,7 @@ export function SettingsPage() {
       <PageHeader title="Configurações" description="Personalize sua experiência no Koto." />
 
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-        {/* Perfil */}
+        {/* Profile */}
         <section className="bg-card border border-card-border rounded-2xl p-6 md:p-7 flex flex-col sm:flex-row items-center gap-6">
           <Show when="signed-in">
             <div className="flex-shrink-0">
@@ -86,9 +86,9 @@ export function SettingsPage() {
           )}
         </section>
 
-        {/* Seções */}
+        {/* Sections */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Estudo */}
+          {/* Study */}
           <section className="bg-card border border-card-border rounded-2xl p-6 flex flex-col gap-5">
             <SectionHeader icon="school" title="Estudo" />
             <div>
@@ -131,7 +131,7 @@ export function SettingsPage() {
             </div>
           </section>
 
-          {/* Aparência */}
+          {/* Appearance */}
           <section className="bg-card border border-card-border rounded-2xl p-6 flex flex-col gap-5">
             <SectionHeader icon="palette" title="Aparência" />
             <div>
@@ -175,7 +175,7 @@ export function SettingsPage() {
             </div>
           </section>
 
-          {/* Idioma — placeholder (só PT-BR ativo) */}
+          {/* Language — placeholder (pt-BR is the only active option) */}
           <section className="bg-card border border-card-border rounded-2xl p-6 flex flex-col gap-4">
             <SectionHeader icon="language" title="Idioma da Interface" />
             <div className="flex flex-col gap-2">
@@ -199,7 +199,7 @@ export function SettingsPage() {
             </div>
           </section>
 
-          {/* Conta / Dados */}
+          {/* Account / Data */}
           <section className="bg-card border border-card-border rounded-2xl p-6 flex flex-col gap-3">
             <SectionHeader icon="manage_accounts" title="Conta e dados" />
             <Link

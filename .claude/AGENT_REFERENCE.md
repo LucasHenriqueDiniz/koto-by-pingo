@@ -1,19 +1,22 @@
 # 🎯 Agent Reference — Koto by Pingo
 
-Quick guide para as tasks mais comuns. Use como checklist.
+Quick guide to the most common tasks. Use it as a checklist.
+
+The app's own interface is pt-BR, so UI labels and learning content quoted below stay in
+Portuguese on purpose — they are product text, not prose.
 
 ---
 
-## 1️⃣ Adicionar Palavra ao Vocabulário
+## 1️⃣ Add a word to the vocabulary
 
-**Goal:** Adicionar nova palavra N5 ao vocabulário.
+**Goal:** add a new N5 word to the vocabulary.
 
 **Files:**
 - `artifacts/koto/src/data/vocabulary.ts`
-- `artifacts/koto/src/types/vocabulary.ts` (se novo campo)
+- `artifacts/koto/src/types/vocabulary.ts` (only if a new field is needed)
 
 **Steps:**
-1. Editar `vocabulary.ts` → adicionar objeto à lista:
+1. Edit `vocabulary.ts` → append an object to the list:
    ```ts
    {
      id: 'v-046',
@@ -25,30 +28,31 @@ Quick guide para as tasks mais comuns. Use como checklist.
      level: 'N5',
    }
    ```
-2. Categoria detectada automaticamente via `Set` — no need to update `categories`
-3. Rodar dev server: `pnpm --filter @workspace/koto run dev`
-4. Testar em `/vocabulario/treinar` — palavra deve aparecer em todos os 4 modos
-5. Validar: `pnpm --filter @workspace/koto run build`
+2. The category is picked up automatically through a `Set` — no need to update `categories`
+3. Start the dev server: `pnpm --filter @workspace/koto run dev`
+4. Try it at `/vocabulario/treinar` — the word must show up in all 4 modes
+5. Validate: `pnpm --filter @workspace/koto run build`
 6. Commit: `git add artifacts/koto/src/data/vocabulary.ts && git commit -m "Add vocabulary: 猫 (neko)"`
 
 **Checklist:**
-- [ ] Palavra adicionada com 7 campos (id, japanese, kana, romaji, meaningPt, category, level)
-- [ ] `id` é único e segue padrão `v-NNN`
-- [ ] Categoria é válida (animais, alimentos, escola, trabalho, etc)
-- [ ] Build passa
-- [ ] Testado em dev server
+- [ ] The word carries all 7 fields (id, japanese, kana, romaji, meaningPt, category, level)
+- [ ] `id` is unique and follows the `v-NNN` pattern
+- [ ] The category is one of the existing ones (`animais`, `alimentos`, `escola`, `trabalho`, …)
+- [ ] The build passes
+- [ ] Tried on the dev server
 
 ---
 
-## 2️⃣ Adicionar Questão ao Simulado
+## 2️⃣ Add a question to a mock exam
 
-**Goal:** Adicionar questão múltipla escolha aos simulados (N5 Mini ou N4 Mini).
+**Goal:** add a multiple-choice question to a mock exam (N5 Mini or N4 Mini).
 
 **Files:**
 - `artifacts/koto/src/data/mockExams.ts`
 
 **Steps:**
-1. Editar `mockExams.ts` → adicionar questão ao exame correspondente:
+1. Edit `mockExams.ts` → append the question to the matching exam. The question content is
+   product text and is authored in pt-BR:
    ```ts
    {
      id: 'n5-q-35',
@@ -67,71 +71,71 @@ Quick guide para as tasks mais comuns. Use como checklist.
      difficulty: 2,
    }
    ```
-2. Validar estrutura: id único, 4 opções, correctOptionId válido, explanation clara
-3. Rodar: `pnpm --filter @workspace/koto run dev`
-4. Testar em `/simulados/{examId}` — questão deve aparecer na posição correta
+2. Check the shape: unique id, 4 options, a valid `correctOptionId`, a clear explanation
+3. Run: `pnpm --filter @workspace/koto run dev`
+4. Try it at `/simulados/{examId}` — the question must appear in the right position
 5. Build: `pnpm --filter @workspace/koto run build`
 6. Commit: `git add artifacts/koto/src/data/mockExams.ts && git commit -m "Add exam question: n5-q-35"`
 
 **Checklist:**
-- [ ] Questão tem estrutura completa (id, type, prompt, japaneseText, options[4], correctOptionId, explanation, tags, difficulty)
-- [ ] `id` é único e segue padrão `n5-q-NN` ou `n4-q-NN`
-- [ ] 4 opções com textos significativos (não triviais)
-- [ ] Resposta correta está em `options` (validar `correctOptionId`)
-- [ ] Explicação em português claro
-- [ ] Testado em dev server
-- [ ] Build passa
+- [ ] The question is complete (id, type, prompt, japaneseText, options[4], correctOptionId, explanation, tags, difficulty)
+- [ ] `id` is unique and follows the `n5-q-NN` or `n4-q-NN` pattern
+- [ ] 4 options with meaningful text (no throwaway distractors)
+- [ ] The correct answer is actually in `options` (check `correctOptionId`)
+- [ ] The explanation is written in clear pt-BR, like the rest of the learning content
+- [ ] Tried on the dev server
+- [ ] The build passes
 
 ---
 
-## 3️⃣ Corrigir Critério de Domínio (Kana)
+## 3️⃣ Change the kana mastery criteria
 
-**Goal:** Ajustar "Dominado", "Difícil", "Nunca visto" para kana.
+**Goal:** adjust the mastered / troublesome / never-seen thresholds for kana.
 
 **Current criteria:**
-| Status | Tentativas | Precisão |
-|--------|-----------|---------|
-| Dominado | ≥ 5 | ≥ 85% |
-| Difícil | ≥ 3 | < 60% |
-| Nunca visto | 0 | — |
+| Status | Attempts | Accuracy |
+|--------|----------|----------|
+| Mastered | ≥ 5 | ≥ 85% |
+| Troublesome | ≥ 3 | < 60% |
+| Never seen | 0 | — |
 
 **Files:**
-- `artifacts/koto/src/services/progress/progress.local.ts` (funções `getWeakKana`, `getMasteredKana`)
-- Teste em `artifacts/koto/src/pages/KanaStatsPage.tsx`
+- `artifacts/koto/src/services/progress/progress.local.ts` (`getWeakKana`, `getMasteredKana`)
+- Check the result on `artifacts/koto/src/pages/KanaStatsPage.tsx`
 
 **Steps:**
-1. Editar `progress.local.ts`:
+1. Edit `progress.local.ts`:
    ```ts
-   // Exemplo: mudar "Dominado" para ≥ 5 AND ≥ 90%
+   // Example: require ≥ 5 attempts AND ≥ 90% for "mastered"
    export function getMasteredKana(kanaIds: string[]) {
      return kanaIds.filter(id => {
        const stats = getKanaCharacterStats(id);
-       return stats.attempts >= 5 && stats.accuracy >= 0.90;  // ← MUDOU 0.85 para 0.90
+       return stats.attempts >= 5 && stats.accuracy >= 0.90;  // ← CHANGED from 0.85 to 0.90
      });
    }
    ```
-2. Testar em `/kana/estatisticas` — contador de "Dominado" deve mudar
+2. Check `/kana/estatisticas` — the mastered counter must move
 3. Build + commit
 
 **Checklist:**
-- [ ] Função editada corretamente
-- [ ] Lógica de comparação está clara (>= ou <, não invertida)
-- [ ] Testado em stats page
-- [ ] Build passa
+- [ ] The function was edited correctly
+- [ ] The comparison reads right (>= or <, not inverted)
+- [ ] Checked on the stats page
+- [ ] The build passes
 
 ---
 
-## 4️⃣ Novo Modo de Treino (Kana)
+## 4️⃣ New kana training mode
 
-**Goal:** Implementar novo modo de treino para kana (ex: Reverse Flashcards).
+**Goal:** implement a new kana training mode (e.g. Reverse Flashcards).
 
 **Files:**
-- Criar: `artifacts/koto/src/components/kana/modes/ReverseFlashcardsMode.tsx`
-- Editar: `artifacts/koto/src/components/kana/modes/index.ts` (registrar componente)
-- Editar: `artifacts/koto/src/types/kana.ts` (adicionar `'reverse_flashcards'` a `KanaTrainingMode`)
+- Create: `artifacts/koto/src/components/kana/modes/ReverseFlashcardsMode.tsx`
+- Edit: `artifacts/koto/src/components/kana/modes/index.ts` (register the component)
+- Edit: `artifacts/koto/src/types/kana.ts` (add `'reverse_flashcards'` to `KanaTrainingMode`)
 
 **Steps:**
-1. Criar novo componente em `modes/ReverseFlashcardsMode.tsx`:
+1. Create the component in `modes/ReverseFlashcardsMode.tsx`:
    ```tsx
    export interface ReverseFlashcardsModeProp {
      items: KanaItem[];
@@ -140,20 +144,20 @@ Quick guide para as tasks mais comuns. Use como checklist.
    
    export function ReverseFlashcardsMode({ items, showRomajiHint }: ReverseFlashcardsModeProp) {
      const trainer = useKanaQueue(items);
-     // ... implementação
+     // ... implementation
      return <div>...</div>;
    }
    ```
-2. Registrar em `components/kana/modes/index.ts`:
+2. Register it in `components/kana/modes/index.ts`:
    ```ts
    import { ReverseFlashcardsMode } from './ReverseFlashcardsMode';
    
    export const KANA_MODE_COMPONENTS: Record<KanaTrainingMode, React.ComponentType<any>> = {
-     // ... existentes
+     // ... the existing ones
      reverse_flashcards: ReverseFlashcardsMode,  // ← ADD
    };
    ```
-3. Adicionar a `KanaTrainingMode` em `types/kana.ts`:
+3. Add it to `KanaTrainingMode` in `types/kana.ts`:
    ```ts
    type KanaTrainingMode =
      | 'typing'
@@ -165,31 +169,31 @@ Quick guide para as tasks mais comuns. Use como checklist.
      | 'tracing'
      | 'reverse_flashcards';  // ← ADD
    ```
-4. Testar em `/kana/treinar` — novo modo deve aparecer no seletor
+4. Check `/kana/treinar` — the new mode must appear in the selector
 5. Build + commit
 
 **Checklist:**
-- [ ] Componente tem interface `KanaItem[]` + `showRomajiHint?`
-- [ ] Usa `useKanaQueue(items)` internamente
-- [ ] Registrado em `KANA_MODE_COMPONENTS`
-- [ ] Tipo adicionado a `KanaTrainingMode`
-- [ ] Testado em dev server
-- [ ] Build passa
+- [ ] The component takes `KanaItem[]` + `showRomajiHint?`
+- [ ] It uses `useKanaQueue(items)` internally
+- [ ] Registered in `KANA_MODE_COMPONENTS`
+- [ ] The type was added to `KanaTrainingMode`
+- [ ] Tried on the dev server
+- [ ] The build passes
 
 ---
 
-## 5️⃣ Adicionar Nova Página (ex: AulasExtrasPage)
+## 5️⃣ Add a new page (e.g. AulasExtrasPage)
 
-**Goal:** Criar nova página `/aulas` com conteúdo complementar.
+**Goal:** create the `/aulas` page with supplementary content.
 
 **Files:**
-- Criar: `artifacts/koto/src/pages/AulasExtrasPage.tsx`
-- Editar: `artifacts/koto/src/App.tsx` (adicionar rota)
-- Editar: `artifacts/koto/src/components/layout/DesktopSidebar.tsx` (link nav)
-- Editar: `artifacts/koto/src/components/layout/MobileBottomNav.tsx` (link nav)
+- Create: `artifacts/koto/src/pages/AulasExtrasPage.tsx`
+- Edit: `artifacts/koto/src/App.tsx` (add the route)
+- Edit: `artifacts/koto/src/components/layout/DesktopSidebar.tsx` (nav link)
+- Edit: `artifacts/koto/src/components/layout/MobileBottomNav.tsx` (nav link)
 
 **Steps:**
-1. Criar página:
+1. Create the page. The visible copy is pt-BR, like every other page:
    ```tsx
    import { PageHeader } from '../components/ui/PageHeader';
    import { updatePageSEO } from '../utils/seo';
@@ -207,232 +211,232 @@ Quick guide para as tasks mais comuns. Use como checklist.
            color="#ac2b2f"
          />
          <div className="max-w-6xl mx-auto px-4 py-6">
-           {/* conteúdo */}
+           {/* content */}
          </div>
        </>
      );
    }
    ```
-2. Adicionar rota em `App.tsx`:
+2. Add the route in `App.tsx`:
    ```tsx
    <Route path="/aulas" component={AulasExtrasPage} />
    ```
-3. Adicionar link em `DesktopSidebar.tsx` e `MobileBottomNav.tsx`:
+3. Add the link in `DesktopSidebar.tsx` and `MobileBottomNav.tsx`:
    ```tsx
    <Link href="/aulas">Aulas Extras</Link>
    ```
-4. Testar navegação em dev server
+4. Check navigation on the dev server
 5. Build + commit
 
 **Checklist:**
-- [ ] Página criada com `PageHeader` + `updatePageSEO`
-- [ ] Rota adicionada em `App.tsx`
-- [ ] Links adicionados em sidebar + mobile nav
-- [ ] Container principal usa `max-w-6xl mx-auto px-4 py-6`
-- [ ] Testado em dev server (desktop + mobile)
-- [ ] Build passa
+- [ ] The page uses `PageHeader` + `updatePageSEO`
+- [ ] The route was added to `App.tsx`
+- [ ] The links were added to the sidebar + mobile nav
+- [ ] The main container uses `max-w-6xl mx-auto px-4 py-6`
+- [ ] Tried on the dev server (desktop + mobile)
+- [ ] The build passes
 
 ---
 
-## 6️⃣ Validar Build e Types
+## 6️⃣ Validate the build and the types
 
-**Goal:** Garantir que código compila e passa em type checking.
+**Goal:** make sure the code compiles and passes type checking.
 
 **Steps:**
-1. Rodar build:
+1. Run the build:
    ```bash
    pnpm --filter @workspace/koto run build
    ```
-2. Rodar skill de validação:
+2. Run the validation script:
    ```bash
    ./.claude/skills/validate-koto-build.sh
    ```
-3. Se erros, corrigir:
-   - TS errors: tipo implícito, falta import, etc
-   - File errors: arquivo deletado, path incorreto
-4. Commit apenas depois que build passa
+3. On failure, fix it:
+   - TS errors: an implicit type, a missing import, etc
+   - File errors: a deleted file, a wrong path
+4. Commit only once the build passes
 
 **Checklist:**
-- [ ] `pnpm run build` passa sem erros
-- [ ] Sem warnings de tipo implícito (`any`)
-- [ ] `./.claude/skills/validate-koto-build.sh` passa
-- [ ] Sem erros no console do dev server
+- [ ] `pnpm run build` passes with no errors
+- [ ] No implicit-`any` warnings
+- [ ] `./.claude/skills/validate-koto-build.sh` passes
+- [ ] No errors in the dev-server console
 
 ---
 
-## 7️⃣ Resetar Progresso do Usuário (Admin)
+## 7️⃣ Reset a user's progress (admin)
 
-**Goal:** Limpar localStorage para testar do zero.
+**Goal:** clear localStorage to test from scratch.
 
 **Files:**
-- `artifacts/koto/src/pages/KanaStatsPage.tsx` (botão "Resetar Progresso")
-- `artifacts/koto/src/services/progress/progress.local.ts` (função `resetKanaProgress`)
+- `artifacts/koto/src/pages/KanaStatsPage.tsx` (the `Resetar Progresso` button — "reset progress")
+- `artifacts/koto/src/services/progress/progress.local.ts` (`resetKanaProgress`)
 
 **Steps:**
-1. Ir para `/kana/estatisticas`
-2. Clicar botão "Resetar Progresso" (vermelho, no final da página)
-3. Confirmar em modal
-4. localStorage é limpo (`koto:kana_progress`, `koto:sessions`, etc)
-5. Página recarrega e volta a zero
+1. Go to `/kana/estatisticas`
+2. Click `Resetar Progresso` (red, at the bottom of the page)
+3. Confirm in the modal
+4. localStorage is cleared (`koto:kana_progress`, `koto:sessions`, etc)
+5. The page reloads back at zero
 
-**Nota:** Não é necessário editar código para isto — feature já implementada.
+**Note:** no code change is needed for this — the feature already exists.
 
 **Checklist:**
-- [ ] Botão "Resetar" visível em `/kana/estatisticas`
-- [ ] Modal de confirmação aparece
-- [ ] localStorage limpo após confirmar
-- [ ] Página recarrega com stats zeradas
+- [ ] The reset button is visible on `/kana/estatisticas`
+- [ ] The confirmation modal appears
+- [ ] localStorage is cleared after confirming
+- [ ] The page reloads with the stats zeroed
 
 ---
 
-## 8️⃣ Integrar AdSense / Publicidade
+## 8️⃣ Place an AdSense slot
 
-**Goal:** Adicionar `<AdPlaceholder>` em local apropriado.
+**Goal:** add `<AdPlaceholder>` somewhere allowed.
 
 **Rules:**
-- ✅ Antes de iniciar sessão
-- ✅ Depois de encerrar sessão
-- ✅ Sidebar direita (desktop) com ≥ 16px espaçamento
-- ✅ Entre blocos editoriais
-- ❌ Dentro de flashcard, questão, par de matching
-- ❌ Adjacente a botões de ação (Verificar, Próximo, etc)
+- ✅ Before a session starts
+- ✅ After a session ends
+- ✅ Right sidebar (desktop) with ≥ 16px spacing
+- ✅ Between editorial blocks
+- ❌ Inside a flashcard, a question, or a matching pair
+- ❌ Next to action buttons (`Verificar`, `Próximo`, … — check, next)
 
 **Files:**
-- `artifacts/koto/src/components/ui/AdPlaceholder.tsx` (componente)
-- Página onde adicionar (ex: `KanaLearnPage.tsx`)
+- `artifacts/koto/src/components/ui/AdPlaceholder.tsx` (the component)
+- The page you are placing it on (e.g. `KanaLearnPage.tsx`)
 
 **Steps:**
-1. Importar componente:
+1. Import the component:
    ```tsx
    import { AdPlaceholder } from '../components/ui/AdPlaceholder';
    ```
-2. Adicionar em local válido (ex: depois de `PageHeader`):
+2. Add it somewhere allowed (e.g. right after `PageHeader`):
    ```tsx
    <PageHeader ... />
-   <AdPlaceholder />  {/* ← ADD aqui */}
+   <AdPlaceholder />  {/* ← ADD here */}
    <div className="max-w-6xl mx-auto px-4 py-6">
-     {/* conteúdo */}
+     {/* content */}
    </div>
    ```
-3. Testar em dev server (placeholder mostra retângulo cinza)
+3. Check the dev server (the placeholder renders a grey rectangle)
 4. Build + commit
 
 **Checklist:**
-- [ ] Local válido (antes/depois de sessão ou editorial)
-- [ ] ≥ 16px espaçamento se em sidebar
-- [ ] Não dentro de card/questão/exercício
-- [ ] Build passa
+- [ ] The position is allowed (before/after a session, or editorial)
+- [ ] ≥ 16px spacing when in the sidebar
+- [ ] Not inside a card, a question or an exercise
+- [ ] The build passes
 
 ---
 
-## 9️⃣ Sync com Cloudflare D1 (Para Logados)
+## 9️⃣ Sync with Cloudflare D1 (signed-in users)
 
-**Goal:** Sincronizar progresso local com backend quando usuário faz login.
+**Goal:** push local progress to the backend once the user signs in.
 
-**Note:** Feature já implementada via `SyncProgressBanner` em Dashboard.  
-Não é necessário editar código — apenas validar que Clerk + D1 estão conectados.
+**Note:** the feature already exists, through `SyncProgressBanner` on the dashboard.  
+No code change is needed — only a check that Clerk + D1 are connected.
 
 **Files:**
 - `artifacts/koto/src/services/progress/progress.remote.ts` (sync logic)
-- `artifacts/koto/src/pages/DashboardPage.tsx` (banner de sync)
+- `artifacts/koto/src/pages/DashboardPage.tsx` (the sync banner)
 
-**Verificação:**
-1. Login com Clerk em `/entrar`
-2. Ir para `/progresso`
-3. Banner "Sincronizar Progresso" deve aparecer
-4. Clicar em "Sincronizar" → progresso é enviado para D1
+**How to verify:**
+1. Sign in with Clerk at `/entrar`
+2. Go to `/progresso`
+3. The `Sincronizar Progresso` banner ("sync progress") must appear
+4. Click `Sincronizar` → the progress is pushed to D1
 
-**Note:** Requer `CLERK_SECRET_KEY` e `wrangler d1 create` real (ver `docs/TODO_CLOUDFLARE_D1.md`).
+**Note:** this needs a real `CLERK_SECRET_KEY` and a real `wrangler d1 create` (see `docs/TODO_CLOUDFLARE_D1.md`).
 
 **Checklist:**
-- [ ] Clerk login funciona
-- [ ] Banner aparece em `/progresso`
-- [ ] Clicar em sincronizar não gera erro
-- [ ] (Production) Progresso é salvo em D1
+- [ ] Clerk sign-in works
+- [ ] The banner appears on `/progresso`
+- [ ] Clicking sync raises no error
+- [ ] (Production) The progress lands in D1
 
 ---
 
-## 🔟 Rodas Script de Validação (Audit)
+## 🔟 Run the validation scripts (audit)
 
-**Goal:** Validar projeto antes de fazer PR grande ou deploy.
+**Goal:** validate the project before a large PR or a deploy.
 
 **Steps:**
 ```bash
-# Validar build
+# Validate the build
 ./.claude/skills/validate-koto-build.sh
 
-# Validar conteúdo (kana, vocabulary, exams)
+# Validate the content (kana, vocabulary, exams)
 ./.claude/skills/validate-learning-content.sh
 
-# Audit completo (draft/local checks)
+# Full audit (draft/local checks)
 ./.claude/skills/full-audit.sh draft
 
-# Audit live (se pronto para deploy)
+# Live audit (only when ready to deploy)
 ./.claude/skills/full-audit.sh live
 ```
 
 **Checklist:**
-- [ ] `validate-koto-build.sh` passa (build + files)
-- [ ] `validate-learning-content.sh` passa (vocabulário + kana + simulados)
-- [ ] `full-audit.sh draft` passa (checks locais)
-- [ ] Se PR grande, rodar `full-audit.sh draft` antes de push
+- [ ] `validate-koto-build.sh` passes (build + files)
+- [ ] `validate-learning-content.sh` passes (vocabulary + kana + mock exams)
+- [ ] `full-audit.sh draft` passes (local checks)
+- [ ] For a large PR, run `full-audit.sh draft` before pushing
 
 ---
 
-## 🔗 External Skills
+## 🔗 External skills
 
-Para audits mais profundos, ver `EXTERNAL_SKILLS.md`:
+For deeper audits, see `EXTERNAL_SKILLS.md`:
 
-- **Claude SEO:** Verificar meta tags, canonical URLs, schema.org
-- **AdSense Auditor:** Validar placement, revenue potential, compliance
+- **Claude SEO:** check meta tags, canonical URLs, schema.org
+- **AdSense Auditor:** check placement, revenue potential, compliance
 
-Ambas são opcionais — use para PRs grandes ou antes de deploy.
+Both are optional — reach for them on large PRs or before a deploy.
 
 ---
 
-## ⚙️ Atalhos úteis
+## ⚙️ Handy shortcuts
 
 ```bash
 # Dev server
-pnpm --filter @workspace/koto run dev          # porta 5173
+pnpm --filter @workspace/koto run dev          # port 5173
 
 # Build
 pnpm --filter @workspace/koto run build        # full build
 
 # Preview
-pnpm --filter @workspace/koto run preview      # local preview do build
+pnpm --filter @workspace/koto run preview      # local preview of the build
 
-# Scripts customizados
-./.claude/skills/validate-koto-build.sh        # rápido (2s)
-./.claude/skills/validate-learning-content.sh  # médio (5s)
-./.claude/skills/full-audit.sh draft          # completo local (30s)
+# Custom scripts
+./.claude/skills/validate-koto-build.sh        # fast (2s)
+./.claude/skills/validate-learning-content.sh  # medium (5s)
+./.claude/skills/full-audit.sh draft          # full, local (30s)
 ```
 
 ---
 
-## 📌 Antes de commit
+## 📌 Before committing
 
 ```bash
-# 1. Build passa
+# 1. The build passes
 pnpm --filter @workspace/koto run build
 
-# 2. Feature testada em dev server
+# 2. The feature was tried on the dev server
 pnpm --filter @workspace/koto run dev
 
-# 3. Validação rápida
+# 3. Quick validation
 ./.claude/skills/validate-koto-build.sh
 
-# 4. Se OK → commit
+# 4. If OK → commit
 git add artifacts/koto/
-git commit -m "Feature/Fix: descrição breve"
+git commit -m "Feature/Fix: short description"
 git push origin main
 ```
 
 ---
 
-## 📚 Referências
+## 📚 References
 
-- **CLAUDE.md** — Estrutura completa, hard constraints, convenções
-- **INSTRUCTIONS.md** — Onboarding (5 min)
+- **CLAUDE.md** — full structure, hard constraints, conventions
+- **INSTRUCTIONS.md** — onboarding (5 min)
 - **EXTERNAL_SKILLS.md** — Claude SEO + AdSense Auditor
-- **settings.json** — Config do projeto (build, perms)
+- **settings.json** — project config (build, permissions)

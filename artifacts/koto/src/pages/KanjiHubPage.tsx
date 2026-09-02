@@ -70,7 +70,7 @@ export function KanjiHubPage() {
 
         <AdPlaceholder slot="banner" />
 
-        {/* Modos de treino */}
+        {/* Training modes */}
         <section>
           <h2 className="font-heading text-xl font-bold text-foreground mb-4">Modos de treino</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -101,7 +101,7 @@ export function KanjiHubPage() {
           </div>
         </section>
 
-        {/* Cross-link com vocabulário */}
+        {/* Cross-link to vocabulary */}
         <section className="bg-card border border-border rounded-2xl p-6 flex items-center justify-between flex-wrap gap-3">
           <div>
             <h3 className="font-heading text-lg font-bold text-foreground">Kanji aparecem no vocabulário</h3>

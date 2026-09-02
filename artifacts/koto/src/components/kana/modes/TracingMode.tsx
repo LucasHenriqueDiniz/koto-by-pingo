@@ -97,7 +97,7 @@ export function TracingMode({ items, showRomajiHint }: TracingModeProps) {
         </div>
       )}
 
-      {/* Prompt + dica (kana mode) */}
+      {/* Prompt + hint (kana mode) */}
       {!freeMode && current && (
         <div className="flex items-center justify-between">
           {hintRevealed ? (
@@ -136,7 +136,7 @@ export function TracingMode({ items, showRomajiHint }: TracingModeProps) {
         <p className="text-xs text-muted-foreground -mt-2">Desenhe este kana de memória.</p>
       )}
 
-      {/* Teste de desenho */}
+      {/* Drawing test */}
       {activeChar && <DrawingCanvas strokes={freeMode || hintRevealed ? strokes : []} />}
 
       {/* Actions (kana mode only) */}

@@ -1,146 +1,150 @@
 # Koto by Pingo
 
-**Japonês em pequenos treinos diários.**
+**"Japonês em pequenos treinos diários."** — Japanese in small daily drills.
 
-Koto by Pingo é um app web brasileiro para treinar japonês com kana, vocabulário, escuta e simulados estilo JLPT.
-
----
-
-## Sobre a marca
-
-O Koto é um produto da [Pingo Concursos](https://pingoconcursos.com.br), marca brasileira de preparação para exames e certificações.
-
-O mascote **Pingo** é um pinguim preto. No Koto, ele aparece como **Pingo-sensei**, guia dos estudos de japonês.
+Koto by Pingo is a Brazilian web app for practising Japanese: kana, vocabulary, listening and
+JLPT-style mock exams. The interface and the learning content are pt-BR.
 
 ---
 
-## Como trocar o placeholder pelo mascote real
+## About the brand
 
-O componente `PingoMascot` carrega automaticamente `/brand/pingo.png` quando disponível.
+Koto is a product of [Pingo Concursos](https://pingoconcursos.com.br), a Brazilian brand for exam
+and certification prep.
 
-1. Coloque a imagem do Pingo em `artifacts/koto/public/brand/pingo.png`
-2. O componente usará a imagem real em todas as variantes
-3. Se a imagem não existir, o placeholder SVG é exibido automaticamente
-
-Veja `artifacts/koto/public/brand/README.md` para mais detalhes.
+The **Pingo** mascot is a black penguin. In Koto he shows up as **Pingo-sensei**, the guide for the
+Japanese studies.
 
 ---
 
-## Rodando localmente
+## Swapping the placeholder for the real mascot
+
+The `PingoMascot` component loads `/brand/pingo.png` automatically when it is present.
+
+1. Drop the Pingo image at `artifacts/koto/public/brand/pingo.png`
+2. The component then uses the real image in every variant
+3. When the image is missing, the SVG placeholder is shown instead
+
+See `artifacts/koto/public/brand/README.md` for the details.
+
+---
+
+## Running locally
 
 ```bash
-# Instalar dependências
+# Install the dependencies
 pnpm install
 
-# Iniciar o servidor de desenvolvimento
+# Start the dev server
 pnpm --filter @workspace/koto run dev
 ```
 
-O app estará disponível em `http://localhost:<PORT>`.
+The app is then served at `http://localhost:<PORT>`.
 
 ---
 
-## Build para produção
+## Production build
 
 ```bash
 pnpm --filter @workspace/koto run build
 ```
 
-O build é gerado em `artifacts/koto/dist/public`.
+The build lands in `artifacts/koto/dist/public`.
 
 ---
 
-## Estrutura do projeto
+## Project structure
 
 ```
 artifacts/koto/src/
-  App.tsx        — Router e configuração do app (Wouter)
+  App.tsx        — router and app setup (Wouter)
   components/
     brand/       — Logo, BrandMark, AppIcon, PingoMascot, MascotMessage
     layout/      — AppLayout, ResponsiveAppShell, DesktopSidebar, MobileTopBar,
                    MobileBottomNav, RightStudyPanel, Footer
-    ui/          — Componentes genéricos (Shadcn/UI + ProgressBar, StatCard, AdPlaceholder, etc.)
+    ui/          — generic components (Shadcn/UI + ProgressBar, StatCard, AdPlaceholder, etc.)
     kana/        — KanaInput, KanaStats, KanaCharacterCard, KanaModeSelector, KanaGroupFilter,
-                   KanaSubNav, modes/ (7 modos de treino de kana)
+                   KanaSubNav, modes/ (the 7 kana training modes)
     vocabulary/  — FlashcardMode, WordSelectionMode, MatchingPairsMode,
                    TranslationQuizMode, VocabularyCard, VocabularyQuiz
     quiz/        — QuizCard, MultipleChoiceQuestion, ResultSummary
-  pages/         — Todas as páginas do app (incluindo KanaHubPage e as 5 sub-páginas /kana/*)
+  pages/         — every page of the app (including KanaHubPage and the 5 /kana/* sub-pages)
   data/          — kana.ts, kanaWords.ts, vocabulary.ts, mockExams.ts
   hooks/         — useLocalStorage, useStudyProgress, useKanaQueue, useKanaTrainer, useKanaFilters
   services/
-    progress/    — Acesso ao localStorage (nunca acessar direto)
-    auth/        — Placeholder para Clerk
-    exams/       — Lógica de simulados
-  types/         — Tipos TypeScript
+    progress/    — localStorage access (never reach for it directly)
+    auth/        — Clerk placeholder
+    exams/       — mock-exam logic
+  types/         — TypeScript types
   utils/         — kana, scoring, seo, storage
 
-cloudflare/      — Schema SQL e migrations para Cloudflare D1
+cloudflare/      — SQL schema and migrations for Cloudflare D1
 ```
 
 ---
 
-## Como o LocalStorage funciona
+## How localStorage works
 
-Todo o progresso do usuário é armazenado localmente no navegador.
+All user progress is stored locally in the browser.
 
-**Regra:** Nenhum componente ou página acessa o `localStorage` diretamente. Todo acesso passa por `src/services/progress/progress.local.ts`.
+**The rule:** no component and no page touches `localStorage` directly. Every access goes through
+`src/services/progress/progress.local.ts`.
 
-Chaves utilizadas (prefixo `koto:`):
-- `koto:kana_progress` — histórico de tentativas de kana
-- `koto:vocab_progress` — histórico de tentativas de vocabulário
-- `koto:exam_attempts` — simulados completados
-- `koto:sessions` — sessões de estudo
+Keys in use (prefix `koto:`):
+- `koto:kana_progress` — history of kana attempts
+- `koto:vocab_progress` — history of vocabulary attempts
+- `koto:exam_attempts` — completed mock exams
+- `koto:sessions` — study sessions
 
 ---
 
-## Como o Clerk entrará depois
+## How Clerk comes in later
 
-O arquivo `src/services/auth/auth.placeholder.ts` tem comentários `TODO` indicando cada ponto de integração.
+`src/services/auth/auth.placeholder.ts` carries `TODO` comments marking each integration point.
 
-Para integrar o Clerk:
+To wire Clerk up:
 1. `pnpm --filter @workspace/koto add @clerk/clerk-react`
-2. Adicionar `VITE_CLERK_PUBLISHABLE_KEY` às variáveis de ambiente
-3. Envolver `<App>` com `<ClerkProvider>`
-4. Substituir as funções do placeholder pelas APIs do Clerk
+2. Add `VITE_CLERK_PUBLISHABLE_KEY` to the environment variables
+3. Wrap `<App>` in `<ClerkProvider>`
+4. Replace the placeholder functions with the Clerk APIs
 
 ---
 
-## Como o Cloudflare D1 entrará depois
+## How Cloudflare D1 comes in later
 
-O arquivo `cloudflare/schema.sql` contém todas as tabelas necessárias.
+`cloudflare/schema.sql` holds every table that is needed.
 
-Para ativar:
-1. Criar o banco: `npx wrangler d1 create koto_by_pingo`
-2. Copiar `wrangler.example.toml` → `wrangler.toml` e preencher `database_id`
-3. Aplicar migrations: `npx wrangler d1 migrations apply koto_by_pingo`
-4. Implementar as rotas da API em `cloudflare/api/`
-5. Substituir os stubs em `services/progress/progress.remote.placeholder.ts`
+To turn it on:
+1. Create the database: `npx wrangler d1 create koto_by_pingo`
+2. Copy `wrangler.example.toml` → `wrangler.toml` and fill in `database_id`
+3. Apply the migrations: `npx wrangler d1 migrations apply koto_by_pingo`
+4. Implement the API routes under `cloudflare/api/`
+5. Replace the stubs in `services/progress/progress.remote.placeholder.ts`
 
 ---
 
-## Como publicar no Cloudflare Pages
+## Publishing to Cloudflare Pages
 
-1. Faça o build: `pnpm --filter @workspace/koto run build`
-2. O diretório de saída é `artifacts/koto/dist/public`
-3. No painel do Cloudflare Pages, configure:
+1. Build it: `pnpm --filter @workspace/koto run build`
+2. The output directory is `artifacts/koto/dist/public`
+3. In the Cloudflare Pages dashboard, set:
    - Build command: `pnpm --filter @workspace/koto run build`
    - Build output directory: `artifacts/koto/dist/public`
-4. Para usar Cloudflare Workers/Functions junto com Pages, veja a documentação oficial.
+4. To run Cloudflare Workers/Functions alongside Pages, see the official documentation.
 
 ---
 
-## Tecnologia
+## Technology
 
 - **React 19** + **TypeScript**
 - **Vite** (build tool)
-- **Tailwind CSS** (estilização)
-- **Wouter** (roteamento)
-- **Framer Motion** (animações)
-- **localStorage** (persistência local)
+- **Tailwind CSS** (styling)
+- **Wouter** (routing)
+- **Framer Motion** (animation)
+- **localStorage** (local persistence)
 
 ---
 
-## Licença
+## License
 
-Propriedade da Pingo Concursos. Uso pessoal e educacional permitido.
+Property of Pingo Concursos. Personal and educational use permitted.

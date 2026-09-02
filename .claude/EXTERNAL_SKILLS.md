@@ -1,6 +1,6 @@
 # 🔗 External Skills & Audits
 
-Referência para ferramentas externas de validação e auditoria.
+Reference for the external validation and audit tooling.
 
 ---
 
