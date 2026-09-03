@@ -52,6 +52,9 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+# wrangler's local secret file. It carries TEST_BYPASS_SECRET during a `wrangler dev`
+# session, so it must never be committed — the bypass is only as safe as this line.
+.dev.vars
 
 # Cloudflare
 # The blanket ignore sits right under "Environment secrets", which is the mistake: a wrangler
