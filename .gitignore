@@ -61,3 +61,6 @@ Thumbs.db
 wrangler.toml
 !cloudflare/wrangler.toml
 .wrangler/
+
+# Derived board state (see the hexagram board skill) — regenerate with sync.py
+.kanban.json
