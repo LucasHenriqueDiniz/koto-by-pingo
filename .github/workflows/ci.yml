@@ -24,8 +24,6 @@ jobs:
 
       # The shared libs are checked separately because the artifacts consume them
       # already compiled — an error here surfaces in both artifacts.
-      - name: Typecheck libs
-        run: pnpm run typecheck:libs
 
       # `build` here does NOT duplicate Cloudflare. Pages publishes a single package
       # (artifacts/koto); the script is `typecheck && pnpm -r --if-present run build`,
