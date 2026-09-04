@@ -2,15 +2,13 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  "references": [
-    {
-      "path": "./lib/db"
-    },
-    {
-      "path": "./lib/api-client-react"
-    },
-    {
-      "path": "./lib/api-zod"
-    }
-  ]
+  // Empty since 2026-09-04. This array held project references to lib/db,
+  // lib/api-client-react and lib/api-zod — the three packages that hung off the
+  // Express api-server, deleted with it. Nothing lives under lib/ now.
+  //
+  // Add a reference back here when a real shared package appears, and restore the
+  // `typecheck:libs` script alongside it: `tsc --build` on an empty references
+  // array succeeds without compiling anything, so a script wrapping it would
+  // report success for work it never did.
+  "references": []
 }

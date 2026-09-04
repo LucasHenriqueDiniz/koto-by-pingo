@@ -1,5 +1,5 @@
 ---
-status: todo
+status: done
 kanban: 3dfdb11f-580e-4b20-b0f9-54e12477976c
 ---
 
@@ -33,3 +33,20 @@ deliberately not deployed.
 **If stuck** — publishing costs nothing but a project; the real question is
 whether the sandbox contains anything not meant to be seen. Check that before
 deciding, not after.
+
+## Outcome — not published, written down
+
+`docs/deploy.md` names it in the deployables table as **none — deliberately**, plus a section
+saying why. The gate reads 3.
+
+Checked before deciding, in the order this slice asked for: 70 files, a gallery of shadcn/ui
+components, **no API call anywhere in `src/`**, no key, no secret, nothing reading or writing real
+data. So "is there anything not meant to be seen" answers cleanly — there is not.
+
+It stays local anyway, because publishing buys nothing here. Nothing links to a component gallery,
+so it would earn no visitors, and it would add a second Pages project to watch, a public URL of
+unfinished design, and a deploy that can break unnoticed. The owner's stated constraint is having
+less to maintain, not more hosting.
+
+The condition this slice set for *not* publishing holds: `pnpm run typecheck` covers
+`./artifacts/**`, so CI typechecks the sandbox on every run exactly as it does the site.

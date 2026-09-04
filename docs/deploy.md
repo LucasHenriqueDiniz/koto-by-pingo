@@ -7,6 +7,7 @@ differently. Both deploy on a push to `main`; neither needs a secret in CI.
 | --- | --- | --- | --- |
 | Site | Pages `koto-by-pingo` | repo root, `pnpm run build` | `artifacts/koto/dist/public` |
 | API | Worker `koto-by-pingo` | root directory `cloudflare/`, `npx wrangler deploy` | the Worker itself |
+| Mockup sandbox | **none — deliberately** | `artifacts/mockup-sandbox` | not published |
 
 Same name, different products. The Pages project serves
 `koto-by-pingo.pages.dev`; the Worker answers on
@@ -74,3 +75,25 @@ Both migrations are already recorded in `d1_migrations`; the nine tables exist.
 `wrangler secret put`. Without it `verifyToken` throws, `requireUserId` returns
 null, and every authenticated route answers 401 — indistinguishable from a
 missing Authorization header, so check the secret before debugging the client.
+
+## The mockup sandbox is not published, and that is a decision
+
+`artifacts/mockup-sandbox` is a second Vite app with its own build. It is a gallery of shadcn/ui
+components — 70 files, no API call anywhere in `src/`, no key, no secret, nothing that reads or
+writes real data. Checked 2026-09-04 before deciding, which is the order the slice asked for:
+whether it holds anything not meant to be seen is a question you answer *first*, not after the URL
+exists.
+
+It stays local because publishing it would buy nothing and cost something. Nothing outside this
+repo links to a component gallery, so it would earn no visitors; it would add a second Pages
+project to watch, a public URL showing unfinished design, and one more deploy that can break
+without anyone noticing. This project is a POC with one owner — the scarce resource is attention,
+not hosting.
+
+It cannot rot unnoticed. `pnpm run typecheck` covers `./artifacts/**`, so the sandbox is
+typechecked on every CI run exactly like the site is. That is the whole reason "not published" is
+safe to write down rather than a way of forgetting about it.
+
+To publish it later: a Pages project with `artifacts/mockup-sandbox` as the root directory, and a
+row in the table above. Delete this section when that happens — a file that says both things is
+worse than one that says neither.
